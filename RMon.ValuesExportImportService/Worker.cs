@@ -5,14 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using RMon.Configuration.Options;
 
-namespace RMon.Service
+namespace RMon.ValuesExportImportService
 {
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
 
-        public Worker(ILogger<Worker> logger)
+        public Worker(ILogger<Worker> logger, IOptionsMonitor<Esb> esBOptions)
         {
             _logger = logger;
         }
