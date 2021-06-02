@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>dotnet-RMon.Service-399D6D63-FC54-4817-BFFE-5EA5E4448777</UserSecretsId>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="5.0.1" />
+		<PackageReference Include="RMon.Configuration.DependencyInjection" Version="1.0.0" />
+		<PackageReference Include="RMon.Configuration.MassTransit" Version="1.0.0" />
+		<PackageReference Include="RMon.Configuration.Options" Version="1.1.0" />
+		<PackageReference Include="RMon.Logging" Version="3.1.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Update="Windows\*.cmd" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
+		<ContentWithTargetPath Include="Windows\install.cmd" CopyToOutputDirectory="PreserveNewest" TargetPath="install.cmd" />
+		<ContentWithTargetPath Include="Windows\uninstall.cmd" CopyToOutputDirectory="PreserveNewest" TargetPath="uninstall.cmd" />
+		<ContentWithTargetPath Include="Windows\start.cmd" CopyToOutputDirectory="PreserveNewest" TargetPath="start.cmd" />
+		<ContentWithTargetPath Include="Windows\stop.cmd" CopyToOutputDirectory="PreserveNewest" TargetPath="stop.cmd" />
+		<ContentWithTargetPath Include="Windows\status.cmd" CopyToOutputDirectory="PreserveNewest" TargetPath="status.cmd" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Update="Linux\*.sh" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
+		<ContentWithTargetPath Include="Linux\install.sh" CopyToOutputDirectory="PreserveNewest" TargetPath="install.sh" />
+		<ContentWithTargetPath Include="Linux\uninstall.sh" CopyToOutputDirectory="PreserveNewest" TargetPath="uninstall.sh" />
+		<ContentWithTargetPath Include="Linux\start.sh" CopyToOutputDirectory="PreserveNewest" TargetPath="start.sh" />
+		<ContentWithTargetPath Include="Linux\stop.sh" CopyToOutputDirectory="PreserveNewest" TargetPath="stop.sh" />
+		<ContentWithTargetPath Include="Linux\status.sh" CopyToOutputDirectory="PreserveNewest" TargetPath="status.sh" />
+	</ItemGroup>
+</Project>

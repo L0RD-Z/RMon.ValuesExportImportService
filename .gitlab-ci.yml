@@ -1,0 +1,104 @@
+variables:
+  MS_VS_AUX: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\Common7\\Tools"
+  BUILD_TARGET_CONFIG: "Release"
+  BUILD_TARGET_PLATFORM: "Any CPU"
+  EnableNuGetPackageRestore: "TRUE"
+  GIT_STRATEGY: clone
+  DEVTOOLS_BIN: "C:\\devtools\\utils\\bin"
+  NUGET_LOCAL_SOURCE: "\\\\nuget.allmonitoring.local\\nuget"
+  OUTPUT_PREFIX: "bin\\Release"
+  GIT_CLONE_PATH: c:\GitlabRunner/builds/RMon.DataProcessorService
+
+before_script:
+  - "echo off"
+  - 'cp "C:\ProgramData\Nuget\Config\NuGet.Config" ".\NuGet.Config"'
+  - '"%DEVTOOLS_BIN%\nuget.exe" config -set repositoryPath=".\packages" -ConfigFile ".\NuGet.Config"'
+  - '"%DEVTOOLS_BIN%\nuget.exe" sources Add -Name "SiM" -Source "%NUGET_LOCAL_SOURCE%" -ConfigFile ".\NuGet.Config"'
+  - '"%DEVTOOLS_BIN%\nuget.exe" config -set enabled=true -ConfigFile ".\NuGet.Config"'
+  - set
+  - 'call "%MS_VS_AUX%\VsDevCmd.bat"'
+  - echo.
+  - set
+  - echo.
+
+stages:
+  - build
+  - deploydev
+  - test
+  - package_windows
+  - package_linux
+
+Build app:
+  stage: build
+  script:
+  - echo building...
+  - '"%DEVTOOLS_BIN%\nuget.exe" restore -ConfigFile ".\NuGet.Config"'  
+  - 'msbuild.exe /p:Configuration=%BUILD_TARGET_CONFIG% /p:Platform="%BUILD_TARGET_PLATFORM%"'
+
+Package Windows:
+  variables:
+    GIT_STRATEGY: clone
+  stage: package_windows
+  script:
+  - echo packaging...
+  - '"%DEVTOOLS_BIN%\nuget.exe" restore -ConfigFile ".\NuGet.Config"'
+  - 'dotnet publish /p:Configuration=%BUILD_TARGET_CONFIG% /p:Platform="%BUILD_TARGET_PLATFORM%" /p:PublishProfile=windows'
+  - 'rd /s /q "%CI_PROJECT_NAME%.%CI_COMMIT_REF_NAME%"'
+  - 'move publish/windows "%CI_PROJECT_NAME%.%CI_COMMIT_REF_NAME%"'
+  artifacts:
+    paths:
+    - "%CI_PROJECT_NAME%.%CI_COMMIT_REF_NAME%"
+    name: "%CI_PROJECT_NAME%.%CI_COMMIT_REF_NAME%_windows"
+  only:
+    refs:
+     - master
+     - dev
+     - tags
+
+Package Linux:
+  variables:
+    GIT_STRATEGY: none
+  stage: package_linux
+  script:
+  - echo packaging...
+  - '"%DEVTOOLS_BIN%\nuget.exe" restore -ConfigFile ".\NuGet.Config"'
+  - 'dotnet publish  /p:Configuration=%BUILD_TARGET_CONFIG% /p:Platform="%BUILD_TARGET_PLATFORM%" /p:PublishProfile=linux'
+  - 'rd /s /q "%CI_PROJECT_NAME%.%CI_COMMIT_REF_NAME%"'
+  - 'move publish/linux "%CI_PROJECT_NAME%.%CI_COMMIT_REF_NAME%"'
+  artifacts:
+    paths:
+    - "%CI_PROJECT_NAME%.%CI_COMMIT_REF_NAME%"
+    name: "%CI_PROJECT_NAME%.%CI_COMMIT_REF_NAME%_linux"
+  only:
+    refs:
+     - master
+     - dev
+     - tags
+  
+test:
+  variables:
+    GIT_STRATEGY: none
+  stage: test
+  script:
+  - echo testing...
+  - dir /s /b *.Tests.dll | findstr /r Tests\\*\\bin\\ > testcontainers.txt
+  - 'for /f %%f in (testcontainers.txt) do vstest.console.exe "%%f"'
+  except:
+  - tags
+
+Deploy on dev server:
+  variables:
+    GIT_STRATEGY: none
+  stage: deploydev
+  script:
+  - echo deploying dev...
+  - set PRODUCT_NAME=%CI_PROJECT_NAME%
+  - '"%DEVTOOLS_BIN%\nuget.exe" restore -ConfigFile ".\NuGet.Config"'
+  - 'dotnet publish /p:Configuration=%BUILD_TARGET_CONFIG% /p:Platform="%BUILD_TARGET_PLATFORM%" /p:PublishProfile=windows'
+  - cd gitlab-ci
+  - deploydev.cmd publish/windows %DEV_SERVICE_NAME% %DEV_SERVER_NAME% "%DEV_SERVICES_PATH%\\%DEV_SERVICE_FOLDER%"
+  only:
+    refs:
+     - dev
+    variables:
+     - $DEV_SERVICE_NAME
