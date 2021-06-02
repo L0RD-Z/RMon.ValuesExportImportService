@@ -1,5 +1,0 @@
-[Service]
-SERVICE_NAME=RMon.Service
-SERVICE_DISPLAY_NAME=Romonitoring .NET Service
-SERVICE_DESCRIPTION=Service of Romonitoring .NET
-SERVICE_EXE=RMon.Service

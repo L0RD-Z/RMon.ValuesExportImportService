@@ -2,19 +2,24 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <UserSecretsId>dotnet-RMon.Service-399D6D63-FC54-4817-BFFE-5EA5E4448777</UserSecretsId>
+    <UserSecretsId>dotnet-RMon.ValuesExportImportService-57461154-8A03-4CC3-AC2A-645407D08240</UserSecretsId>
+	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	<Company>АО Связь инжиниринг М</Company>
+	<Authors>АО Связь инжиниринг М</Authors>
+	<Description>Служба экспорта/импорта значений тегов Romonitoring .NET</Description>
+	<Copyright>Copyright © АО Связь инжиниринг М 2021</Copyright>
   </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="5.0.1" />
-		<PackageReference Include="RMon.Configuration.DependencyInjection" Version="1.0.0" />
-		<PackageReference Include="RMon.Configuration.MassTransit" Version="1.0.0" />
-		<PackageReference Include="RMon.Configuration.Options" Version="1.1.0" />
-		<PackageReference Include="RMon.Logging" Version="3.1.1" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="5.0.1" />
+    <PackageReference Include="RMon.Configuration.DependencyInjection" Version="1.0.0" />
+    <PackageReference Include="RMon.Configuration.MassTransit" Version="1.0.0" />
+    <PackageReference Include="RMon.Configuration.Options" Version="1.1.0" />
+    <PackageReference Include="RMon.Logging" Version="3.1.1" />
+  </ItemGroup>
 
 	<ItemGroup>
 		<Content Update="Windows\*.cmd" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
@@ -24,7 +29,6 @@
 		<ContentWithTargetPath Include="Windows\stop.cmd" CopyToOutputDirectory="PreserveNewest" TargetPath="stop.cmd" />
 		<ContentWithTargetPath Include="Windows\status.cmd" CopyToOutputDirectory="PreserveNewest" TargetPath="status.cmd" />
 	</ItemGroup>
-
 	<ItemGroup>
 		<Content Update="Linux\*.sh" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
 		<ContentWithTargetPath Include="Linux\install.sh" CopyToOutputDirectory="PreserveNewest" TargetPath="install.sh" />
@@ -33,4 +37,10 @@
 		<ContentWithTargetPath Include="Linux\stop.sh" CopyToOutputDirectory="PreserveNewest" TargetPath="stop.sh" />
 		<ContentWithTargetPath Include="Linux\status.sh" CopyToOutputDirectory="PreserveNewest" TargetPath="status.sh" />
 	</ItemGroup>
+
+  <ItemGroup>
+    <None Update="service.info">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
