@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using RMon.Configuration.Options;
+using RMon.Configuration.Options.FileStorage;
 
 namespace RMon.ValuesExportImportService
 {
@@ -14,7 +15,7 @@ namespace RMon.ValuesExportImportService
     {
         private readonly ILogger<Worker> _logger;
 
-        public Worker(ILogger<Worker> logger, IOptionsMonitor<Esb> esbOptions)
+        public Worker(ILogger<Worker> logger, IOptionsMonitor<ValuesExportImportFileStorage> esbOptions)
         {
             _logger = logger;
         }

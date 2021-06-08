@@ -20,6 +20,7 @@
     <PackageReference Include="RMon.Configuration.Options" Version="1.2.0" />
     <PackageReference Include="RMon.ESB.Common" Version="3.3.0" />
     <PackageReference Include="RMon.ESB.Core" Version="2.13.0" />
+    <PackageReference Include="RMon.FileStorage.Grpc" Version="1.1.0" />
     <PackageReference Include="RMon.Globalization" Version="1.1.2" />
     <PackageReference Include="RMon.Logging" Version="3.1.1" />
     <PackageReference Include="RMon.Values.ExportImport.Core" Version="1.0.0" />
@@ -40,6 +41,9 @@
 		<ContentWithTargetPath Include="Linux\start.sh" CopyToOutputDirectory="PreserveNewest" TargetPath="start.sh" />
 		<ContentWithTargetPath Include="Linux\stop.sh" CopyToOutputDirectory="PreserveNewest" TargetPath="stop.sh" />
 		<ContentWithTargetPath Include="Linux\status.sh" CopyToOutputDirectory="PreserveNewest" TargetPath="status.sh" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\RMon.ValuesExportImportService.Text\RMon.ValuesExportImportService.Text.csproj" />
 	</ItemGroup>
 
   <ItemGroup>
