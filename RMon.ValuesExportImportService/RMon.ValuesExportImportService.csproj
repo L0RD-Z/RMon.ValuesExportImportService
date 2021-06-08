@@ -17,8 +17,12 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="5.0.1" />
     <PackageReference Include="RMon.Configuration.DependencyInjection" Version="1.0.0" />
     <PackageReference Include="RMon.Configuration.MassTransit" Version="1.0.0" />
-    <PackageReference Include="RMon.Configuration.Options" Version="1.1.0" />
+    <PackageReference Include="RMon.Configuration.Options" Version="1.2.0" />
+    <PackageReference Include="RMon.ESB.Common" Version="3.3.0" />
+    <PackageReference Include="RMon.ESB.Core" Version="2.13.0" />
+    <PackageReference Include="RMon.Globalization" Version="1.1.2" />
     <PackageReference Include="RMon.Logging" Version="3.1.1" />
+    <PackageReference Include="RMon.Values.ExportImport.Core" Version="1.0.0" />
   </ItemGroup>
 
 	<ItemGroup>

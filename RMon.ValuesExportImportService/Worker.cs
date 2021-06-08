@@ -14,7 +14,7 @@ namespace RMon.ValuesExportImportService
     {
         private readonly ILogger<Worker> _logger;
 
-        public Worker(ILogger<Worker> logger, IOptionsMonitor<Esb> esBOptions)
+        public Worker(ILogger<Worker> logger, IOptionsMonitor<Esb> esbOptions)
         {
             _logger = logger;
         }
@@ -24,7 +24,7 @@ namespace RMon.ValuesExportImportService
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await Task.Delay(1000, stoppingToken);
+                await Task.Delay(1000, stoppingToken).ConfigureAwait(false);
             }
         }
     }

@@ -9,6 +9,13 @@ using Microsoft.Extensions.Logging;
 using RMon.Configuration.DependencyInjection;
 using RMon.Configuration.MassTransit;
 using RMon.Configuration.Options;
+using RMon.ValuesExportImportService.Processing.Export;
+using RMon.ValuesExportImportService.Processing.Import;
+using RMon.ValuesExportImportService.Processing.Parse;
+using RMon.ValuesExportImportService.ServiceBus;
+using RMon.ValuesExportImportService.ServiceBus.Export;
+using RMon.ValuesExportImportService.ServiceBus.Import;
+using RMon.ValuesExportImportService.ServiceBus.Parse;
 
 namespace RMon.ValuesExportImportService
 {
@@ -23,12 +30,30 @@ namespace RMon.ValuesExportImportService
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .SetMassTransitConfiguration(args)
-                .ConfigureLogging((context, builder) => { builder.AddLog4Net(); })
+                .ConfigureLogging((context, builder) =>
+                {
+                    builder.SetMinimumLevel(LogLevel.Trace);
+                    builder.AddLog4Net();
+                })
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.Configure<Service>(hostContext.Configuration.GetSection(nameof(Service)));
                     services.ConfigureOption<Esb>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(Esb));
                     services.ConfigureOption<EntitiesDatabase>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(EntitiesDatabase));
+
+                    services.AddSingleton<IBusProvider, BusProvider>();
+                    services.AddSingleton<ExportStateMachine>();
+                    services.AddSingleton<ParseStateMachine>();
+                    services.AddSingleton<ImportStateMachine>();
+                    services.AddSingleton<IExportBusPublisher, ExportBusPublisher>();
+                    services.AddSingleton<IParseBusPublisher, ParseBusPublisher>();
+                    services.AddSingleton<IImportBusPublisher, ImportBusPublisher>();
+
+                    services.AddSingleton<IExportTaskLogic, ExportTaskLogic>();
+                    services.AddSingleton<IImportTaskLogic, ImportTaskLogic>();
+                    services.AddSingleton<IParseTaskLogic, ParseTaskLogic>();
+
+                    services.AddHostedService<BusService>();
 
                     services.AddHostedService<Worker>();
                 })
