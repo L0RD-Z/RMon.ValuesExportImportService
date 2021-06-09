@@ -22,19 +22,16 @@ namespace EsbConsumer
 
                 cfg.ReceiveEndpoint(endpoint =>
                 {
-                    endpoint.Consumer<ConsumerT<IValuesExportTaskAbort>>();
                     endpoint.Consumer<ConsumerT<IValuesExportTaskFinished>>();
                     endpoint.Consumer<ConsumerT<IValuesExportTaskLog>>();
                     endpoint.Consumer<ConsumerT<IValuesExportTaskProgressChanged>>();
                     endpoint.Consumer<ConsumerT<IValuesExportTaskStarted>>();
 
-                    endpoint.Consumer<ConsumerT<IValuesParseTaskAbort>>();
                     endpoint.Consumer<ConsumerT<IValuesParseTaskFinished>>();
                     endpoint.Consumer<ConsumerT<IValuesParseTaskLog>>();
                     endpoint.Consumer<ConsumerT<IValuesParseTaskProgressChanged>>();
                     endpoint.Consumer<ConsumerT<IValuesParseTaskStarted>>();
 
-                    endpoint.Consumer<ConsumerT<IValuesImportTaskAbort>>();
                     endpoint.Consumer<ConsumerT<IValuesImportTaskFinished>>();
                     endpoint.Consumer<ConsumerT<IValuesImportTaskLog>>();
                     endpoint.Consumer<ConsumerT<IValuesImportTaskProgressChanged>>();
