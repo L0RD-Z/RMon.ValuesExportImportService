@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using RMon.Core.CommonTask;
-using RMon.Core.Files;
 using RMon.ESB.Core.Common;
 using RMon.ESB.Core.ValuesImportTaskDto;
 using RMon.ValuesExportImportService.ServiceBus.Common;
@@ -47,6 +45,14 @@ namespace RMon.ValuesExportImportService.ServiceBus.Import
         }
 
         /// <inheritdoc/>
+        public async Task SendTaskLogAsync(ITask receivedTask, DateTime date, LogLevel logLevel, string message)
+        {
+            var msg = new ValuesImportTaskLog(receivedTask, date, logLevel, message, string.Empty);
+            await _busProvider.Bus.Publish((IValuesImportTaskLog)msg).ConfigureAwait(false);
+            _busLogger.LogSentTask(msg, typeof(IValuesImportTaskLog));
+        }
+
+        /// <inheritdoc/>
         public async Task SendTaskLogAsync(ITask receivedTask, DateTime date, string message, Exception exception)
         {
             var msg = new ValuesImportTaskLog(receivedTask, date, LogLevel.Error, message, exception.StackTrace);
@@ -62,13 +68,11 @@ namespace RMon.ValuesExportImportService.ServiceBus.Import
             _busLogger.LogSentTask(msg, typeof(IValuesImportTaskProgressChanged));
         }
 
-        /// <inheritdoc/>
-        public async Task SendTaskFinishedAsync(ITask receivedTask, DateTime date, string instanceName, TaskState state, IList<FileInStorage> files)
-        { 
+        public async Task SendTaskFinishedAsync(ITask receivedTask, DateTime date, string instanceName, TaskState state)
+        {
             var msg = new ValuesImportTaskFinished(receivedTask, date, instanceName, state);
             await _busProvider.Bus.Publish((IValuesImportTaskFinished)msg).ConfigureAwait(false);
             _busLogger.LogSentTask(msg, typeof(IValuesImportTaskFinished));
         }
-
     }
 }

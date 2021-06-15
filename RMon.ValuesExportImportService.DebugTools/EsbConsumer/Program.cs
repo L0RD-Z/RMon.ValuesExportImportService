@@ -26,16 +26,19 @@ namespace EsbConsumer
                     endpoint.Consumer<ConsumerT<IValuesExportTaskLog>>();
                     endpoint.Consumer<ConsumerT<IValuesExportTaskProgressChanged>>();
                     endpoint.Consumer<ConsumerT<IValuesExportTaskStarted>>();
+                    endpoint.Consumer<ConsumerT<IValuesExportTask>>();
 
                     endpoint.Consumer<ConsumerT<IValuesParseTaskFinished>>();
                     endpoint.Consumer<ConsumerT<IValuesParseTaskLog>>();
                     endpoint.Consumer<ConsumerT<IValuesParseTaskProgressChanged>>();
                     endpoint.Consumer<ConsumerT<IValuesParseTaskStarted>>();
+                    endpoint.Consumer<ConsumerT<IValuesParseTask>>();
 
                     endpoint.Consumer<ConsumerT<IValuesImportTaskFinished>>();
                     endpoint.Consumer<ConsumerT<IValuesImportTaskLog>>();
                     endpoint.Consumer<ConsumerT<IValuesImportTaskProgressChanged>>();
                     endpoint.Consumer<ConsumerT<IValuesImportTaskStarted>>();
+                    endpoint.Consumer<ConsumerT<IValuesImportTask>>();
                 });
             });
 

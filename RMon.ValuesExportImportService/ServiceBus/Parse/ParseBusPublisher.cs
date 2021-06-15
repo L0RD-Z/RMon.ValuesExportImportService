@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using RMon.Core.CommonTask;
-using RMon.Core.Files;
 using RMon.ESB.Core.Common;
 using RMon.ESB.Core.ValuesParseTaskDto;
+using RMon.Values.ExportImport.Core;
 using RMon.ValuesExportImportService.ServiceBus.Common;
 using RMon.ValuesExportImportService.ServiceBus.Entity;
 using LogLevel = RMon.ESB.Core.Common.LogLevel;
@@ -47,6 +47,14 @@ namespace RMon.ValuesExportImportService.ServiceBus.Parse
         }
 
         /// <inheritdoc/>
+        public async Task SendTaskLogAsync(ITask receivedTask, DateTime date, LogLevel logLevel, string message)
+        {
+            var msg = new ValuesParseTaskLog(receivedTask, date, logLevel, message, string.Empty);
+            await _busProvider.Bus.Publish((IValuesParseTaskLog)msg).ConfigureAwait(false);
+            _busLogger.LogSentTask(msg, typeof(IValuesParseTaskLog));
+        }
+
+        /// <inheritdoc/>
         public async Task SendTaskLogAsync(ITask receivedTask, DateTime date, string message, Exception exception)
         {
             var msg = new ValuesParseTaskLog(receivedTask, date, LogLevel.Error, message, exception.StackTrace);
@@ -63,12 +71,19 @@ namespace RMon.ValuesExportImportService.ServiceBus.Parse
         }
 
         /// <inheritdoc/>
-        public async Task SendTaskFinishedAsync(ITask receivedTask, DateTime date, string instanceName, TaskState state, IList<FileInStorage> files)
-        { 
+        public async Task SendTaskFinishedAsync(ITask receivedTask, DateTime date, string instanceName, TaskState state)
+        {
             var msg = new ValuesParseTaskFinished(receivedTask, date, instanceName, state);
             await _busProvider.Bus.Publish((IValuesParseTaskFinished)msg).ConfigureAwait(false);
             _busLogger.LogSentTask(msg, typeof(IValuesParseTaskFinished));
         }
 
+        /// <inheritdoc/>
+        public async Task SendTaskFinishedAsync(ITask receivedTask, DateTime date, string instanceName, TaskState state, IList<ValueInfo> values)
+        {
+            var msg = new ValuesParseTaskFinished(receivedTask, date, instanceName, state, values);
+            await _busProvider.Bus.Publish((IValuesParseTaskFinished)msg).ConfigureAwait(false);
+            _busLogger.LogSentTask(msg, typeof(IValuesParseTaskFinished));
+        }
     }
 }

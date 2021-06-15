@@ -25,5 +25,10 @@ namespace RMon.ValuesExportImportService.ServiceBus.Entity
             State = state;
             Results = new ValuesExportTaskResults() {Files = files};
         }
+
+        public ValuesExportTaskFinished(ITask task, DateTime dateTime, string instanceName, TaskState state) 
+            : this(task, dateTime, instanceName, state, null)
+        {
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using RMon.Core.CommonTask;
 using RMon.ESB.Core.Common;
 using RMon.ESB.Core.ValuesImportTaskDto;
@@ -17,13 +18,21 @@ namespace RMon.ValuesExportImportService.ServiceBus.Entity
 
         public ValuesParseTaskResults Results { get; set; }
 
-        public ValuesParseTaskFinished(ITask task, DateTime dateTime, string instanceName, TaskState state)
+        public ValuesParseTaskFinished(ITask task, DateTime dateTime, string instanceName, TaskState state, IList<ValueInfo> values)
             :base(task)
         {
             DateTime = dateTime;
             InstanceName = instanceName;
             State = state;
-            Results = new ValuesParseTaskResults();
+            Results = new ValuesParseTaskResults
+            {
+                Values = values
+            };
+        }
+
+        public ValuesParseTaskFinished(ITask task, DateTime dateTime, string instanceName, TaskState state) : 
+            this(task, dateTime, instanceName, state, null)
+        {
         }
     }
 }

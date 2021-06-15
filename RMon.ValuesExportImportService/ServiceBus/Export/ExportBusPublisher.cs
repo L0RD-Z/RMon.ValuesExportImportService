@@ -48,6 +48,14 @@ namespace RMon.ValuesExportImportService.ServiceBus.Export
         }
 
         /// <inheritdoc/>
+        public async Task SendTaskLogAsync(ITask receivedTask, DateTime date, LogLevel logLevel, string message)
+        {
+            var msg = new ValuesExportTaskLog(receivedTask, date, logLevel, message, string.Empty);
+            await _busProvider.Bus.Publish((IValuesExportTaskLog)msg).ConfigureAwait(false);
+            _busLogger.LogSentTask(msg, typeof(IValuesExportTaskLog));
+        }
+
+        /// <inheritdoc/>
         public async Task SendTaskLogAsync(ITask receivedTask, DateTime date, string message, Exception exception)
         {
             var msg = new ValuesExportTaskLog(receivedTask, date, LogLevel.Error, message, exception.StackTrace);
@@ -61,6 +69,14 @@ namespace RMon.ValuesExportImportService.ServiceBus.Export
             var msg = new ValuesExportTaskProgressionChanged(receivedTask, progress);
             await _busProvider.Bus.Publish((IValuesExportTaskProgressChanged)msg).ConfigureAwait(false);
             _busLogger.LogSentTask(msg, typeof(IValuesExportTaskProgressChanged));
+        }
+
+        /// <inheritdoc/>
+        public async Task SendTaskFinishedAsync(ITask receivedTask, DateTime date, string instanceName, TaskState state)
+        {
+            var msg = new ValuesExportTaskFinished(receivedTask, date, instanceName, state);
+            await _busProvider.Bus.Publish((IValuesExportTaskFinished)msg).ConfigureAwait(false);
+            _busLogger.LogSentTask(msg, typeof(IValuesExportTaskFinished));
         }
 
         /// <inheritdoc/>

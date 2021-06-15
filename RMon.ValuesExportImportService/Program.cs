@@ -1,16 +1,18 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using RMon.Configuration.DependencyInjection;
 using RMon.Configuration.MassTransit;
 using RMon.Configuration.Options;
 using RMon.Configuration.Options.FileStorage;
+using RMon.Context.FrontEndContext;
+using RMon.Core.Base;
+using RMon.ValuesExportImportService.Data;
+using RMon.ValuesExportImportService.Excel;
 using RMon.ValuesExportImportService.Files;
+using RMon.ValuesExportImportService.Globalization;
 using RMon.ValuesExportImportService.Processing.Export;
 using RMon.ValuesExportImportService.Processing.Import;
 using RMon.ValuesExportImportService.Processing.Parse;
@@ -40,7 +42,7 @@ namespace RMon.ValuesExportImportService
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.Configure<Service>(hostContext.Configuration.GetSection(nameof(Service)));
-                    services.ConfigureOption<Esb>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(Esb));
+                    services.ConfigureOption<TasksEsb>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(TasksEsb));
                     services.ConfigureOption<EntitiesDatabase>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(EntitiesDatabase));
                     services.ConfigureOption<ValuesExportImportFileStorage>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesExportImportFileStorage));
                     
@@ -56,11 +58,19 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<IImportTaskLogic, ImportTaskLogic>();
                     services.AddSingleton<IParseTaskLogic, ParseTaskLogic>();
 
+                    services.AddSingleton<IRepositoryFactoryConfigurator, RepositoryFactoryConfigurator>();
+                    services.AddSingleton<ISimpleFactory<FrontEndContext>, FrontEndContextFactory>();
+                    services.AddSingleton<IDataRepository, MsSqlDataRepository>();
+                   
+
                     services.AddSingleton<IFileStorage, Files.FileStorage>();
+                    services.AddSingleton<IExcelWorker, ExcelWorker>();
+
+
+                    services.AddSingleton<ILanguageRepository, LanguageRepository>();
+                    services.AddSingleton<IGlobalizationProviderFactory, FileProviderFactory>();
 
                     services.AddHostedService<BusService>();
-
-                    services.AddHostedService<Worker>();
                 })
                 .UseSystemd()
                 .UseWindowsService();
