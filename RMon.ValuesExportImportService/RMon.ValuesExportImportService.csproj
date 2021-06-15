@@ -23,7 +23,7 @@
     <PackageReference Include="RMon.Context.BackEndContext" Version="4.5.1" />
     <PackageReference Include="RMon.Context.FrontEndContext" Version="3.5.1" />
     <PackageReference Include="RMon.Data.Provider" Version="5.15.2" />
-    <PackageReference Include="RMon.Data.Provider.Esb" Version="3.1.1" />
+    <PackageReference Include="RMon.Data.Provider.Esb" Version="3.1.2" />
     <PackageReference Include="RMon.ESB.Common" Version="3.3.0" />
     <PackageReference Include="RMon.ESB.Core" Version="2.13.0" />
     <PackageReference Include="RMon.FileStorage.Grpc" Version="1.1.0" />

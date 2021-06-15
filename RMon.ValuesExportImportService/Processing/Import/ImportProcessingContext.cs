@@ -13,7 +13,7 @@ namespace RMon.ValuesExportImportService.Processing.Import
         {
         }
 
-        public Task LogFinished(I18nString msg) => ((ImportTaskLogger)_taskLogger).LogFinishedAsync(_task, _dbTask, msg);
+        public Task LogFinished(I18nString msg) => ((ImportTaskLogger)TaskLogger).LogFinishedAsync(Task, DbTask, msg);
 
     }
 }

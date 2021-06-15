@@ -15,6 +15,6 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         {
         }
 
-        public Task LogFinished(I18nString msg, IList<ValueInfo> values) => ((ParseTaskLogger)_taskLogger).LogFinishedAsync(_task, _dbTask, msg, values);
+        public Task LogFinished(I18nString msg, IList<ValueInfo> values) => ((ParseTaskLogger)TaskLogger).LogFinishedAsync(Task, DbTask, msg, values);
     }
 }

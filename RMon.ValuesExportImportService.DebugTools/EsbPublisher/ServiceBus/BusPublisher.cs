@@ -21,7 +21,7 @@ namespace EsbPublisher.ServiceBus
 
         public Task SendExportTaskAsync(Guid correlationId, DateTime startDate, DateTime endDate, IList<long> idLogicDevices, IList<string> tagTypeCodes, IList<string> propertyCodes)
         {
-            var sendTask = new ValuesExportTask(correlationId, startDate, endDate, idLogicDevices, tagTypeCodes, propertyCodes);
+            var sendTask = new ValuesExportTask(correlationId, startDate, endDate, idLogicDevices, tagTypeCodes, propertyCodes) {IdUser = 53};
             return _bus.Publish((IValuesExportTask)sendTask);
         }
 

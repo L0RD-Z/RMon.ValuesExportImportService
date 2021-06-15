@@ -16,7 +16,7 @@ namespace RMon.ValuesExportImportService.Processing.Export
         {
         }
 
-        public Task LogFinished(I18nString msg, IList<FileInStorage> resultFiles) => ((ExportTaskLogger)_taskLogger).LogFinishedAsync(_task, _dbTask, msg, resultFiles);
+        public Task LogFinished(I18nString msg, IList<FileInStorage> resultFiles) => ((ExportTaskLogger)TaskLogger).LogFinishedAsync(Task, DbTask, msg, resultFiles);
 
     }
 }

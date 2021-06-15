@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using RMon.Core.Files;
 using RMon.Data.Provider.Esb.Entities;
 using RMon.ESB.Core.Common;
 using RMon.Globalization;
@@ -13,9 +11,9 @@ namespace RMon.ValuesExportImportService.Processing
     class ProcessingContext<T> : IProcessingContext 
         where T : DbTask
     {
-        protected readonly BaseTaskLogger<T> _taskLogger;
-        protected readonly ITask _task;
-        protected readonly T _dbTask;
+        protected readonly BaseTaskLogger<T> TaskLogger;
+        protected readonly ITask Task;
+        protected readonly T DbTask;
 
         public long IdUser { get; set; }
         public IGlobalizationProvider GlobalizationProvider { get; set; }
@@ -23,19 +21,19 @@ namespace RMon.ValuesExportImportService.Processing
         public ProcessingContext(ITask task, T dbTask, BaseTaskLogger<T> taskLogger, long idUser)
         {
             IdUser = idUser;
-            _taskLogger = taskLogger;
-            _task = task;
-            _dbTask = dbTask;
+            TaskLogger = taskLogger;
+            Task = task;
+            DbTask = dbTask;
         }
 
-        public Task LogStarted(I18nString msg) => _taskLogger.LogStartedAsync(_task, _dbTask, msg);
+        public Task LogStarted(I18nString msg) => TaskLogger.LogStartedAsync(Task, DbTask, msg);
 
         
 
-        public Task LogAborted(I18nString msg) => _taskLogger.LogAbortedAsync(_task, _dbTask, msg);
+        public Task LogAborted(I18nString msg) => TaskLogger.LogAbortedAsync(Task, DbTask, msg);
 
-        public Task LogFailed(I18nString msg, Exception ex) => _taskLogger.LogFailedAsync(_task, _dbTask, msg, ex);
+        public Task LogFailed(I18nString msg, Exception ex) => TaskLogger.LogFailedAsync(Task, DbTask, msg, ex);
 
-        public Task Log(I18nString msg, LogLevel logLevel, float? progress) => _taskLogger.Log(_task, _dbTask, msg, logLevel, progress);
+        public Task Log(I18nString msg, LogLevel logLevel, float? progress) => TaskLogger.Log(Task, DbTask, msg, logLevel, progress);
     }
 }

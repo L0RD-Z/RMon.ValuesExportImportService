@@ -54,6 +54,8 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<IParseBusPublisher, ParseBusPublisher>();
                     services.AddSingleton<IImportBusPublisher, ImportBusPublisher>();
 
+                    services.AddSingleton<ImportTaskLogger>();
+                    services.AddSingleton<ExportTaskLogger>();
                     services.AddSingleton<IExportTaskLogic, ExportTaskLogic>();
                     services.AddSingleton<IImportTaskLogic, ImportTaskLogic>();
                     services.AddSingleton<IParseTaskLogic, ParseTaskLogic>();
