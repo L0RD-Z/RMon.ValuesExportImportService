@@ -25,6 +25,7 @@ namespace EsbPublisher
         private IList<Selected<LogicTagType>> _tagTypes;
 
         private Guid _exportCorrelationId;
+        private long _idUser;
 
         public IList<Selected<DevicePropertyType>> DevicePropertyTypes
         {
@@ -81,6 +82,19 @@ namespace EsbPublisher
             }
         }
 
+        public long IdUser
+        {
+            get => _idUser;
+            set
+            {
+                if (_idUser != value)
+                {
+                    _idUser = value;
+                    OnPropertyChanged(nameof(IdUser));
+                }
+            }
+        }
+
         public MainLogic()
         {
             _busService = new BusService();
@@ -96,6 +110,7 @@ namespace EsbPublisher
         {
             DateEnd = DateTime.Now;
             DateStart = DateEnd.AddMonths(-1);
+            IdUser = 14;
         }
 
 
@@ -122,7 +137,7 @@ namespace EsbPublisher
             var tagTypeCodes = TagTypes.Where(t => t.IsSelect).Select(t => t.Entity.Code).ToList();
             var propertyCodes = DevicePropertyTypes.Where(t => t.IsSelect).Select(t => t.Entity.Code).ToList();
 
-            await _busService.Publisher.SendExportTaskAsync(_exportCorrelationId, DateStart, DateEnd, idLogicDevices, tagTypeCodes, propertyCodes).ConfigureAwait(true);
+            await _busService.Publisher.SendExportTaskAsync(_exportCorrelationId, DateStart, DateEnd, idLogicDevices, tagTypeCodes, propertyCodes, IdUser).ConfigureAwait(true);
         }
 
         /// <summary>

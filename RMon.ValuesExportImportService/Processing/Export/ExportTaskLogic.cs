@@ -26,12 +26,15 @@ using RMon.ValuesExportImportService.ServiceBus;
 using RMon.ValuesExportImportService.Text;
 using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Extensions;
+using RMon.ValuesExportImportService.Processing.Permission;
 
 namespace RMon.ValuesExportImportService.Processing.Export
 {
     class ExportTaskLogic : BaseTaskLogic, IExportTaskLogic
     {
         private readonly ExportTaskLogger _taskLogger;
+
+        private readonly EntityReader _entityReader;
         //private readonly IEntitiesReader _entitiesReader;
 
         /// <summary>
@@ -53,15 +56,17 @@ namespace RMon.ValuesExportImportService.Processing.Export
             IOptionsMonitor<Service> serviceOptions,
             IRepositoryFactoryConfigurator taskFactoryRepositoryConfigurator,
             IDataRepository dataRepository, ExportTaskLogger taskLogger,
-           // IPermissionLogic permissionLogic,
+            IPermissionLogic permissionLogic,
             IFileStorage fileStorage,
             IExcelWorker excelWorker,
+            EntityReader entityReader,
             //IEntitiesReader entitiesReader,
             IGlobalizationProviderFactory globalizationProviderFactory,
             ILanguageRepository languageRepository)
-            : base(logger, serviceOptions, taskFactoryRepositoryConfigurator, dataRepository, fileStorage, excelWorker, globalizationProviderFactory, languageRepository)
+            : base(logger, serviceOptions, taskFactoryRepositoryConfigurator, dataRepository, permissionLogic, fileStorage, excelWorker, globalizationProviderFactory, languageRepository)
         {
             _taskLogger = taskLogger;
+            _entityReader = entityReader;
             //_entitiesReader = entitiesReader;
         }
 
@@ -82,6 +87,9 @@ namespace RMon.ValuesExportImportService.Processing.Export
 
                     await context.LogInfo(TextExport.LoadingData, 10).ConfigureAwait(false);
                     var idUser = task.IdUser.Value;
+
+                    await _entityReader.Read(task.Parameters.IdLogicDevices, task.Parameters.PropertyCodes, idUser, ct).ConfigureAwait(false);
+
                     //var exportContainer = await _entitiesReader.LoadEntities(task, idUser, ct).ConfigureAwait(false);
 
                     //await context.LogInfo(TextExport.BuildingExcel, 60).ConfigureAwait(false);

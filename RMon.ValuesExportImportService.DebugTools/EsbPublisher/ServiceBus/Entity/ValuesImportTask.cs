@@ -11,13 +11,14 @@ namespace EsbPublisher.ServiceBus.Entity
         public string Name { get; set; }
         public long? IdUser { get; set; }
 
-        public ValuesImportTask(Guid correlationId, IList<ValueInfo> values)
+        public ValuesImportTask(Guid correlationId, IList<ValueInfo> values, long? idUser = null)
         {
             CorrelationId = correlationId;
             Parameters = new()
             {
                 Values = values
             };
+            IdUser = idUser;
         }
 
     }

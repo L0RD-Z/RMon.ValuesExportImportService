@@ -8,6 +8,7 @@ using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Excel;
 using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Globalization;
+using RMon.ValuesExportImportService.Processing.Permission;
 using RMon.ValuesExportImportService.ServiceBus;
 
 namespace RMon.ValuesExportImportService.Processing.Common
@@ -17,7 +18,8 @@ namespace RMon.ValuesExportImportService.Processing.Common
         protected readonly ILogger Logger;
         protected readonly IOptionsMonitor<Service> ServiceOptions;
         protected readonly IRepositoryFactoryConfigurator TaskFactoryRepositoryConfigurator;
-        protected IDataRepository DataRepository { get; private set; }
+        protected IDataRepository DataRepository { get; }
+        protected readonly IPermissionLogic PermissionLogic;
         protected readonly IFileStorage FileStorage;
         protected readonly IExcelWorker ExcelWorker;
         protected readonly IGlobalizationProviderFactory GlobalizationProviderFactory;
@@ -30,12 +32,16 @@ namespace RMon.ValuesExportImportService.Processing.Common
         /// <param name="serviceOptions">Опции сервиса</param>
         /// <param name="taskFactoryRepositoryConfigurator">Конфигуратор репозиторияя для логирования хода выполнения задач</param>
         /// <param name="dataRepository">Репозиторий данных</param>
+        /// <param name="permissionLogic">Логика работы с прадвами доступа</param>
         /// <param name="fileStorage">Файловое хранилище</param>
         /// <param name="excelWorker">Работник с Excel</param>
+        /// <param name="globalizationProviderFactory"></param>
+        /// <param name="languageRepository"></param>
         protected BaseTaskLogic(ILogger logger, 
             IOptionsMonitor<Service> serviceOptions, 
             IRepositoryFactoryConfigurator taskFactoryRepositoryConfigurator, 
-            IDataRepository dataRepository, 
+            IDataRepository dataRepository,
+            IPermissionLogic permissionLogic,
             IFileStorage fileStorage, 
             IExcelWorker excelWorker,
             IGlobalizationProviderFactory globalizationProviderFactory,
@@ -45,6 +51,7 @@ namespace RMon.ValuesExportImportService.Processing.Common
             ServiceOptions = serviceOptions;
             TaskFactoryRepositoryConfigurator = taskFactoryRepositoryConfigurator;
             DataRepository = dataRepository;
+            PermissionLogic = permissionLogic;
             FileStorage = fileStorage;
             ExcelWorker = excelWorker;
             GlobalizationProviderFactory = globalizationProviderFactory;

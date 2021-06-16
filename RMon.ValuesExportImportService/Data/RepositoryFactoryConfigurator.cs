@@ -2,6 +2,9 @@
 using Microsoft.Extensions.Options;
 using RMon.Configuration.Options;
 using RMon.Data.Provider.Esb.Backend;
+using RMon.Data.Provider.Security;
+using RMon.Security.Core;
+using RMon.Security.Provider.Sql;
 
 namespace RMon.ValuesExportImportService.Data
 {
@@ -19,7 +22,17 @@ namespace RMon.ValuesExportImportService.Data
         #region IRepositoryFactoryConfigurator
 
 
-        public IRepository TaskRepositoryCreate()
+        public IPermissionProvider PermissionProviderCreate()
+        {
+            return new SqlPermissionProvider(_dbOptionsMonitor.CurrentValue.ConnectionString, _loggerFactory);
+        }
+
+        public RMon.Data.Provider.Security.IRepository UsersRepositoryCreate(IPermissionProvider permissionProvider)
+        {
+            return new SqlRepository(_dbOptionsMonitor.CurrentValue.ConnectionString, permissionProvider, null, _loggerFactory);
+        }
+
+        public RMon.Data.Provider.Esb.Backend.IRepository TaskRepositoryCreate()
         {
             return TasksRepositoryFactory.CreateRepository(_dbOptionsMonitor.CurrentValue.ConnectionString, _loggerFactory);
         }

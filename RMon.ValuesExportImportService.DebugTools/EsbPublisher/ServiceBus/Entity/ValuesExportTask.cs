@@ -12,7 +12,7 @@ namespace EsbPublisher.ServiceBus.Entity
         public long? IdUser { get; set; }
 
 
-        public ValuesExportTask(Guid correlationId, DateTime dateTimeStart, DateTime dateTimeEnd, IList<long> idLogicDevices, IList<string> tagTypeCodes, IList<string> propertyCodes)
+        public ValuesExportTask(Guid correlationId, DateTime dateTimeStart, DateTime dateTimeEnd, IList<long> idLogicDevices, IList<string> tagTypeCodes, IList<string> propertyCodes, long? idUser = null)
         {
             CorrelationId = correlationId;
             Parameters = new()
@@ -24,6 +24,7 @@ namespace EsbPublisher.ServiceBus.Entity
                 TagTypeCodes = tagTypeCodes,
                 PropertyCodes = propertyCodes
             };
+            IdUser = idUser;
         }
     }
 }

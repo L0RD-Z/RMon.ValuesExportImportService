@@ -19,9 +19,9 @@ namespace EsbPublisher.ServiceBus
         }
 
 
-        public Task SendExportTaskAsync(Guid correlationId, DateTime startDate, DateTime endDate, IList<long> idLogicDevices, IList<string> tagTypeCodes, IList<string> propertyCodes)
+        public Task SendExportTaskAsync(Guid correlationId, DateTime startDate, DateTime endDate, IList<long> idLogicDevices, IList<string> tagTypeCodes, IList<string> propertyCodes, long idUser)
         {
-            var sendTask = new ValuesExportTask(correlationId, startDate, endDate, idLogicDevices, tagTypeCodes, propertyCodes) {IdUser = 53};
+            var sendTask = new ValuesExportTask(correlationId, startDate, endDate, idLogicDevices, tagTypeCodes, propertyCodes, idUser);
             return _bus.Publish((IValuesExportTask)sendTask);
         }
 
@@ -33,9 +33,9 @@ namespace EsbPublisher.ServiceBus
         }
 
 
-        public Task SendImportTaskAsync(Guid correlationId, IList<ValueInfo> values)
+        public Task SendImportTaskAsync(Guid correlationId, IList<ValueInfo> values, long idUser)
         {
-            var sendTask = new ValuesImportTask(correlationId, values);
+            var sendTask = new ValuesImportTask(correlationId, values, idUser);
             return _bus.Publish((IValuesImportTask)sendTask);
         }
         

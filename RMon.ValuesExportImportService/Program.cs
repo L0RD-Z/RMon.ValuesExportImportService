@@ -9,6 +9,8 @@ using RMon.Configuration.Options;
 using RMon.Configuration.Options.FileStorage;
 using RMon.Context.FrontEndContext;
 using RMon.Core.Base;
+using RMon.Data.Provider.Units.Backend.Interfaces;
+using RMon.Data.Provider.Units.Backend.Sql;
 using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Excel;
 using RMon.ValuesExportImportService.Files;
@@ -16,6 +18,7 @@ using RMon.ValuesExportImportService.Globalization;
 using RMon.ValuesExportImportService.Processing.Export;
 using RMon.ValuesExportImportService.Processing.Import;
 using RMon.ValuesExportImportService.Processing.Parse;
+using RMon.ValuesExportImportService.Processing.Permission;
 using RMon.ValuesExportImportService.ServiceBus;
 using RMon.ValuesExportImportService.ServiceBus.Export;
 using RMon.ValuesExportImportService.ServiceBus.Import;
@@ -54,16 +57,22 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<IParseBusPublisher, ParseBusPublisher>();
                     services.AddSingleton<IImportBusPublisher, ImportBusPublisher>();
 
+                    services.AddSingleton<IRepositoryFactoryConfigurator, RepositoryFactoryConfigurator>();
+                    services.AddSingleton<ISimpleFactory<FrontEndContext>, FrontEndContextFactory>();
+                    services.AddSingleton<IDataRepository, MsSqlDataRepository>();
+                    services.AddSingleton<ILogicDevicesRepository, SqlLogicDevicesRepository>();
+                    services.AddSingleton<ITagsRepository, SqlTagsRepository>();
+
+                    services.AddSingleton<EntityReader>();
+
                     services.AddSingleton<ImportTaskLogger>();
                     services.AddSingleton<ExportTaskLogger>();
+                    services.AddSingleton<IPermissionLogic, PermissionLogic>();
                     services.AddSingleton<IExportTaskLogic, ExportTaskLogic>();
                     services.AddSingleton<IImportTaskLogic, ImportTaskLogic>();
                     services.AddSingleton<IParseTaskLogic, ParseTaskLogic>();
 
-                    services.AddSingleton<IRepositoryFactoryConfigurator, RepositoryFactoryConfigurator>();
-                    services.AddSingleton<ISimpleFactory<FrontEndContext>, FrontEndContextFactory>();
-                    services.AddSingleton<IDataRepository, MsSqlDataRepository>();
-                   
+                    
 
                     services.AddSingleton<IFileStorage, Files.FileStorage>();
                     services.AddSingleton<IExcelWorker, ExcelWorker>();
