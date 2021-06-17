@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
@@ -16,34 +15,29 @@ using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Extensions;
 using RMon.ValuesExportImportService.Processing.Permission;
 using RMon.Data.Provider.Values;
-using RMon.Globalization;
-using RMon.Globalization.String;
 using RMon.ValuesExportImportService.Text;
 
 namespace RMon.ValuesExportImportService.Processing.Export
 {
-    class EntityReader
+    class EntityReader : IEntityReader
     {
-        private readonly IOptionsMonitor<ValuesDatabase> _valuesDatabase;
+        private readonly IOptionsMonitor<ValuesDatabase> _valuesDatabaseOptions;
 
-        /// <summary>
-        /// Репозиторий для работы с оборудованием
-        /// </summary>
         private readonly ILogicDevicesRepository _logicDevicesRepository;
-        
         private readonly IDataRepository _dataRepository;
         private readonly IPermissionLogic _permissionLogic;
+
 
         /// <summary>
         /// Конструктор
         /// </summary>
-        /// <param name="valuesDatabase"></param>
+        /// <param name="valuesDatabaseOptions"></param>
         /// <param name="logicDevicesRepository">Репозиторий доступа к данным</param>
         /// <param name="permissionLogic">Логика работы с правами доступа</param>
         /// <param name="dataRepository"></param>
-        public EntityReader(IOptionsMonitor<ValuesDatabase> valuesDatabase, ILogicDevicesRepository logicDevicesRepository, IDataRepository dataRepository, IPermissionLogic permissionLogic)
+        public EntityReader(IOptionsMonitor<ValuesDatabase> valuesDatabaseOptions, ILogicDevicesRepository logicDevicesRepository, IDataRepository dataRepository, IPermissionLogic permissionLogic)
         {
-            _valuesDatabase = valuesDatabase;
+            _valuesDatabaseOptions = valuesDatabaseOptions;
             _logicDevicesRepository = logicDevicesRepository;
             _permissionLogic = permissionLogic;
             _dataRepository = dataRepository;
@@ -61,21 +55,15 @@ namespace RMon.ValuesExportImportService.Processing.Export
             var tags = await _dataRepository.GetTagsAsync(valuesExportTaskParameters.IdLogicDevices, valuesExportTaskParameters.TagTypeCodes).ConfigureAwait(false);
 
             var valuesRepository = ValueRepositoryFactory.GetRepository(
-                _valuesDatabase.CurrentValue.IsMongo() ? EProviderEngine.Mongo : EProviderEngine.Sql,
-                _valuesDatabase.CurrentValue.ConnectionString, _valuesDatabase.CurrentValue.ConnectionString);
+                _valuesDatabaseOptions.CurrentValue.IsMongo() ? EProviderEngine.Mongo : EProviderEngine.Sql,
+                _valuesDatabaseOptions.CurrentValue.ConnectionString, _valuesDatabaseOptions.CurrentValue.ConnectionString);
 
             var timeRange = new TimeRange(valuesExportTaskParameters.DateTimeStart, valuesExportTaskParameters.DateTimeEnd);
 
 
-            var entityDescriptions = new List<EntityDescription>()
-            {
-                logicDevicesTable.EntityDescription,
-                new(EntityCodes.Tag, TextExcel.Tags, CreateTagPropertyDescriptions())
-            };
-
             var entityTable = new EntityTable
             {
-                EntityDescription = new EntityDescription(EntityCodes.Result, TextExcel.Results, CreateValuesPropertyDescriptions(), entityDescriptions),
+                EntityDescription = new EntityDescription(EntityCodes.Result, TextExcel.Results, CreateValuesPropertyDescriptions(), CreateEntityDescription(logicDevicesTable.EntityDescription))
             };
 
             foreach (var logicDevice in logicDevicesTable.Entities)
@@ -84,7 +72,7 @@ namespace RMon.ValuesExportImportService.Processing.Export
                 var tagsLogicDevice = tags.Where(t => t.IdLogicDevice == idLogicDevice).ToList();
                 foreach (var tag in tagsLogicDevice)
                 {
-                    var tagValues = await valuesRepository.GetValuesAsync(new []{ tag.Id }, timeRange).ConfigureAwait(false);
+                    var tagValues = await valuesRepository.GetValuesAsync(tag.Id, timeRange).ConfigureAwait(false);
                     tagValues = tagValues.OrderBy(t => t.Datetime).ToList();
                     foreach (var value in tagValues)
                     {
@@ -100,15 +88,20 @@ namespace RMon.ValuesExportImportService.Processing.Export
                 }
             }
 
-            
-
-
             return new ExportTable
             {
                 PropertyCodes = CreateTagPropertyDescriptions().Select(t => t.Code).ToList(),
                 EntityTable = entityTable
             };
         }
+
+        List<EntityDescription> CreateEntityDescription(EntityDescription logicDeviceEntityDescription) =>
+            new()
+            {
+                logicDeviceEntityDescription,
+                new(EntityCodes.Tag, TextExcel.Tags, CreateTagPropertyDescriptions())
+            };
+
 
         List<PropertyDescription> CreateTagPropertyDescriptions() =>
             new()

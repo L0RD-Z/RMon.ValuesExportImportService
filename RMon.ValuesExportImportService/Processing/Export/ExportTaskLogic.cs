@@ -33,9 +33,8 @@ namespace RMon.ValuesExportImportService.Processing.Export
     class ExportTaskLogic : BaseTaskLogic, IExportTaskLogic
     {
         private readonly ExportTaskLogger _taskLogger;
+        private readonly IEntityReader _entityReader;
 
-        private readonly EntityReader _entityReader;
-        //private readonly IEntitiesReader _entitiesReader;
 
         /// <summary>
         /// Конструктор 1
@@ -48,7 +47,7 @@ namespace RMon.ValuesExportImportService.Processing.Export
         /// <param name="permissionLogic">Логика работы с прадвами доступа</param>
         /// <param name="fileStorage">Файловое хранилище</param>
         /// <param name="excelWorker">Работник с Excel</param>
-        /// <param name="entitiesReader">Логика для работы с агрегатором сущностей</param>
+        /// <param name="entityReader">Логика загрузки сущностей из БД</param>
         /// <param name="globalizationProviderFactory"></param>
         /// <param name="languageRepository"></param>
         public ExportTaskLogic(
@@ -60,15 +59,13 @@ namespace RMon.ValuesExportImportService.Processing.Export
             IPermissionLogic permissionLogic,
             IFileStorage fileStorage,
             IExcelWorker excelWorker,
-            EntityReader entityReader,
-            //IEntitiesReader entitiesReader,
+            IEntityReader entityReader,
             IGlobalizationProviderFactory globalizationProviderFactory,
             ILanguageRepository languageRepository)
             : base(logger, serviceOptions, taskFactoryRepositoryConfigurator, dataRepository, permissionLogic, fileStorage, excelWorker, globalizationProviderFactory, languageRepository)
         {
             _taskLogger = taskLogger;
             _entityReader = entityReader;
-            //_entitiesReader = entitiesReader;
         }
 
         
@@ -84,25 +81,21 @@ namespace RMon.ValuesExportImportService.Processing.Export
                 {
                     await context.LogStarted(TextExport.Start).ConfigureAwait(false);
                     await context.LogInfo(TextExport.ValidateParameters).ConfigureAwait(false);
-                    ValidateParameters(task, instanceName);
+                    ValidateParameters(task);
 
                     await context.LogInfo(TextExport.LoadingData, 10).ConfigureAwait(false);
-                    var idUser = task.IdUser.Value;
 
-                    var exportTable = await _entityReader.Read(task.Parameters, idUser, ct).ConfigureAwait(false);
-
-                    //var exportContainer = await _entitiesReader.LoadEntities(task, idUser, ct).ConfigureAwait(false);
+                    var exportTable = await _entityReader.Read(task.Parameters, task.IdUser.Value, ct).ConfigureAwait(false);
 
                     await context.LogInfo(TextExport.BuildingExcel, 60).ConfigureAwait(false);
                     var fileBody = ExcelWorker.WriteWorksheet(context, exportTable);
-                    await File.WriteAllBytesAsync(@"C:\Users\Admin\Desktop\Values.xlsx", fileBody, ct).ConfigureAwait(false);
 
-                    //await context.LogInfo(TextExport.StoringFile, 90).ConfigureAwait(false); 
-                    //var currentDate = await DataRepository.GetDateAsync().ConfigureAwait(false);
-                    //var filePath = FilePathCreate(Guid.NewGuid(), currentDate, context);
-                    //await FileStorage.StoreFileAsync(filePath, fileBody, ct).ConfigureAwait(false);
+                    await context.LogInfo(TextExport.StoringFile, 90).ConfigureAwait(false);
+                    var currentDate = await DataRepository.GetDateAsync().ConfigureAwait(false);
+                    var filePath = FilePathCreate(Guid.NewGuid(), currentDate, context);
+                    await FileStorage.StoreFileAsync(filePath, fileBody, ct).ConfigureAwait(false);
 
-                    //await context.LogFinished(TextExport.FinishSuccess, new List<FileInStorage> { new(filePath, fileBody.Length) }).ConfigureAwait(false);
+                    await context.LogFinished(TextExport.FinishSuccess, new List<FileInStorage> { new(filePath, fileBody.Length) }).ConfigureAwait(false);
                 }
                 catch (TaskCanceledException)
                 {
@@ -127,23 +120,21 @@ namespace RMon.ValuesExportImportService.Processing.Export
             }
         }
 
-        public override void AbortTask(ITask receivedTask, StateMachineInstance instance)
-        {
-            throw new NotImplementedException();
-        }
+        public override void AbortTask(ITask receivedTask, StateMachineInstance instance) => instance.CancellationTokenSource.Cancel();
 
 
         /// <summary>
         /// Проверяет корректность полученных параметров
         /// </summary>
         /// <param name="task"></param>
-        /// <param name="instanceName">Имя экземпляра сервиса</param>
-        private void ValidateParameters(IValuesExportTask task, string instanceName)
+        private void ValidateParameters(IValuesExportTask task)
         {
             if (task.IdUser == null)
                 throw new TaskException(TextExport.NoUserIdError);
-
-            
+            if (!task.Parameters.IdLogicDevices.Any())
+                throw new TaskException(TextExport.NoLogicDevicesError);
+            if (!task.Parameters.TagTypeCodes.Any())
+                throw new TaskException(TextExport.NoTagCodesError);
         }
 
         /// <summary>

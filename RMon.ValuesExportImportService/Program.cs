@@ -64,7 +64,7 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<ILogicDevicesRepository, SqlLogicDevicesRepository>();
 
 
-                    services.AddSingleton<EntityReader>();
+                    services.AddSingleton<IEntityReader, EntityReader>();
                     services.AddSingleton<IFileStorage, Files.FileStorage>();
                     services.AddSingleton<IExcelWorker, ExcelWorker>();
 

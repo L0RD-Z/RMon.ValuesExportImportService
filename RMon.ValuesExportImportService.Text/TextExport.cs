@@ -14,9 +14,10 @@ namespace RMon.ValuesExportImportService.Text
         public static I18nString FinishAborted = new(nameof(FinishAborted), "Задание отменено");
         public static I18nString<I18nString> FinishFailed = new (nameof(FinishFailed), "Ошибка при выполнении задания: {error}", "error");
 
-        public static I18nString<DateTime> ExportFileName = new (nameof(ExportFileName), "Выгрузка свойств {dateTime:yyyyMMdd HHmmss}.xlsx", "dateTime");
+        public static I18nString<DateTime> ExportFileName = new (nameof(ExportFileName), "Выгрузка значений {dateTime:yyyyMMdd HHmmss}.xlsx", "dateTime");
         
         public static I18nString NoUserIdError = new(nameof(NoUserIdError), "Не указан идентификатор пользователя.");
-        public static I18nString NoEntitiesError = new(nameof(NoEntitiesError), "Список экспортируемых сущностей пуст.");
+        public static I18nString NoLogicDevicesError = new(nameof(NoLogicDevicesError), "Список оборудования пуст.");
+        public static I18nString NoTagCodesError = new(nameof(NoTagCodesError), "Список кодов тегов пуст.");
     }
 }
