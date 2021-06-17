@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Processing;
 
 namespace RMon.ValuesExportImportService.Excel
@@ -22,5 +23,7 @@ namespace RMon.ValuesExportImportService.Excel
         ///// <param name="cancellationToken">Токен отмены операции</param>
         ///// <returns></returns>
         //ImportContainer ReadBook(byte[] fileBody, CancellationToken cancellationToken = default);
+
+        byte[] WriteWorksheet(IProcessingContext processingContext, ExportTable exportTable);
     }
 }

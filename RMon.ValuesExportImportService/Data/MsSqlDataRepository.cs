@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RMon.Configuration.Options;
 using RMon.Context.BackEndContext;
+using RMon.Context.EntityStore;
 
 namespace RMon.ValuesExportImportService.Data
 {
@@ -53,6 +56,17 @@ namespace RMon.ValuesExportImportService.Data
         {
             await using var dataContext = BackEndContextCreate();
             return await dataContext.GetServerDateTimeAsync().ConfigureAwait(false);
+        }
+
+        public async Task<IList<Tag>> GetTagsAsync(IList<long> idLogicDevices, IList<string> tagCodes)
+        {
+            await using var dataContext = BackEndContextCreate();
+            return await dataContext.Tags.AsNoTracking()
+                .Include(t => t.LogicTagLink)
+                .ThenInclude(t => t.LogicTagType)
+                .Where(t => idLogicDevices.Contains(t.IdLogicDevice) && tagCodes.Contains(t.LogicTagLink.LogicTagType.Code))
+                .ToListAsync()
+                .ConfigureAwait(false);
         }
     }
 }

@@ -47,6 +47,7 @@ namespace RMon.ValuesExportImportService
                     services.Configure<Service>(hostContext.Configuration.GetSection(nameof(Service)));
                     services.ConfigureOption<TasksEsb>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(TasksEsb));
                     services.ConfigureOption<EntitiesDatabase>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(EntitiesDatabase));
+                    services.ConfigureOption<ValuesDatabase>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesDatabase));
                     services.ConfigureOption<ValuesExportImportFileStorage>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesExportImportFileStorage));
                     
                     services.AddSingleton<IBusProvider, BusProvider>();
@@ -61,9 +62,12 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<ISimpleFactory<FrontEndContext>, FrontEndContextFactory>();
                     services.AddSingleton<IDataRepository, MsSqlDataRepository>();
                     services.AddSingleton<ILogicDevicesRepository, SqlLogicDevicesRepository>();
-                    services.AddSingleton<ITagsRepository, SqlTagsRepository>();
+
 
                     services.AddSingleton<EntityReader>();
+                    services.AddSingleton<IFileStorage, Files.FileStorage>();
+                    services.AddSingleton<IExcelWorker, ExcelWorker>();
+
 
                     services.AddSingleton<ImportTaskLogger>();
                     services.AddSingleton<ExportTaskLogger>();
@@ -73,10 +77,6 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<IParseTaskLogic, ParseTaskLogic>();
 
                     
-
-                    services.AddSingleton<IFileStorage, Files.FileStorage>();
-                    services.AddSingleton<IExcelWorker, ExcelWorker>();
-
 
                     services.AddSingleton<ILanguageRepository, LanguageRepository>();
                     services.AddSingleton<IGlobalizationProviderFactory, FileProviderFactory>();

@@ -55,7 +55,8 @@ namespace RMon.ValuesExportImportService.Processing.Export
             ILogger<ExportTaskLogic> logger,
             IOptionsMonitor<Service> serviceOptions,
             IRepositoryFactoryConfigurator taskFactoryRepositoryConfigurator,
-            IDataRepository dataRepository, ExportTaskLogger taskLogger,
+            IDataRepository dataRepository, 
+            ExportTaskLogger taskLogger,
             IPermissionLogic permissionLogic,
             IFileStorage fileStorage,
             IExcelWorker excelWorker,
@@ -88,13 +89,13 @@ namespace RMon.ValuesExportImportService.Processing.Export
                     await context.LogInfo(TextExport.LoadingData, 10).ConfigureAwait(false);
                     var idUser = task.IdUser.Value;
 
-                    await _entityReader.Read(task.Parameters.IdLogicDevices, task.Parameters.PropertyCodes, idUser, ct).ConfigureAwait(false);
+                    var exportTable = await _entityReader.Read(task.Parameters, idUser, ct).ConfigureAwait(false);
 
                     //var exportContainer = await _entitiesReader.LoadEntities(task, idUser, ct).ConfigureAwait(false);
 
-                    //await context.LogInfo(TextExport.BuildingExcel, 60).ConfigureAwait(false);
-                    //var entityCodes = GetEntityCodes(task);
-                    //var fileBody = ExcelWorker.CreateBook(context, exportContainer, entityCodes, ct);
+                    await context.LogInfo(TextExport.BuildingExcel, 60).ConfigureAwait(false);
+                    var fileBody = ExcelWorker.WriteWorksheet(context, exportTable);
+                    await File.WriteAllBytesAsync(@"C:\Users\Admin\Desktop\Values.xlsx", fileBody, ct).ConfigureAwait(false);
 
                     //await context.LogInfo(TextExport.StoringFile, 90).ConfigureAwait(false); 
                     //var currentDate = await DataRepository.GetDateAsync().ConfigureAwait(false);

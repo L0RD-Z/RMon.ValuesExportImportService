@@ -6,7 +6,7 @@ using RMon.ValuesExportImportService.Data;
 
 namespace RMon.ValuesExportImportService.Processing.Permission
 {
-    public class PermissionLogic : IPermissionLogic
+    public class PermissionLogic : IPermissionLogic //TODO провести рефакторнг: удалить не нужные константы
     {
         private readonly IRepositoryFactoryConfigurator _repositoryFactoryConfigurator;
 

@@ -119,7 +119,8 @@ namespace EsbPublisher
             var devicePropertyTypes = await _dataRepository.GetDevicePropertyTypesAsync(CancellationToken.None).ConfigureAwait(false);
             var tagTypes = await _dataRepository.GetTagTypesAsync(CancellationToken.None).ConfigureAwait(false);
             DevicePropertyTypes = devicePropertyTypes.Select(t => new Selected<DevicePropertyType>(t)).OrderBy(t => t.Entity.Name).ToList();
-            TagTypes = tagTypes.Select(t => new Selected<LogicTagType>(t)).OrderBy(t => t.Entity.Name).ToList();
+
+            TagTypes = tagTypes.Select(t => new Selected<LogicTagType>(t, true)).OrderBy(t => t.Entity.Name).ToList();
         }
 
 
@@ -133,7 +134,7 @@ namespace EsbPublisher
         {
             _exportCorrelationId = Guid.NewGuid();
 
-            var idLogicDevices = new List<long> { 5311 };
+            var idLogicDevices = new List<long> { 3332, 3940, 3942, 3946, 5582, 6203, 6205, 6213, 6236, 9638, 9671, 57122, 57172, 57174, 57123, 1299, 1301, 1302, 1303, 1335, 1318, 1319, 1320, 1321, 1322 };
             var tagTypeCodes = TagTypes.Where(t => t.IsSelect).Select(t => t.Entity.Code).ToList();
             var propertyCodes = DevicePropertyTypes.Where(t => t.IsSelect).Select(t => t.Entity.Code).ToList();
 
