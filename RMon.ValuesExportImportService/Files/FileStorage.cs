@@ -14,17 +14,17 @@ namespace RMon.ValuesExportImportService.Files
     public class FileStorage : IFileStorage, IDisposable
     {
         private readonly SemaphoreSlim _semaphore;
-        private readonly IOptionsMonitor<CommissioningFileStorage> _optionsMonitor;
+        private readonly IOptionsMonitor<ValuesExportImportFileStorage> _optionsMonitor;
 
-        private CommissioningFileStorage _options;
-        private CommissioningFileStorage _newOptions;
+        private ValuesExportImportFileStorage _options;
+        private ValuesExportImportFileStorage _newOptions;
 
         private Channel _channel;
         private FileStorageService.FileStorageServiceClient _fileStorageService;
 
 
 
-        public FileStorage(IOptionsMonitor<CommissioningFileStorage> optionsMonitor)
+        public FileStorage(IOptionsMonitor<ValuesExportImportFileStorage> optionsMonitor)
         {
             _semaphore = new SemaphoreSlim(1, 1);
             _optionsMonitor = optionsMonitor;

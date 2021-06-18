@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using RMon.Commissioning.Core;
 using RMon.Configuration.Options;
 using RMon.Data.Provider;
 using RMon.Data.Provider.Units.Backend.Common;
@@ -45,11 +44,11 @@ namespace RMon.ValuesExportImportService.Processing.Export
 
         public async Task<ExportTable> Read(ValuesExportTaskParameters valuesExportTaskParameters, long idUser, CancellationToken cancellationToken = default)
         {
-            var idUserGroups = await _permissionLogic.GetUserGroupIdsWithPermissionAsync(EntityTypes.LogicDevices, CrudOperations.Read, idUser).ConfigureAwait(false);
+            var idUserGroups = await _permissionLogic.GetUserGroupIdsWithPermissionAsync(EntityTypes.Values, CrudOperations.Read, idUser).ConfigureAwait(false);
 
             var newPropertyCodes = valuesExportTaskParameters.PropertyCodes.ToList();
             newPropertyCodes.Add(PropertyCodes.Id);
-            var entityDescription = newPropertyCodes.ToEntityDescription(EntityTypes.LogicDevices);
+            var entityDescription = newPropertyCodes.ToEntityDescription("LogicDevices");
             var logicDevicesTable = await _logicDevicesRepository.GetLogicDevicesTable(idUserGroups, valuesExportTaskParameters.IdLogicDevices, entityDescription, cancellationToken).ConfigureAwait(false);
 
             var tags = await _dataRepository.GetTagsAsync(valuesExportTaskParameters.IdLogicDevices, valuesExportTaskParameters.TagTypeCodes).ConfigureAwait(false);

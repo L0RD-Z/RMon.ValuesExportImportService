@@ -4,7 +4,7 @@ using RMon.Globalization.String;
 namespace RMon.ValuesExportImportService.Exceptions
 {
     /// <summary>
-    /// Класс пользовательских исключений, созданных на уровне <see cref="CommissioningService"/>
+    /// Класс пользовательских исключений, созданных на уровне <see cref="ValuesExportImportService"/>
     /// </summary>
     public class UserException : Exception
     {

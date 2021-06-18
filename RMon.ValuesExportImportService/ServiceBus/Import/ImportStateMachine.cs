@@ -7,7 +7,7 @@ using RMon.ValuesExportImportService.ServiceBus.Common;
 
 namespace RMon.ValuesExportImportService.ServiceBus.Import
 {
-    class ImportStateMachine: MassTransitStateMachine<ImportStateMachineInstance>
+    class ImportStateMachine : MassTransitStateMachine<ImportStateMachineInstance>
     {
         private readonly ILogger<BusLogger> _busLogger;
         private readonly ITaskLogic _taskLogic;

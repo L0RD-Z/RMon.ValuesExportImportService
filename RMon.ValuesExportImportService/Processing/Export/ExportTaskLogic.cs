@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -10,9 +9,7 @@ using Microsoft.Extensions.Options;
 using RMon.Configuration.Options;
 using RMon.Core.Files;
 using RMon.Data.Provider;
-using RMon.Data.Provider.Esb.Entities.Commissioning;
 using RMon.Data.Provider.Esb.Entities.ValuesExportImport;
-using RMon.ESB.Core.CommissioningExportTaskDto;
 using RMon.ESB.Core.Common;
 using RMon.ESB.Core.ValuesExportTaskDto;
 using RMon.Globalization.String;
@@ -88,7 +85,7 @@ namespace RMon.ValuesExportImportService.Processing.Export
                     var exportTable = await _entityReader.Read(task.Parameters, task.IdUser.Value, ct).ConfigureAwait(false);
 
                     await context.LogInfo(TextExport.BuildingExcel, 60).ConfigureAwait(false);
-                    var fileBody = ExcelWorker.WriteWorksheet(context, exportTable);
+                    var fileBody = ExcelWorker.WriteWorksheet(exportTable, context.GlobalizationProvider);
                     
                     await context.LogInfo(TextExport.StoringFile, 90).ConfigureAwait(false);
                     var currentDate = await DataRepository.GetDateAsync().ConfigureAwait(false);

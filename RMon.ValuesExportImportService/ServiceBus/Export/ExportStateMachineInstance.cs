@@ -1,6 +1,6 @@
 ﻿namespace RMon.ValuesExportImportService.ServiceBus.Export
 {
-    class ExportStateMachineInstance:StateMachineInstance
+    class ExportStateMachineInstance : StateMachineInstance
     {
     }
 }

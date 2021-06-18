@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using RMon.Globalization;
 using RMon.Globalization.String;
 using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Excel.Common;
@@ -35,12 +36,8 @@ namespace RMon.ValuesExportImportService.Excel
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         }
 
-        /// <summary>
-        /// Создаёт книгу Excel и заполняет данными <see cref="exportTable"/>
-        /// </summary>
-        /// <param name="processingContext"></param>
-        /// <param name="exportTable">Список оборудования</param>
-        public byte[] WriteWorksheet(IProcessingContext processingContext, ExportTable exportTable)
+        /// <inheritdoc/>
+        public byte[] WriteWorksheet(ExportTable exportTable, IGlobalizationProvider globalizationProvider)
         {
             try
             {
@@ -48,11 +45,11 @@ namespace RMon.ValuesExportImportService.Excel
                 _logger.LogInformation("Формирование книги Excel начато.");
                 var timer = Stopwatch.StartNew();
                 excelPackage.Workbook.Properties.Author = nameof(ValuesExportImportService);
-                excelPackage.Workbook.Properties.Title = TextExcel.EntityProperties.ToString(processingContext.GlobalizationProvider);
+                excelPackage.Workbook.Properties.Title = TextExcel.EntityProperties.ToString(globalizationProvider);
 
-                var excelSheet = ExcelMethods.WorksheetCreate(excelPackage.Workbook, EntityName.ToString(processingContext.GlobalizationProvider));
+                var excelSheet = ExcelMethods.WorksheetCreate(excelPackage.Workbook, EntityName.ToString(globalizationProvider));
 
-                var entityDescriptionDictionary = exportTable.EntityTable.EntityDescription.GetPropertyDescriptionDictionary(processingContext.GlobalizationProvider);
+                var entityDescriptionDictionary = exportTable.EntityTable.EntityDescription.GetPropertyDescriptionDictionary(globalizationProvider);
 
                 var columns = entityDescriptionDictionary.Keys.ToList();
 
@@ -72,7 +69,7 @@ namespace RMon.ValuesExportImportService.Excel
                 //строка, столбец
                 _logger.LogInformation($"Лист \"{EntityName}\": формирование заголовка.");
                 var titleCells = excelSheet.Cells[1, colStart, 1, colEnd];
-                titleCells.Value = EntityName.ToString(processingContext.GlobalizationProvider);
+                titleCells.Value = EntityName.ToString(globalizationProvider);
                 SetTitleStyle(titleCells);
 
                 _logger.LogInformation($"Лист \"{EntityName}\": формирование шапки таблицы.");

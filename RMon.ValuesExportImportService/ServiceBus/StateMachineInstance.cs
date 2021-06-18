@@ -4,7 +4,7 @@ using Automatonymous;
 
 namespace RMon.ValuesExportImportService.ServiceBus
 {
-    abstract class StateMachineInstance:SagaStateMachineInstance
+    abstract class StateMachineInstance : SagaStateMachineInstance
     {
         public Guid CorrelationId { get; set; }
 
