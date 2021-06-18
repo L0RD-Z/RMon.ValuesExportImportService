@@ -59,7 +59,7 @@ namespace RMon.ValuesExportImportService.Processing.Export
                 _valuesDatabaseOptions.CurrentValue.ConnectionString, _valuesDatabaseOptions.CurrentValue.ConnectionString);
 
             var timeRange = new TimeRange(valuesExportTaskParameters.DateTimeStart, valuesExportTaskParameters.DateTimeEnd);
-
+            var values = await valuesRepository.GetValuesAsync(tags.Select(t => t.Id).ToList(), timeRange).ConfigureAwait(false);
 
             var entityTable = new EntityTable
             {
@@ -72,8 +72,7 @@ namespace RMon.ValuesExportImportService.Processing.Export
                 var tagsLogicDevice = tags.Where(t => t.IdLogicDevice == idLogicDevice).ToList();
                 foreach (var tag in tagsLogicDevice)
                 {
-                    var tagValues = await valuesRepository.GetValuesAsync(tag.Id, timeRange).ConfigureAwait(false);
-                    tagValues = tagValues.OrderBy(t => t.Datetime).ToList();
+                    var tagValues = values.Where(t => t.IdDeviceTag == tag.Id).OrderBy(t => t.Datetime).ToList();
                     foreach (var value in tagValues)
                     {
                         var valuePropertyValues = CreateValuesPropertyValues(value.Datetime, value.ValueFloat ?? 0);

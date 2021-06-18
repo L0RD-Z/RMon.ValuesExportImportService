@@ -89,7 +89,7 @@ namespace RMon.ValuesExportImportService.Processing.Export
 
                     await context.LogInfo(TextExport.BuildingExcel, 60).ConfigureAwait(false);
                     var fileBody = ExcelWorker.WriteWorksheet(context, exportTable);
-
+                    
                     await context.LogInfo(TextExport.StoringFile, 90).ConfigureAwait(false);
                     var currentDate = await DataRepository.GetDateAsync().ConfigureAwait(false);
                     var filePath = FilePathCreate(Guid.NewGuid(), currentDate, context);
