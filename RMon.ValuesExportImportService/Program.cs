@@ -7,6 +7,7 @@ using RMon.Configuration.DependencyInjection;
 using RMon.Configuration.MassTransit;
 using RMon.Configuration.Options;
 using RMon.Configuration.Options.FileStorage;
+using RMon.Context.BackEndContext;
 using RMon.Context.FrontEndContext;
 using RMon.Core.Base;
 using RMon.Data.Provider.Units.Backend.Interfaces;
@@ -59,6 +60,7 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<IImportBusPublisher, ImportBusPublisher>();
 
                     services.AddSingleton<IRepositoryFactoryConfigurator, RepositoryFactoryConfigurator>();
+                    services.AddSingleton<ISimpleFactory<BackEndContext>, BackEndContextFactory>();
                     services.AddSingleton<ISimpleFactory<FrontEndContext>, FrontEndContextFactory>();
                     services.AddSingleton<IDataRepository, MsSqlDataRepository>();
                     services.AddSingleton<ILogicDevicesRepository, SqlLogicDevicesRepository>();
