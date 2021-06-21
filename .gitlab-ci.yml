@@ -7,6 +7,7 @@ variables:
   DEVTOOLS_BIN: "C:\\devtools\\utils\\bin"
   NUGET_LOCAL_SOURCE: "\\\\nuget.allmonitoring.local\\nuget"
   OUTPUT_PREFIX: "bin\\Release"
+  GIT_CLONE_PATH: c:\GitlabRunner/builds/RMon.ValuesExportImportService
 
 before_script:
   - "echo off"
