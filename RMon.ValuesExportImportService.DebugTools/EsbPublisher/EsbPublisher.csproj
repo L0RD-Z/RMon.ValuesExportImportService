@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	<Authors>АО Связь инжиниринг М</Authors>
+	<Product>RMon.ValuesExportImportService</Product>
+	<Copyright>Copyright © 2021 АО Связь инжиниринг М</Copyright>
+	<Product>RMon.ValuesExportImportService</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit.RabbitMQ" Version="7.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.7" />
+    <PackageReference Include="RMon.Data.Provider.Configuration" Version="4.0.2" />
+    <PackageReference Include="RMon.ESB.Common" Version="3.3.0" />
+    <PackageReference Include="RMon.ESB.Core" Version="2.13.0" />
+  </ItemGroup>
+
+</Project>

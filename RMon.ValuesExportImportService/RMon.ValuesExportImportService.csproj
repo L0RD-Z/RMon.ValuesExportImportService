@@ -11,14 +11,29 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EPPlus" Version="5.7.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.7" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="5.0.3" />
     <PackageReference Include="RMon.Configuration.DependencyInjection" Version="1.0.0" />
     <PackageReference Include="RMon.Configuration.MassTransit" Version="1.0.0" />
-    <PackageReference Include="RMon.Configuration.Options" Version="1.1.0" />
+    <PackageReference Include="RMon.Configuration.Options" Version="1.3.0" />
+    <PackageReference Include="RMon.Context.BackEndContext" Version="4.5.1" />
+    <PackageReference Include="RMon.Context.FrontEndContext" Version="3.5.1" />
+    <PackageReference Include="RMon.Data.Provider" Version="5.15.2" />
+    <PackageReference Include="RMon.Data.Provider.Esb" Version="3.1.2" />
+    <PackageReference Include="RMon.Data.Provider.Security" Version="3.3.1" />
+    <PackageReference Include="RMon.Data.Provider.Units" Version="3.6.0" />
+    <PackageReference Include="RMon.Data.Provider.Values" Version="2.1.1" />
+    <PackageReference Include="RMon.ESB.Common" Version="3.3.0" />
+    <PackageReference Include="RMon.ESB.Core" Version="2.13.0" />
+    <PackageReference Include="RMon.FileStorage.Grpc" Version="1.1.0" />
+    <PackageReference Include="RMon.Globalization" Version="1.1.2" />
     <PackageReference Include="RMon.Logging" Version="3.1.1" />
+    <PackageReference Include="RMon.Security.Provider.Sql" Version="3.4.0" />
+    <PackageReference Include="RMon.Values.ExportImport.Core" Version="1.0.0" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -36,6 +51,9 @@
 		<ContentWithTargetPath Include="Linux\start.sh" CopyToOutputDirectory="PreserveNewest" TargetPath="start.sh" />
 		<ContentWithTargetPath Include="Linux\stop.sh" CopyToOutputDirectory="PreserveNewest" TargetPath="stop.sh" />
 		<ContentWithTargetPath Include="Linux\status.sh" CopyToOutputDirectory="PreserveNewest" TargetPath="status.sh" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\RMon.ValuesExportImportService.Text\RMon.ValuesExportImportService.Text.csproj" />
 	</ItemGroup>
 
   <ItemGroup>
