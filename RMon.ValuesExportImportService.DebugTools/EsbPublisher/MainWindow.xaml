@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EsbPublisher"
         xmlns:commands="clr-namespace:EsbPublisher.Commands"
+        xmlns:converters="clr-namespace:EsbPublisher.Converters"
         mc:Ignorable="d"
         Title="EsbPublisher" Height="450" Width="420"
         DataContext="{Binding Logic, RelativeSource={RelativeSource Self}}" WindowStartupLocation="CenterScreen"
@@ -20,15 +21,23 @@
         <Style BasedOn="{StaticResource GroupBoxStyle}" TargetType="GroupBox"/>
         <Style BasedOn="{StaticResource ListBoxStyle}" TargetType="ListBox"/>
 
+        <converters:ImportSettingsTypeConverter x:Key="ImportSettingsTypeConverter"/>
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="commands:MainCommands.Export" CanExecute="Export_OnCanExecute" Executed="Export_OnExecuted"/>
         <CommandBinding Command="commands:MainCommands.CancelExport" CanExecute="CancelExport_OnCanExecute" Executed="CancelExport_OnExecuted"/>
+        <CommandBinding Command="commands:MainCommands.Parse" CanExecute="Parse_OnCanExecute" Executed="Parse_OnExecuted"/>
+        <CommandBinding Command="commands:MainCommands.CancelParse" CanExecute="CancelParse_OnCanExecute" Executed="CancelParse_OnExecuted"/>
         <CommandBinding Command="commands:MainCommands.Import" CanExecute="Import_OnCanExecute" Executed="Import_OnExecuted"/>
         <CommandBinding Command="commands:MainCommands.CancelImport" CanExecute="CancelImport_OnCanExecute" Executed="CancelImport_OnExecuted"/>
     </Window.CommandBindings>
     <Grid>
-        <GroupBox Header="Экспорт">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <GroupBox Grid.Row="0" Header="Экспорт">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -103,6 +112,24 @@
 
                 
             </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Row="1" Header="Парсинг">
+            <StackPanel Orientation="Vertical">
+                <ComboBox ItemsSource="{Binding SupportedFileTypes}" SelectedItem="{Binding SelectedFileType}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ., Converter={StaticResource ImportSettingsTypeConverter}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock Text="Путь к файлу (внутри Rmon.FileStorageService)"/>
+                <TextBox   Text="{Binding FilePath}"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Парсинг" Command="commands:MainCommands.Parse"/>
+                    <Button Content="Отмена" Command="commands:MainCommands.CancelParse"/>
+                </StackPanel>
+            </StackPanel>
         </GroupBox>
     </Grid>
 </Window>

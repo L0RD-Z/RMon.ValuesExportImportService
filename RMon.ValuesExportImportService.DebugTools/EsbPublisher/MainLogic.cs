@@ -11,6 +11,7 @@ using EsbPublisher.Model;
 using EsbPublisher.ServiceBus;
 using MassTransit;
 using RMon.Data.Provider.Configuration;
+using RMon.Values.ExportImport.Core;
 
 namespace EsbPublisher
 {
@@ -25,7 +26,12 @@ namespace EsbPublisher
         private IList<Selected<LogicTagType>> _tagTypes;
 
         private Guid _exportCorrelationId;
+        private Guid _parseCorrelationId;
+        private Guid _importCorrelationId;
         private long _idUser;
+        private List<ValuesParseFileFormatType> _supportedFileTypes;
+        private ValuesParseFileFormatType _selectedFileType;
+        private string _filePath;
 
         public IList<Selected<DevicePropertyType>> DevicePropertyTypes
         {
@@ -95,6 +101,52 @@ namespace EsbPublisher
             }
         }
 
+        /// <summary>
+        /// Поддерживаемые типы файлов
+        /// </summary>
+        public List<ValuesParseFileFormatType> SupportedFileTypes
+        {
+            get => _supportedFileTypes;
+            set
+            {
+                if (_supportedFileTypes != value)
+                {
+                    _supportedFileTypes = value;
+                    OnPropertyChanged(nameof(SupportedFileTypes));
+                }
+
+            }
+        }
+        /// <summary>
+        /// Выбранный тип файла
+        /// </summary>
+        public ValuesParseFileFormatType SelectedFileType
+        {
+            get => _selectedFileType;
+            set
+            {
+                if (_selectedFileType != value)
+                {
+                    _selectedFileType = value;
+                    OnPropertyChanged(nameof(SelectedFileType));
+                }
+            }
+        }
+
+        public string FilePath
+        {
+            get => _filePath;
+            set
+            {
+                if (_filePath != value)
+                {
+                    _filePath = value;
+                    OnPropertyChanged(nameof(FilePath));
+                }
+            }
+        }
+
+
         public MainLogic()
         {
             _busService = new BusService();
@@ -111,6 +163,14 @@ namespace EsbPublisher
             DateEnd = DateTime.Now;
             DateStart = DateEnd.AddMonths(-1);
             IdUser = 14;
+            SupportedFileTypes = new List<ValuesParseFileFormatType>()
+            {
+                ValuesParseFileFormatType.Xml80020,
+                ValuesParseFileFormatType.Matrix24X31,
+                ValuesParseFileFormatType.Matrix31X24,
+                ValuesParseFileFormatType.Table,
+                ValuesParseFileFormatType.Flexible,
+            };
         }
 
 
@@ -154,6 +214,36 @@ namespace EsbPublisher
             }
         }
 
+        /// <summary>
+        /// Отправляет задания на Парсинг
+        /// </summary>
+        /// <returns></returns>
+        public Task SendParseTaskAsync()
+        {
+            return SelectedFileType switch
+            {
+                ValuesParseFileFormatType.Xml80020 => SendParseXml80020(),
+                ValuesParseFileFormatType.Matrix24X31 => throw new NotImplementedException(),
+                ValuesParseFileFormatType.Matrix31X24 => throw new NotImplementedException(),
+                ValuesParseFileFormatType.Table => throw new NotImplementedException(),
+                ValuesParseFileFormatType.Flexible => throw new NotImplementedException(),
+                _ => throw new NotImplementedException()
+            };
+        }
+
+        /// <summary>
+        /// Отправляет задание на Отмену парсинга
+        /// </summary>
+        /// <returns></returns>
+        public async Task SendParseTaskAbortAsync()
+        {
+            if (_parseCorrelationId != Guid.Empty)
+            {
+                await _busService.Publisher.SendParseTaskAbortAsync(_parseCorrelationId).ConfigureAwait(false);
+                _parseCorrelationId = Guid.Empty;
+            }
+        }
+
 
         /// <summary>
         /// Отправляет задание на Импорт
@@ -161,19 +251,18 @@ namespace EsbPublisher
         /// <returns></returns>
         public async Task SendImportTaskAsync()
         {
-            //switch (SelectedImportSettingsType)
+            //return SelectedFileType switch
             //{
-            //    case ServiceBusPublisher.ImportSettingsTypes.ImportFromFiles:
-            //        return SendImportFromFilesTaskAsync();
-            //    case ServiceBusPublisher.ImportSettingsTypes.ImportFromSiteAts:
-            //        return SendImportFromSiteAtsTaskAsync();
-            //    default:
-            //        throw new ArgumentOutOfRangeException();
-            //}
-            return;
+            //    ValuesParseFileFormatType.Xml80020 => SendParseXml80020(),
+            //    ValuesParseFileFormatType.Matrix24X31 => throw new NotImplementedException(),
+            //    ValuesParseFileFormatType.Matrix31X24 => throw new NotImplementedException(),
+            //    ValuesParseFileFormatType.Table => throw new NotImplementedException(),
+            //    ValuesParseFileFormatType.Flexible => throw new NotImplementedException()
+            //};
         }
 
         
+
 
         public async Task SendImportTaskAbortAsync()
         {
@@ -184,6 +273,13 @@ namespace EsbPublisher
             //    _importCorrelationId = Guid.Empty;
             //}
             return;
+        }
+
+
+        private async Task SendParseXml80020()
+        {
+            _parseCorrelationId = Guid.NewGuid();
+            await _busService.Publisher.SendParseTaskAsync(_parseCorrelationId, FilePath, SelectedFileType, IdUser).ConfigureAwait(false);
         }
 
 

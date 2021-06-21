@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using EsbPublisher.ServiceBus.Entity;
 using MassTransit;
 using RMon.ESB.Core.ValuesExportTaskDto;
 using RMon.ESB.Core.ValuesImportTaskDto;
+using RMon.ESB.Core.ValuesParseTaskDto;
 using RMon.Values.ExportImport.Core;
 
 namespace EsbPublisher.ServiceBus
@@ -30,6 +32,19 @@ namespace EsbPublisher.ServiceBus
         {
             var sendTask = new ValuesExportTaskAbort(correlationId);
             return _bus.Publish((IValuesExportTaskAbort)sendTask);
+        }
+
+        public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, long idUser)
+        {
+            var sendTask = new ValuesParseTask(correlationId, filePath, fileType, idUser);
+            return _bus.Publish((IValuesParseTask)sendTask);
+        }
+
+
+        public Task SendParseTaskAbortAsync(Guid correlationId)
+        {
+            var sendTask = new ValuesParseTaskAbort(correlationId);
+            return _bus.Publish((IValuesParseTaskAbort)sendTask);
         }
 
 

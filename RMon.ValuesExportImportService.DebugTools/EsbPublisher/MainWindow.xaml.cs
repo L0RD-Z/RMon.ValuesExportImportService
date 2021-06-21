@@ -83,6 +83,35 @@ namespace EsbPublisher
         #endregion
 
 
+        #region Парсинг
+
+        private void Parse_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private async void Parse_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            await Logic.SendParseTaskAsync().ConfigureAwait(true);
+        }
+
+        #endregion
+
+        #region Отмена парсинга
+
+        private void CancelParse_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private async void CancelParse_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            await Logic.SendParseTaskAbortAsync().ConfigureAwait(true);
+        }
+
+        #endregion
+
+
         #region Импорт
 
         private void Import_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
