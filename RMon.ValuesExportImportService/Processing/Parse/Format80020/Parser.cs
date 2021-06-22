@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading;
 using System.Xml.Serialization;
 using RMon.Globalization.String;
 using RMon.ValuesExportImportService.Processing.Parse.Format80020.Entity;
@@ -10,26 +11,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse.Format80020
     {
         private const string Class80020 = "80020";
         private const string SupportedVersion = "2";
-
-        public static MessageHeader ParseHeader(byte[] data)
-        {
-            using var stream = new MemoryStream(data);
-            object message = null;
-            try
-            {
-                var serializer = new XmlSerializer(typeof(MessageHeader));
-                message = serializer.Deserialize(stream);
-            }
-            catch
-            {
-                // ignored
-            }
-
-            if (Validate(message) != null)
-                message = null;
-
-            return (MessageHeader)message;
-        }
+        
 
         public static Message Parse(byte[] data)
         {

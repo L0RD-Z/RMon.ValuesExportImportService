@@ -51,7 +51,7 @@ namespace RMon.ValuesExportImportService.Processing.Export
             var entityDescription = newPropertyCodes.ToEntityDescription("LogicDevices");
             var logicDevicesTable = await _logicDevicesRepository.GetLogicDevicesTable(idUserGroups, valuesExportTaskParameters.IdLogicDevices, entityDescription, cancellationToken).ConfigureAwait(false);
 
-            var tags = await _dataRepository.GetTagsAsync(valuesExportTaskParameters.IdLogicDevices, valuesExportTaskParameters.TagTypeCodes).ConfigureAwait(false);
+            var tags = await _dataRepository.GetTagsAsync(valuesExportTaskParameters.IdLogicDevices, valuesExportTaskParameters.TagTypeCodes, cancellationToken).ConfigureAwait(false);
 
             var valuesRepository = ValueRepositoryFactory.GetRepository(
                 _valuesDatabaseOptions.CurrentValue.IsMongo() ? EProviderEngine.Mongo : EProviderEngine.Sql,

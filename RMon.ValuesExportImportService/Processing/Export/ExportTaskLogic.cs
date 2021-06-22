@@ -31,6 +31,7 @@ namespace RMon.ValuesExportImportService.Processing.Export
     {
         private readonly ExportTaskLogger _taskLogger;
         private readonly IEntityReader _entityReader;
+        private readonly IExcelWorker _excelWorker;
 
 
         /// <summary>
@@ -59,10 +60,11 @@ namespace RMon.ValuesExportImportService.Processing.Export
             IEntityReader entityReader,
             IGlobalizationProviderFactory globalizationProviderFactory,
             ILanguageRepository languageRepository)
-            : base(logger, serviceOptions, taskFactoryRepositoryConfigurator, dataRepository, permissionLogic, fileStorage, excelWorker, globalizationProviderFactory, languageRepository)
+            : base(logger, serviceOptions, taskFactoryRepositoryConfigurator, dataRepository, permissionLogic, fileStorage, globalizationProviderFactory, languageRepository)
         {
             _taskLogger = taskLogger;
             _entityReader = entityReader;
+            _excelWorker = excelWorker;
         }
 
         
@@ -85,7 +87,7 @@ namespace RMon.ValuesExportImportService.Processing.Export
                     var exportTable = await _entityReader.Read(task.Parameters, task.IdUser.Value, ct).ConfigureAwait(false);
 
                     await context.LogInfo(TextExport.BuildingExcel, 60).ConfigureAwait(false);
-                    var fileBody = ExcelWorker.WriteWorksheet(exportTable, context.GlobalizationProvider);
+                    var fileBody = _excelWorker.WriteWorksheet(exportTable, context.GlobalizationProvider);
                     
                     await context.LogInfo(TextExport.StoringFile, 90).ConfigureAwait(false);
                     var currentDate = await DataRepository.GetDateAsync().ConfigureAwait(false);

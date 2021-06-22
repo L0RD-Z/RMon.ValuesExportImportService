@@ -72,11 +72,13 @@ namespace RMon.ValuesExportImportService
 
 
                     services.AddSingleton<ImportTaskLogger>();
+                    services.AddSingleton<ParseTaskLogger>();
                     services.AddSingleton<ExportTaskLogger>();
                     services.AddSingleton<IPermissionLogic, PermissionLogic>();
                     services.AddSingleton<IExportTaskLogic, ExportTaskLogic>();
-                    services.AddSingleton<IImportTaskLogic, ImportTaskLogic>();
                     services.AddSingleton<IParseTaskLogic, ParseTaskLogic>();
+                    services.AddSingleton<IImportTaskLogic, ImportTaskLogic>();
+                    
 
                     
 

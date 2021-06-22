@@ -21,7 +21,7 @@ namespace RMon.ValuesExportImportService.Processing.Common
         protected IDataRepository DataRepository { get; }
         protected readonly IPermissionLogic PermissionLogic;
         protected readonly IFileStorage FileStorage;
-        protected readonly IExcelWorker ExcelWorker;
+        
         protected readonly IGlobalizationProviderFactory GlobalizationProviderFactory;
         protected readonly ILanguageRepository LanguageRepository;
 
@@ -34,7 +34,6 @@ namespace RMon.ValuesExportImportService.Processing.Common
         /// <param name="dataRepository">Репозиторий данных</param>
         /// <param name="permissionLogic">Логика работы с прадвами доступа</param>
         /// <param name="fileStorage">Файловое хранилище</param>
-        /// <param name="excelWorker">Работник с Excel</param>
         /// <param name="globalizationProviderFactory"></param>
         /// <param name="languageRepository"></param>
         protected BaseTaskLogic(ILogger logger, 
@@ -43,7 +42,6 @@ namespace RMon.ValuesExportImportService.Processing.Common
             IDataRepository dataRepository,
             IPermissionLogic permissionLogic,
             IFileStorage fileStorage, 
-            IExcelWorker excelWorker,
             IGlobalizationProviderFactory globalizationProviderFactory,
             ILanguageRepository languageRepository)
         {
@@ -53,7 +51,6 @@ namespace RMon.ValuesExportImportService.Processing.Common
             DataRepository = dataRepository;
             PermissionLogic = permissionLogic;
             FileStorage = fileStorage;
-            ExcelWorker = excelWorker;
             GlobalizationProviderFactory = globalizationProviderFactory;
             LanguageRepository = languageRepository;
         }
