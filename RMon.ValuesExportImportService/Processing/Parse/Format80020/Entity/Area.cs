@@ -14,6 +14,6 @@ namespace RMon.ValuesExportImportService.Processing.Parse.Format80020.Entity
         public MeasuringPoint[] MeasuringPoints { get; set; }
 
         [XmlElement("deliverypoint")]
-        public DeliveryPoint[] DeliveryPoints { get; set; }
+        public MeasuringPoint[] DeliveryPoints { get; set; }
     }
 }

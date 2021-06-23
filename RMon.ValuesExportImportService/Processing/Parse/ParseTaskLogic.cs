@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -13,6 +14,7 @@ using RMon.Core.Files;
 using RMon.Data.Provider;
 using RMon.Data.Provider.Esb.Entities.Commissioning;
 using RMon.Data.Provider.Esb.Entities.ValuesExportImport;
+using RMon.Data.Provider.Esb.ValuesExportImport.Parse;
 using RMon.Data.Provider.Values;
 using RMon.DriverCore;
 using RMon.ESB.Core.CommissioningImportTaskDto;
@@ -96,81 +98,12 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                     await context.LogInfo(TextParse.LoadingFiles, 10).ConfigureAwait(false);
                     var files = await ReceiveFilesAsync(task.Parameters.Files, ct).ConfigureAwait(false);
 
-                    
 
                     switch (task.Parameters.FileFormatType)
                     {
                         case ValuesParseFileFormatType.Xml80020:
                         {
-                            var messages = new List<(string fileName, Message)>();
-                            foreach (var file in files)
-                            {
-                                await context.LogInfo(TextParse.ReadingFile.With(file.Path, task.Parameters.FileFormatType.ToString())).ConfigureAwait(false);
-
-                                var message = Parser.Parse(file.Body);
-                                messages.Add((file.Path, message));
-                            }
-
-                            
-                            var taskParams = task.Parameters.Xml80020Parameters;
-                            foreach (var message in messages)
-                                foreach (var area in message.Item2.Areas)
-                                {
-                                    if (taskParams.MeasuringPoint != null)
-                                        if (area.MeasuringPoints.Any())
-                                            foreach (var measuringPoint in area.MeasuringPoints)
-                                            {
-                                                //Todo как лучше: тянуть один logicDevice со всеми сущностями или тянуть перед этим все IdlogicDevices и по каждому из них вытаскивать tag со всеми сущностями
-                                                var logicDevice = await DataRepository.GetLogicDeviceByPropertyValueAsync(taskParams.MeasuringPoint.PointPropertyCode, measuringPoint.Code, ct).ConfigureAwait(false);
-
-                                                foreach (var measuringChannel in measuringPoint.MeasuringChannels)
-                                                {
-                                                    var tagCode = GetTagCode(taskParams.MeasuringPoint, measuringChannel.Code);
-                                                    var tag = GetTag(logicDevice, tagCode);
-
-                                                    var timeStampTypeTag = TimeStampTypeEnum.GetTypeByValue(tag.DeviceTag.IdTimeStampType);
-                                                    
-                                                    foreach (var period in measuringChannel.Periods)
-                                                    {
-                                                        if (!DateTime.TryParse(period.Start, out var dateTimeStart))
-                                                            throw new TaskException(TextParse.FailedToConvertToDateTimeError.With(period.Start));
-                                                        if (!DateTime.TryParse(period.End, out var dateTimeEnd))
-                                                            throw new TaskException(TextParse.FailedToConvertToDateTimeError.With(period.End));
-                                                        var timeStampTypeValue = GetTimeStamp(dateTimeStart, dateTimeEnd);
-
-                                                        if (timeStampTypeTag == timeStampTypeValue)
-                                                        {
-                                                            var valueInfo = new ValueInfo()
-                                                            {
-                                                                IdTag = tag.Id,
-                                                                TimeStamp = dateTimeStart, //Todo или dateTimeEnd?
-                                                                Value = new ValueUnion() //Todo как быть с остальными типами значений
-                                                                {
-                                                                    ValueData = period.Value.Val
-                                                                }
-                                                            };
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        else
-                                            await context.LogWarning(TextParse.NotFoundSectionWarning.With(message.fileName, area.Name, nameof(MeasuringPoint))).ConfigureAwait(false);
-                                    
-                                    if (taskParams.DeliveryPoint != null)
-                                        if (area.DeliveryPoints.Any())
-                                        {
-                                            foreach (var deliveryPoint in area.DeliveryPoints)
-                                            {
-                                                var logicDevice = await DataRepository.GetLogicDeviceByPropertyValueAsync(taskParams.DeliveryPoint.PointPropertyCode, deliveryPoint.Code, ct).ConfigureAwait(false);
-                                            }
-                                        }
-                                        else
-                                            await context.LogWarning(TextParse.NotFoundSectionWarning.With(message.fileName, area.Name, nameof(DeliveryPoint))).ConfigureAwait(false);
-                                }
-                            
-                            
-
-
+                            var result = await ParseXml80020(files, task.Parameters.Xml80020Parameters, context, ct).ConfigureAwait(false);
                         }
                             break;
                         case ValuesParseFileFormatType.Matrix24X31:
@@ -209,6 +142,158 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 }
             }
         }
+
+        private async Task<List<ValueInfo>> ParseXml80020(IList<LocalFile> files, Xml80020ParsingParameters taskParams, ParseProcessingContext context, CancellationToken ct)
+        {
+            var messages = new List<(string fileName, Message)>();
+            foreach (var file in files)
+            {
+                await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Xml80020.ToString())).ConfigureAwait(false);
+
+                var message = Parser.Parse(file.Body);
+                messages.Add((file.Path, message));
+            }
+
+            var result = new List<ValueInfo>();
+            foreach (var message in messages)
+            {
+                var date = DateTime.ParseExact(message.Item2.DateTime.Day, "yyyyMMdd", CultureInfo.InvariantCulture);
+
+                foreach (var area in message.Item2.Areas)
+                {
+                    if (taskParams.MeasuringPoint != null)
+                    {
+                        var values = await ParsePointsAsync(area.Name, area.MeasuringPoints, taskParams.MeasuringPoint, date, context, message.fileName, ct).ConfigureAwait(false);
+                        result.AddRange(values);
+                    }
+
+                    if (taskParams.DeliveryPoint != null)
+                    {
+                        var values = await ParsePointsAsync(area.Name, area.DeliveryPoints, taskParams.DeliveryPoint, date, context, message.fileName, ct).ConfigureAwait(false);
+                        result.AddRange(values);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Выполняет парсинг точек поставки (<see cref="DeliveryPoint"/>) / точек измерения (<see cref="MeasuringPoint"/>)
+        /// </summary>
+        /// <param name="areaName">Имя узла</param>
+        /// <param name="points">Массив точек</param>
+        /// <param name="pointParameters">Параметры задания</param>
+        /// <param name="date">Дата файла</param>
+        /// <param name="context">Контекст выполнения задания</param>
+        /// <param name="fileName">Имя файла</param>
+        /// <param name="ct">Токен отмены операции</param>
+        /// <returns></returns>
+        private async Task<List<ValueInfo>> ParsePointsAsync(string areaName, MeasuringPoint[] points, Xml80020PointParameters pointParameters, DateTime date, ParseProcessingContext context, string fileName, CancellationToken ct)
+        {
+            var result = new List<ValueInfo>();
+            if (points != null && points.Any())
+                foreach (var measuringPoint in points)
+                {
+                    var logicDevice = await DataRepository.GetLogicDeviceByPropertyValueAsync(pointParameters.PointPropertyCode, measuringPoint.Code, ct).ConfigureAwait(false);
+                    foreach (var measuringChannel in measuringPoint.MeasuringChannels)
+                        result.AddRange(ParseChannel(measuringChannel, pointParameters, logicDevice, date, context));
+                }
+            else
+                await context.LogWarning(TextParse.NotFoundSectionWarning.With(fileName, areaName, nameof(DeliveryPoint))).ConfigureAwait(false);
+            return result;
+        }
+
+        /// <summary>
+        /// Выполняет парсинг канала поставки
+        /// </summary>
+        /// <param name="measuringChannel">Канал</param>
+        /// <param name="pointParameters">Параметры задания</param>
+        /// <param name="logicDevice">Логическое устройство</param>
+        /// <param name="date">Дата</param>
+        /// <param name="processingContext">Контекст выполнения задания</param>
+        /// <returns></returns>
+        private List<ValueInfo> ParseChannel(MeasuringChannel measuringChannel, Xml80020PointParameters pointParameters, LogicDevice logicDevice, DateTime date, ParseProcessingContext processingContext)
+        {
+            var result = new List<ValueInfo>();
+
+            var tagCode = GetTagCode(pointParameters, measuringChannel.Code);
+            var tag = GetTag(logicDevice, tagCode);
+
+            var timeStampTypeTag = TimeStampTypeEnum.GetTypeByValue(tag.DeviceTag.IdTimeStampType);
+
+            ValueInfo lastValue = null;
+            foreach (var period in measuringChannel.Periods)
+            {
+                var startTime = DateTime.ParseExact(period.Start, "HHmm", CultureInfo.InvariantCulture);
+                var endTime = DateTime.ParseExact(period.End, "HHmm", CultureInfo.InvariantCulture);
+                var value = double.Parse(period.Value.Val.Replace(",", "."), CultureInfo.InvariantCulture);
+
+                var timeStampTypeValue = GetTimeStamp(startTime, endTime);
+
+                if (timeStampTypeTag == timeStampTypeValue)
+                    result.Add(ValueInfoCreate(tag.Id, date, endTime, value));
+                else 
+                    if (timeStampTypeTag == TimeStampTypeEnum.HalfHour && timeStampTypeValue == TimeStampTypeEnum.Hour)
+                    {
+                        result.Add(ValueInfoCreate(tag.Id, date, endTime.AddMinutes(-30), value / 2));
+                        result.Add(ValueInfoCreate(tag.Id, date, endTime, value / 2));
+                    }
+                    else 
+                        if (timeStampTypeTag == TimeStampTypeEnum.Hour && timeStampTypeValue == TimeStampTypeEnum.HalfHour)
+                        {
+                            if (endTime.Minute == 30)
+                                lastValue = ValueInfoCreate(tag.Id, date, endTime, value);
+                            else
+                            {
+                                if (lastValue == null)
+                                    processingContext.LogWarning(TextParse.MissingValueWarning.With(tag.Id, startTime, endTime));
+                                else
+                                {
+                                    var currentValue = ValueInfoCreate(tag.Id, date, endTime, value + lastValue.Value.ValueFloat.Value);
+                                    if ((currentValue.TimeStamp - lastValue.TimeStamp).TotalMinutes == 60)
+                                    {
+                                        result.Add(currentValue);
+                                        lastValue = null;
+                                    }
+                                    else //Если в периоде наткнулись на пропуск
+                                    {
+                                        lastValue = null;
+                                        if (endTime.Minute == 30)
+                                            lastValue = ValueInfoCreate(tag.Id, date, endTime, value);
+                                        else
+                                            processingContext.LogWarning(TextParse.MissingValueWarning.With(tag.Id, startTime, endTime));
+                                    }
+                                }
+                            }
+                        }
+            }
+
+            return result;
+        }
+        
+
+        /// <summary>
+        /// Создаёт и возвращает значение <see cref="ValueInfo"/>
+        /// </summary>
+        /// <param name="tagId">Id тега оборудования</param>
+        /// <param name="date">Дата</param>
+        /// <param name="timeStamp">Таймстамп значения</param>
+        /// <param name="value">Значение</param>
+        /// <returns></returns>
+        private ValueInfo ValueInfoCreate(long tagId, DateTime date, DateTime timeStamp, double value) =>
+            new()
+            {
+                IdTag = tagId,
+                TimeStamp = timeStamp.TimeOfDay == TimeSpan.Zero
+                    ? date.AddDays(1).Add(timeStamp.TimeOfDay)
+                    : date.Add(timeStamp.TimeOfDay),
+                Value = new ValueUnion
+                {
+                    ValueFloat = value,
+                    IdQuality = "Normal"
+                },
+            };
 
         public override void AbortTask(ITask receivedTask, StateMachineInstance instance) => instance.CancellationTokenSource.Cancel();
 

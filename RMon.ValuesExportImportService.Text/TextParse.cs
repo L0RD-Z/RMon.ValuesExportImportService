@@ -34,5 +34,8 @@ namespace RMon.ValuesExportImportService.Text
             "Не удалось определить таймштамп у значения с {DateTimeStart} по {DateTimeEnd}", "DateTimeStart", "DateTimeEnd");
         public static I18nString<string> FailedToConvertToDateTimeError = new(nameof(FailedToConvertToDateTimeError),
             "Не удалось преобразовать значение {value} в дату и время.", "value");
+
+        public static I18nString<long, DateTime, DateTime> MissingValueWarning = new(nameof(MissingValueWarning),
+            "Значение тега (id = {tagId}) с {DateTimeStart} по {DateTimeEnd} является не полным и будет пропущено.", "tagId", "DateTimeStart", "DateTimeEnd");
     }
 }
