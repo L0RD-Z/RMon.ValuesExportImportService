@@ -12,6 +12,14 @@ namespace RMon.ValuesExportImportService.Text
         public static I18nString FinishSuccess = new(nameof(FinishSuccess), "Задание завершено успешно");
         public static I18nString FinishAborted = new(nameof(FinishAborted), "Задание отменено");
         public static I18nString<I18nString> FinishFailed = new(nameof(FinishFailed), "Ошибка при выполнении задания: {error}", "error");
+        public static I18nString<string> AnalyzeInfoFromFile = new(nameof(AnalyzeInfoFromFile), "Анализ информации из файла \"{fileName}\"", "fileName");
+        public static I18nString<string, string> AnalyzeArea = new(nameof(AnalyzeArea), 
+            "Анализ организации \"{name}\" (ИНН {inn})", "name", "inn");
+        public static I18nString AnalyzeMeasuringPoints = new(nameof(AnalyzeMeasuringPoints), "Анализ точек измерения");
+        public static I18nString AnalyzeDeliveryPoints = new(nameof(AnalyzeDeliveryPoints), "Анализ точек поставки");
+        public static I18nString<string, string> AnalyzePoint = new(nameof(AnalyzeDeliveryPoints), 
+            "Анализ точеки \"{name}\" (код: {code})", "name", "code");
+
 
         public static I18nString NoFilesError = new(nameof(NoFilesError), "Отсутствуют ссылки на файлы с данными для импорта.");
         public static I18nString NoUserIdError = new(nameof(NoUserIdError), "Не указан идентификатор пользователя.");

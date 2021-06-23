@@ -86,7 +86,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                     {
                         case ValuesParseFileFormatType.Xml80020:
                         {
-                            result = await _parse80020Logic.ParseFormat80020Async(files, task.Parameters.Xml80020Parameters, context, ct).ConfigureAwait(false);
+                            result = await _parse80020Logic.AnalyzeFormat80020Async(files, task.Parameters.Xml80020Parameters, context, ct).ConfigureAwait(false);
                         }
                             break;
                         case ValuesParseFileFormatType.Matrix24X31:

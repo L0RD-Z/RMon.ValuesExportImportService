@@ -36,14 +36,14 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         }
 
         /// <summary>
-        /// Асинхронно выполняет парсинг файлов в формате 80020
+        /// Асинхронно выполняет анализ файлов в формате 80020
         /// </summary>
         /// <param name="files">Список файлов</param>
         /// <param name="taskParams">Параметры задания</param>
         /// <param name="context">Контекст выполнения</param>
         /// <param name="ct">Токен отмены опреации</param>
         /// <returns></returns>
-        public async Task<List<ValueInfo>> ParseFormat80020Async(IList<LocalFile> files, Xml80020ParsingParameters taskParams, ParseProcessingContext context, CancellationToken ct)
+        public async Task<List<ValueInfo>> AnalyzeFormat80020Async(IList<LocalFile> files, Xml80020ParsingParameters taskParams, ParseProcessingContext context, CancellationToken ct)
         {
             var messages = new List<(string fileName, Message)>();
             foreach (var file in files)
@@ -57,19 +57,23 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             var result = new List<ValueInfo>();
             foreach (var message in messages)
             {
+                await context.LogInfo(TextParse.AnalyzeInfoFromFile.With(message.fileName)).ConfigureAwait(false);
                 var date = DateTime.ParseExact(message.Item2.DateTime.Day, "yyyyMMdd", CultureInfo.InvariantCulture);
 
                 foreach (var area in message.Item2.Areas)
                 {
+                    await context.LogInfo(TextParse.AnalyzeArea.With(area.Name, area.Inn)).ConfigureAwait(false);
                     if (taskParams.MeasuringPoint != null)
                     {
-                        var values = await ParsePointsAsync(area.Name, area.MeasuringPoints, taskParams.MeasuringPoint, date, context, message.fileName, ct).ConfigureAwait(false);
+                        await context.LogInfo(TextParse.AnalyzeMeasuringPoints).ConfigureAwait(false);
+                        var values = await AnalyzePointsAsync(area.Name, area.MeasuringPoints, taskParams.MeasuringPoint, date, context, message.fileName, ct).ConfigureAwait(false);
                         result.AddRange(values);
                     }
 
                     if (taskParams.DeliveryPoint != null)
                     {
-                        var values = await ParsePointsAsync(area.Name, area.DeliveryPoints, taskParams.DeliveryPoint, date, context, message.fileName, ct).ConfigureAwait(false);
+                        await context.LogInfo(TextParse.AnalyzeDeliveryPoints).ConfigureAwait(false);
+                        var values = await AnalyzePointsAsync(area.Name, area.DeliveryPoints, taskParams.DeliveryPoint, date, context, message.fileName, ct).ConfigureAwait(false);
                         result.AddRange(values);
                     }
                 }
@@ -89,15 +93,16 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <param name="fileName">Имя файла</param>
         /// <param name="ct">Токен отмены операции</param>
         /// <returns></returns>
-        private async Task<List<ValueInfo>> ParsePointsAsync(string areaName, MeasuringPoint[] points, Xml80020PointParameters pointParameters, DateTime date, ParseProcessingContext context, string fileName, CancellationToken ct)
+        private async Task<List<ValueInfo>> AnalyzePointsAsync(string areaName, MeasuringPoint[] points, Xml80020PointParameters pointParameters, DateTime date, ParseProcessingContext context, string fileName, CancellationToken ct)
         {
             var result = new List<ValueInfo>();
             if (points != null && points.Any())
                 foreach (var measuringPoint in points)
                 {
+                    await context.LogInfo(TextParse.AnalyzePoint.With(measuringPoint.Name, measuringPoint.Code)).ConfigureAwait(false);
                     var logicDevice = await _dataRepository.GetLogicDeviceByPropertyValueAsync(pointParameters.PointPropertyCode, measuringPoint.Code, ct).ConfigureAwait(false);
                     foreach (var measuringChannel in measuringPoint.MeasuringChannels)
-                        result.AddRange(ParseChannel(measuringChannel, pointParameters, logicDevice, date, context));
+                        result.AddRange(AnalyzeChannel(measuringChannel, pointParameters, logicDevice, date, context));
                 }
             else
                 await context.LogWarning(TextParse.NotFoundSectionWarning.With(fileName, areaName, nameof(DeliveryPoint))).ConfigureAwait(false);
@@ -113,7 +118,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <param name="date">Дата</param>
         /// <param name="processingContext">Контекст выполнения задания</param>
         /// <returns></returns>
-        private List<ValueInfo> ParseChannel(MeasuringChannel measuringChannel, Xml80020PointParameters pointParameters, LogicDevice logicDevice, DateTime date, ParseProcessingContext processingContext)
+        private List<ValueInfo> AnalyzeChannel(MeasuringChannel measuringChannel, Xml80020PointParameters pointParameters, LogicDevice logicDevice, DateTime date, ParseProcessingContext processingContext)
         {
             var result = new List<ValueInfo>();
             var tagCode = GetTagCode(pointParameters, measuringChannel.Code);
