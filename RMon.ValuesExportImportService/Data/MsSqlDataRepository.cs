@@ -55,6 +55,7 @@ namespace RMon.ValuesExportImportService.Data
             var logicDevices = await dataContext.LogicDevices.AsNoTracking()
                 .Include(t => t.Tags)
                 .ThenInclude(t => t.LogicTagLink)
+                .ThenInclude(t => t.LogicTagType)
                 .Include(t => t.Tags)
                 .ThenInclude(t => t.DeviceTag)
                 .Where(t => t.LogicDeviceProperties.Any(tt => tt.LogicDevicePropertyType.Code == propertyCode && tt.Value == propertyValue))
@@ -63,9 +64,9 @@ namespace RMon.ValuesExportImportService.Data
 
             return logicDevices.Count switch
             {
-                0 => throw new DataLayerException(TextDb.SelectedNoOneLogicDeviceError.With(propertyCode, propertyCode)),
+                0 => throw new DataLayerException(TextDb.SelectedNoOneLogicDeviceError.With(propertyCode, propertyValue)),
                 1 => logicDevices.Single(),
-                _ => throw new DataLayerException(TextDb.SelectedManyLogicDeviceError.With(logicDevices.Count, propertyCode, propertyCode))
+                _ => throw new DataLayerException(TextDb.SelectedManyLogicDeviceError.With(logicDevices.Count, propertyCode, propertyValue))
             };
         }
 

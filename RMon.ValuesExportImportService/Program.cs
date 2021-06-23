@@ -70,6 +70,7 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<IFileStorage, Files.FileStorage>();
                     services.AddSingleton<IExcelWorker, ExcelWorker>();
 
+                    services.AddSingleton<Parse80020Logic>();
 
                     services.AddSingleton<ImportTaskLogger>();
                     services.AddSingleton<ParseTaskLogger>();

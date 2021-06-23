@@ -37,5 +37,8 @@ namespace RMon.ValuesExportImportService.Text
 
         public static I18nString<long, DateTime, DateTime> MissingValueWarning = new(nameof(MissingValueWarning),
             "Значение тега (id = {tagId}) с {DateTimeStart} по {DateTimeEnd} является не полным и будет пропущено.", "tagId", "DateTimeStart", "DateTimeEnd");
+
+        public static I18nString<string, string> MissingTimestampTypeError = new(nameof(MissingTimestampTypeError),
+            "Тег \"{tagCode}\" имеет неподдерживаемый тип таймстампа. Импорт значений в формате 80020 возможен только для тегов с таймстампами {supportedTimestampTypes}", "tagCode", "supportedTimestampTypes");
     }
 }

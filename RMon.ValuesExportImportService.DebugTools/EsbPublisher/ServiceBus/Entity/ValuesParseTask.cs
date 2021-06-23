@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RMon.Core.Files;
 using RMon.ESB.Core.ValuesParseTaskDto;
 using RMon.Values.ExportImport.Core;
+using RMon.Values.ExportImport.Core.FileFormatParameters;
 
 namespace EsbPublisher.ServiceBus.Entity
 {
@@ -13,7 +14,7 @@ namespace EsbPublisher.ServiceBus.Entity
         public long? IdUser { get; set; }
 
 
-        public ValuesParseTask(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, long? idUser)
+        public ValuesParseTask(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, Xml80020ParsingParameters taskParams, long? idUser)
         {
             Parameters = new ValuesParseTaskParameters()
             {
@@ -21,8 +22,9 @@ namespace EsbPublisher.ServiceBus.Entity
                 {
                     new(filePath)
                 },
-                FileFormatType = fileType
-                
+                FileFormatType = fileType,
+                Xml80020Parameters = taskParams
+
             };
             CorrelationId = correlationId;
             IdUser = idUser;

@@ -4,7 +4,7 @@ using MassTransit;
 
 namespace EsbPublisher.ServiceBus
 {
-    class BusService
+    public class BusService
     {
         private readonly IBusControl _bus;
         public readonly BusPublisher Publisher;
