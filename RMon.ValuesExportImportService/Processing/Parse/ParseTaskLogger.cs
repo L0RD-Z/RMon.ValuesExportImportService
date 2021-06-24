@@ -26,7 +26,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <param name="dataRepository">Репозиторий данных</param>
         /// <param name="fileLogger">Логгер для записи логов в файл</param>
         /// <param name="esbLogger">Логгер для передачи логов по ESB</param>
-        public ParseTaskLogger(IOptionsMonitor<Service> serviceOptions, IRepositoryFactoryConfigurator repositoryFactoryConfigurator, IDataRepository dataRepository, ILogger<ParseTaskLogger> fileLogger, IImportBusPublisher esbLogger)
+        public ParseTaskLogger(IOptionsMonitor<Service> serviceOptions, IRepositoryFactoryConfigurator repositoryFactoryConfigurator, IDataRepository dataRepository, ILogger<ParseTaskLogger> fileLogger, IParseBusPublisher esbLogger)
             : base(serviceOptions, repositoryFactoryConfigurator, dataRepository, fileLogger, esbLogger)
         {
         }

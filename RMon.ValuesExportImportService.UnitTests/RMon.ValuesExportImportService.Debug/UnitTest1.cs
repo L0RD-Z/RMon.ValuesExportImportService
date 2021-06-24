@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RMon.Data.Provider;
 
 namespace RMon.ValuesExportImportService.Debug
 {
@@ -8,6 +11,32 @@ namespace RMon.ValuesExportImportService.Debug
         [TestMethod]
         public void TestMethod1()
         {
+            var timeRange = new TimeRange(new DateTime(2021, 01, 01), new DateTime(2021, 03, 04));
+            
+            var list = SplitTimeRange(timeRange, TimeSpan.FromDays(30));
+        }
+
+
+        private List<TimeRange> SplitTimeRange(TimeRange timeRange, TimeSpan timeInterval)
+        {
+            var result = new List<TimeRange>();
+            if ((timeRange.DateEnd.Value - timeRange.DateStart.Value) > timeInterval)
+            {
+                var dateTimeIterator = timeRange.DateStart.Value;
+                while (dateTimeIterator <= timeRange.DateEnd.Value)
+                {
+                    var dateEnd = dateTimeIterator + timeInterval;
+                    if (dateEnd > timeRange.DateEnd.Value)
+                        dateEnd = timeRange.DateEnd.Value;
+
+                    result.Add(new TimeRange(dateTimeIterator, dateEnd));
+                    dateTimeIterator = dateEnd.AddSeconds(1);
+                } 
+            }
+            else
+                result.Add(timeRange);
+
+            return result;
         }
     }
 }

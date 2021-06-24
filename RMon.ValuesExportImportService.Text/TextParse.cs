@@ -19,7 +19,9 @@ namespace RMon.ValuesExportImportService.Text
         public static I18nString AnalyzeDeliveryPoints = new(nameof(AnalyzeDeliveryPoints), "Анализ точек поставки");
         public static I18nString<string, string> AnalyzePoint = new(nameof(AnalyzeDeliveryPoints), 
             "Анализ точеки \"{name}\" (код: {code})", "name", "code");
-
+        public static I18nString LoadingCurrentValues = new(nameof(LoadingCurrentValues), "Загрузка текущих значений из БД");
+        public static I18nString<long, DateTime, DateTime> LoadingCurrentValuesForTag = new(nameof(LoadingCurrentValuesForTag),
+            "Загрузка текущих значений из БД для тега (id = {idTag}) за период [{dateStart}; {dateEnd}]", "idTag", "dateStart", "dateEnd");
 
         public static I18nString NoFilesError = new(nameof(NoFilesError), "Отсутствуют ссылки на файлы с данными для импорта.");
         public static I18nString NoUserIdError = new(nameof(NoUserIdError), "Не указан идентификатор пользователя.");

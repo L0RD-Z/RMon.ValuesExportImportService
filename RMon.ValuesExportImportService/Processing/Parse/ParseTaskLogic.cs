@@ -9,6 +9,7 @@ using RMon.Configuration.Options;
 using RMon.Core.Files;
 using RMon.Data.Provider;
 using RMon.Data.Provider.Esb.Entities.ValuesExportImport;
+using RMon.Data.Provider.Values;
 using RMon.ESB.Core.Common;
 using RMon.ESB.Core.ValuesParseTaskDto;
 using RMon.Globalization.String;
@@ -19,7 +20,6 @@ using RMon.ValuesExportImportService.Extensions;
 using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Globalization;
 using RMon.ValuesExportImportService.Processing.Common;
-using RMon.ValuesExportImportService.Processing.Export;
 using RMon.ValuesExportImportService.Processing.Permission;
 using RMon.ValuesExportImportService.ServiceBus;
 using RMon.ValuesExportImportService.Text;
@@ -29,6 +29,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
 {
     class ParseTaskLogic : BaseTaskLogic, IParseTaskLogic
     {
+        private readonly IOptionsMonitor<ValuesDatabase> _valuesDatabaseOptions;
         private readonly ParseTaskLogger _taskLogger;
         private readonly Parse80020Logic _parse80020Logic;
 
@@ -48,6 +49,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         public ParseTaskLogic(
             ILogger<ParseTaskLogic> logger,
             IOptionsMonitor<Service> serviceOptions,
+            IOptionsMonitor<ValuesDatabase> valuesDatabaseOptions,
             IRepositoryFactoryConfigurator taskFactoryRepositoryConfigurator,
             IDataRepository dataRepository,
             ParseTaskLogger taskLogger,
@@ -58,6 +60,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             ILanguageRepository languageRepository)
             : base(logger, serviceOptions,  taskFactoryRepositoryConfigurator, dataRepository, permissionLogic, fileStorage, globalizationProviderFactory, languageRepository)
         {
+            _valuesDatabaseOptions = valuesDatabaseOptions;
             _taskLogger = taskLogger;
             _parse80020Logic = parse80020Logic;
         }
@@ -81,12 +84,12 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                     await context.LogInfo(TextParse.LoadingFiles, 10).ConfigureAwait(false);
                     var files = await ReceiveFilesAsync(task.Parameters.Files, ct).ConfigureAwait(false);
 
-                    var result = new List<ValueInfo>();
+                    var values = new List<ValueInfo>();
                     switch (task.Parameters.FileFormatType)
                     {
                         case ValuesParseFileFormatType.Xml80020:
                         {
-                            result = await _parse80020Logic.AnalyzeFormat80020Async(files, task.Parameters.Xml80020Parameters, context, ct).ConfigureAwait(false);
+                            values = await _parse80020Logic.AnalyzeFormat80020Async(files, task.Parameters.Xml80020Parameters, context, ct).ConfigureAwait(false);
                         }
                             break;
                         case ValuesParseFileFormatType.Matrix24X31:
@@ -101,7 +104,10 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                             throw new ArgumentOutOfRangeException();
                     }
 
-                    await context.LogFinished(TextParse.FinishSuccess, result).ConfigureAwait(false);
+                    await context.LogInfo(TextParse.LoadingCurrentValues, 70).ConfigureAwait(false);
+                    await LoadCurrentValuesFromDb(context, values).ConfigureAwait(false);
+
+                    await context.LogFinished(TextParse.FinishSuccess, values).ConfigureAwait(false);
                 }
                 catch (TaskCanceledException)
                 {
@@ -125,8 +131,6 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 }
             }
         }
-
-        
 
         public override void AbortTask(ITask receivedTask, StateMachineInstance instance) => instance.CancellationTokenSource.Cancel();
 
@@ -169,6 +173,67 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             return processingContext;
         }
 
-        
+        /// <summary>
+        /// Выполняет загрузку текущих значений из БД
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        private async Task LoadCurrentValuesFromDb(ParseProcessingContext context, List<ValueInfo> values)
+        {
+            var valuesRepository = ValueRepositoryFactory.GetRepository(
+                _valuesDatabaseOptions.CurrentValue.IsMongo() ? EProviderEngine.Mongo : EProviderEngine.Sql,
+                _valuesDatabaseOptions.CurrentValue.ConnectionString, _valuesDatabaseOptions.CurrentValue.ConnectionString);
+
+            var groupValues = values.GroupBy(t => t.IdTag);
+            foreach (var groupValue in groupValues)
+            {
+                var sourceTimeRange = new TimeRange(groupValue.Min(t => t.TimeStamp), groupValue.Max(t => t.TimeStamp));
+                var timeRanges = SplitTimeRange(sourceTimeRange, TimeSpan.FromDays(30));
+                foreach (var timeRange in timeRanges)
+                {
+                    await context.LogInfo(TextParse.LoadingCurrentValuesForTag.With(groupValue.Key, timeRange.DateStart.Value, timeRange.DateEnd.Value)).ConfigureAwait(false);
+                    var dbValues = await valuesRepository.GetValuesAsync(groupValue.Key, sourceTimeRange).ConfigureAwait(false);
+                    foreach (var value in groupValue)
+                    {
+                        var dbValue = dbValues.SingleOrDefault(t => t.Datetime == value.TimeStamp);
+                        if (dbValue != null)
+                            value.CurrentValue = new ValueUnion()
+                            {
+                                IdQuality = "Normal",
+                                ValueFloat = dbValue.ValueFloat
+                            };
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Разбивает временной диапазон <see cref="timeRange"/> на диапазоны времен не больше <see cref="timeInterval"/>
+        /// </summary>
+        /// <param name="timeRange">Исходный временной диапазон</param>
+        /// <param name="timeInterval">Интервал времени, накоторые разбивать исходный диапазон</param>
+        /// <returns></returns>
+        private List<TimeRange> SplitTimeRange(TimeRange timeRange, TimeSpan timeInterval)
+        {
+            var result = new List<TimeRange>();
+            if (timeRange.DateEnd.Value - timeRange.DateStart.Value > timeInterval)
+            {
+                var dateTimeIterator = timeRange.DateStart.Value;
+                while (dateTimeIterator <= timeRange.DateEnd.Value)
+                {
+                    var dateEnd = dateTimeIterator + timeInterval;
+                    if (dateEnd > timeRange.DateEnd.Value)
+                        dateEnd = timeRange.DateEnd.Value;
+
+                    result.Add(new TimeRange(dateTimeIterator, dateEnd));
+                    dateTimeIterator = dateEnd.AddSeconds(1);
+                }
+            }
+            else
+                result.Add(timeRange);
+
+            return result;
+        }
     }
 }
