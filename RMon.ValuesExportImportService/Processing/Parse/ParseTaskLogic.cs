@@ -32,6 +32,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         private readonly IOptionsMonitor<ValuesDatabase> _valuesDatabaseOptions;
         private readonly ParseTaskLogger _taskLogger;
         private readonly Parse80020Logic _parse80020Logic;
+        private readonly ParseFlexibleLogic _parseFlexibleLogic;
 
         /// <summary>
         /// Конструктор 1
@@ -44,6 +45,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <param name="permissionLogic">Логика работы с прадвами доступа</param>
         /// <param name="fileStorage">Файловое хранилище</param>
         /// <param name="parse80020Logic">Логика для парсинга формата 80020</param>
+        /// <param name="parseFlexibleLogic">Логика для парсинга гибкого формата</param>
         /// <param name="globalizationProviderFactory"></param>
         /// <param name="languageRepository"></param>
         public ParseTaskLogic(
@@ -56,6 +58,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             IPermissionLogic permissionLogic,
             IFileStorage fileStorage,
             Parse80020Logic parse80020Logic,
+            ParseFlexibleLogic parseFlexibleLogic,
             IGlobalizationProviderFactory globalizationProviderFactory,
             ILanguageRepository languageRepository)
             : base(logger, serviceOptions,  taskFactoryRepositoryConfigurator, dataRepository, permissionLogic, fileStorage, globalizationProviderFactory, languageRepository)
@@ -63,6 +66,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             _valuesDatabaseOptions = valuesDatabaseOptions;
             _taskLogger = taskLogger;
             _parse80020Logic = parse80020Logic;
+            _parseFlexibleLogic = parseFlexibleLogic;
         }
 
         
@@ -88,9 +92,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                     switch (task.Parameters.FileFormatType)
                     {
                         case ValuesParseFileFormatType.Xml80020:
-                        {
                             values = await _parse80020Logic.AnalyzeFormat80020Async(files, task.Parameters.Xml80020Parameters, context, ct).ConfigureAwait(false);
-                        }
                             break;
                         case ValuesParseFileFormatType.Matrix24X31:
                             break;
@@ -99,6 +101,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                         case ValuesParseFileFormatType.Table:
                             break;
                         case ValuesParseFileFormatType.Flexible:
+                            values = await _parseFlexibleLogic.AnalyzeFlexibleAsync(files, task.Parameters.TableParameters, context, ct).ConfigureAwait(false);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
