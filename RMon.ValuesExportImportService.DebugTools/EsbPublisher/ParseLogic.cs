@@ -159,14 +159,16 @@ namespace EsbPublisher
         {
             return SelectedFileType switch
             {
-                ValuesParseFileFormatType.Xml80020 => SendParseXml80020(),
+                ValuesParseFileFormatType.Xml80020 => SendParseXml80020Async(),
                 ValuesParseFileFormatType.Matrix24X31 => throw new NotImplementedException(),
                 ValuesParseFileFormatType.Matrix31X24 => throw new NotImplementedException(),
                 ValuesParseFileFormatType.Table => throw new NotImplementedException(),
-                ValuesParseFileFormatType.Flexible => throw new NotImplementedException(),
+                ValuesParseFileFormatType.Flexible => SendParseFlexibleAsync(),
                 _ => throw new NotImplementedException()
             };
         }
+
+        
 
         /// <summary>
         /// Отправляет задание на Отмену парсинга
@@ -181,7 +183,7 @@ namespace EsbPublisher
             }
         }
 
-        private async Task SendParseXml80020()
+        private Task SendParseXml80020Async()
         {
             _correlationId = Guid.NewGuid();
 
@@ -201,9 +203,18 @@ namespace EsbPublisher
 
 
 
-            await _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, parsingParams, IdUser).ConfigureAwait(false);
+            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, parsingParams, IdUser);
         }
 
+
+        private Task SendParseFlexibleAsync()
+        {
+            _correlationId = Guid.NewGuid();
+
+            var parsingParams = new TableParsingParameters();
+
+            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, parsingParams, IdUser);
+        }
 
         #region INotifyPropertyChanged
 
