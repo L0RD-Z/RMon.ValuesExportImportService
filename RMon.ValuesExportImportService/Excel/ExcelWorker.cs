@@ -164,7 +164,7 @@ namespace RMon.ValuesExportImportService.Excel
             _logger.LogInformation("Разбор книги Excel начат.");
             using var stream = new MemoryStream(fileBody);
             using var excelPackage = new ExcelPackage(stream);
-            var excelSheet = excelPackage.Workbook.Worksheets.First();
+            var excelSheet = excelPackage.Workbook.Worksheets.First();  //TODO парсить только первый или все листы?
 
             const int rowStart = 3; //Первая строка
             const int colStart = 1;

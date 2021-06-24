@@ -13,8 +13,7 @@ namespace EsbPublisher.ServiceBus.Entity
         public string Name { get; set; }
         public long? IdUser { get; set; }
 
-
-        public ValuesParseTask(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, Xml80020ParsingParameters taskParams, long? idUser)
+        public ValuesParseTask(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, long? idUser)
         {
             Parameters = new ValuesParseTaskParameters()
             {
@@ -22,12 +21,23 @@ namespace EsbPublisher.ServiceBus.Entity
                 {
                     new(filePath)
                 },
-                FileFormatType = fileType,
-                Xml80020Parameters = taskParams
-
+                FileFormatType = fileType
             };
             CorrelationId = correlationId;
             IdUser = idUser;
+        }
+
+
+        public ValuesParseTask(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, Xml80020ParsingParameters taskParams, long? idUser)
+            :this(correlationId, filePath, fileType, idUser)
+        {
+            Parameters.Xml80020Parameters = taskParams;
+        }
+
+        public ValuesParseTask(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, TableParsingParameters taskParams, long? idUser)
+            : this(correlationId, filePath, fileType, idUser)
+        {
+            Parameters.TableParameters = taskParams;
         }
     }
 }

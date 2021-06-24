@@ -40,6 +40,12 @@ namespace EsbPublisher.ServiceBus
             return _bus.Publish((IValuesParseTask)sendTask);
         }
 
+        public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, long idUser)
+        {
+            var sendTask = new ValuesParseTask(correlationId, filePath, fileType, idUser);
+            return _bus.Publish((IValuesParseTask)sendTask);
+        }
+
 
         public Task SendParseTaskAbortAsync(Guid correlationId)
         {

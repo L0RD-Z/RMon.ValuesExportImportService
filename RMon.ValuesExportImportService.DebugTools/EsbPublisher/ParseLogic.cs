@@ -159,14 +159,16 @@ namespace EsbPublisher
         {
             return SelectedFileType switch
             {
-                ValuesParseFileFormatType.Xml80020 => SendParseXml80020(),
+                ValuesParseFileFormatType.Xml80020 => SendParseXml80020Async(),
                 ValuesParseFileFormatType.Matrix24X31 => throw new NotImplementedException(),
                 ValuesParseFileFormatType.Matrix31X24 => throw new NotImplementedException(),
                 ValuesParseFileFormatType.Table => throw new NotImplementedException(),
-                ValuesParseFileFormatType.Flexible => throw new NotImplementedException(),
+                ValuesParseFileFormatType.Flexible => SendParseFlexibleAsync(),
                 _ => throw new NotImplementedException()
             };
         }
+
+        
 
         /// <summary>
         /// Отправляет задание на Отмену парсинга
@@ -181,7 +183,11 @@ namespace EsbPublisher
             }
         }
 
-        private async Task SendParseXml80020()
+        /// <summary>
+        /// Отправляет задание на парсинг формата 80020
+        /// </summary>
+        /// <returns></returns>
+        private Task SendParseXml80020Async()
         {
             _correlationId = Guid.NewGuid();
 
@@ -199,11 +205,19 @@ namespace EsbPublisher
                     Channels = MeasuringPoint.Channels.Select(t => new Xml80020ChannelParameters { ChannelCode = t.ChannelCode, TagCode = t.TagCode }).ToList()
                 };
 
-
-
-            await _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, parsingParams, IdUser).ConfigureAwait(false);
+            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, parsingParams, IdUser);
         }
 
+        /// <summary>
+        /// Отправляет задание на парсинг "Гибкого формата"
+        /// </summary>
+        /// <returns></returns>
+        private Task SendParseFlexibleAsync()
+        {
+            _correlationId = Guid.NewGuid();
+
+            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, IdUser);
+        }
 
         #region INotifyPropertyChanged
 
