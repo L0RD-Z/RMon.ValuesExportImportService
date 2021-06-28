@@ -107,7 +107,6 @@ namespace RMon.ValuesExportImportService.Excel
 
                 _logger.LogInformation($"Лист \"{EntityName}\": заполнение таблицы.");
                 foreach (var entity in exportTable.EntityTable.Entities)
-                {
                     try
                     {
                         colIndex = colStart;
@@ -126,7 +125,6 @@ namespace RMon.ValuesExportImportService.Excel
                     {
                         throw new ExcelException(TextExcel.RowUnexpectedError.With(rowIndex), e);
                     }
-                }
 
                 rowEnd = rowIndex - 1;
 
@@ -218,7 +216,6 @@ namespace RMon.ValuesExportImportService.Excel
 
             var entities = new List<ImportEntity>();
             while (rowIndex <= rowEnd)
-            {
                 try
                 {
                     var selectorPropertyMap = new Dictionary<int, PropertyValue>();
@@ -250,7 +247,7 @@ namespace RMon.ValuesExportImportService.Excel
                 {
                     throw new ExcelException(TextExcel.ParseUnexpectedError.With(EntityName, rowIndex), e);
                 }
-            }
+
             _logger.LogInformation($"Сущность \"{EntityName}\": процесс парсинга завершен.");
 
             return new ImportTable

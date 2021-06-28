@@ -12,10 +12,10 @@ using RMon.Data.Provider;
 using RMon.Data.Provider.Esb.Entities.ValuesExportImport;
 using RMon.ESB.Core.Common;
 using RMon.ESB.Core.ValuesExportTaskDto;
+using RMon.Globalization;
 using RMon.Globalization.String;
 using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Excel;
-using RMon.ValuesExportImportService.Exceptions;
 using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Globalization;
 using RMon.ValuesExportImportService.Processing.Common;
@@ -104,9 +104,9 @@ namespace RMon.ValuesExportImportService.Processing.Export
                 {
                     await context.LogAborted(TextExport.FinishAborted).ConfigureAwait(false);
                 }
-                catch (UserException ex)
+                catch (UserFormattedException ex)
                 {
-                    await context.LogFailed(TextExport.FinishFailed.With(ex.String), ex).ConfigureAwait(false);
+                    await context.LogFailed(TextExport.FinishFailed.With(ex.FormattedMessage), ex).ConfigureAwait(false);
                 }
                 catch (DataProviderException ex)
                 {

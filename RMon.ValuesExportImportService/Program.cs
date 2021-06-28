@@ -12,6 +12,7 @@ using RMon.Context.FrontEndContext;
 using RMon.Core.Base;
 using RMon.Data.Provider.Units.Backend.Interfaces;
 using RMon.Data.Provider.Units.Backend.Sql;
+using RMon.Data.Provider.Units.Frontend;
 using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Excel;
 using RMon.ValuesExportImportService.Files;
@@ -64,6 +65,7 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<ISimpleFactory<FrontEndContext>, FrontEndContextFactory>();
                     services.AddSingleton<IDataRepository, MsSqlDataRepository>();
                     services.AddSingleton<ILogicDevicesRepository, SqlLogicDevicesRepository>();
+                    services.AddSingleton<ITagsRepository, SqlTagsRepository>();
 
 
                     services.AddSingleton<IEntityReader, EntityReader>();

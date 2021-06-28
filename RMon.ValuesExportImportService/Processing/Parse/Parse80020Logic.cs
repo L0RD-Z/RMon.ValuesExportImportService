@@ -13,6 +13,7 @@ using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Extensions;
 using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Processing.Common;
+using RMon.ValuesExportImportService.Processing.Parse.Common;
 using RMon.ValuesExportImportService.Processing.Parse.Format80020;
 using RMon.ValuesExportImportService.Processing.Parse.Format80020.Entity;
 using RMon.ValuesExportImportService.Text;
@@ -43,9 +44,9 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <param name="context">Контекст выполнения</param>
         /// <param name="ct">Токен отмены опреации</param>
         /// <returns></returns>
-        public async Task<List<ValueInfo>> AnalyzeFormat80020Async(IList<LocalFile> files, Xml80020ParsingParameters taskParams, ParseProcessingContext context, CancellationToken ct)
+        public async Task<List<ValueInfo>> AnalyzeAsync(IList<LocalFile> files, Xml80020ParsingParameters taskParams, ParseProcessingContext context, CancellationToken ct)
         {
-            var messages = new List<(string fileName, Message)>();
+            var messages = new List<(string FileName, Message)>();
             foreach (var file in files)
             {
                 await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Xml80020.ToString())).ConfigureAwait(false);
@@ -57,7 +58,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             var result = new List<ValueInfo>();
             foreach (var message in messages)
             {
-                await context.LogInfo(TextParse.AnalyzeInfoFromFile.With(message.fileName)).ConfigureAwait(false);
+                await context.LogInfo(TextParse.AnalyzeInfoFromFile.With(message.FileName)).ConfigureAwait(false);
                 var date = DateTime.ParseExact(message.Item2.DateTime.Day, "yyyyMMdd", CultureInfo.InvariantCulture);
 
                 foreach (var area in message.Item2.Areas)
@@ -66,14 +67,14 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                     if (taskParams.MeasuringPoint != null)
                     {
                         await context.LogInfo(TextParse.AnalyzeMeasuringPoints).ConfigureAwait(false);
-                        var values = await AnalyzePointsAsync(area.Name, area.MeasuringPoints, taskParams.MeasuringPoint, date, context, message.fileName, ct).ConfigureAwait(false);
+                        var values = await AnalyzePointsAsync(area.Name, area.MeasuringPoints, taskParams.MeasuringPoint, date, context, message.FileName, ct).ConfigureAwait(false);
                         result.AddRange(values);
                     }
 
                     if (taskParams.DeliveryPoint != null)
                     {
                         await context.LogInfo(TextParse.AnalyzeDeliveryPoints).ConfigureAwait(false);
-                        var values = await AnalyzePointsAsync(area.Name, area.DeliveryPoints, taskParams.DeliveryPoint, date, context, message.fileName, ct).ConfigureAwait(false);
+                        var values = await AnalyzePointsAsync(area.Name, area.DeliveryPoints, taskParams.DeliveryPoint, date, context, message.FileName, ct).ConfigureAwait(false);
                         result.AddRange(values);
                     }
                 }
@@ -141,25 +142,25 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 var timeStampTypeValue = GetTimeStamp(startTime, endTime);
 
                 if (timeStampTypeTag == timeStampTypeValue)
-                    result.Add(ValueInfoCreate(tag.Id, date, endTime, value));
+                    result.Add(Factory.ValueInfoCreate(tag.Id, date, endTime, value));
                 else
                     if (timeStampTypeTag == TimeStampTypeEnum.HalfHour && timeStampTypeValue == TimeStampTypeEnum.Hour)
                 {
-                    result.Add(ValueInfoCreate(tag.Id, date, endTime.AddMinutes(-30), value / 2));
-                    result.Add(ValueInfoCreate(tag.Id, date, endTime, value / 2));
+                    result.Add(Factory.ValueInfoCreate(tag.Id, date, endTime.AddMinutes(-30), value / 2));
+                    result.Add(Factory.ValueInfoCreate(tag.Id, date, endTime, value / 2));
                 }
                 else
                         if (timeStampTypeTag == TimeStampTypeEnum.Hour && timeStampTypeValue == TimeStampTypeEnum.HalfHour)
                 {
                     if (endTime.Minute == 30)
-                        lastValue = ValueInfoCreate(tag.Id, date, endTime, value);
+                        lastValue = Factory.ValueInfoCreate(tag.Id, date, endTime, value);
                     else
                     {
                         if (lastValue == null)
                             processingContext.LogWarning(TextParse.MissingValueWarning.With(tag.Id, startTime, endTime));
                         else
                         {
-                            var currentValue = ValueInfoCreate(tag.Id, date, endTime, value + lastValue.Value.ValueFloat.Value);
+                            var currentValue = Factory.ValueInfoCreate(tag.Id, date, endTime, value + lastValue.Value.ValueFloat.Value);
                             if ((currentValue.TimeStamp - lastValue.TimeStamp).TotalMinutes == 60)
                             {
                                 result.Add(currentValue);
@@ -169,7 +170,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                             {
                                 lastValue = null;
                                 if (endTime.Minute == 30)
-                                    lastValue = ValueInfoCreate(tag.Id, date, endTime, value);
+                                    lastValue = Factory.ValueInfoCreate(tag.Id, date, endTime, value);
                                 else
                                     processingContext.LogWarning(TextParse.MissingValueWarning.With(tag.Id, startTime, endTime));
                             }
@@ -180,30 +181,6 @@ namespace RMon.ValuesExportImportService.Processing.Parse
 
             return result;
         }
-
-
-        /// <summary>
-        /// Создаёт и возвращает значение <see cref="ValueInfo"/>
-        /// </summary>
-        /// <param name="tagId">Id тега оборудования</param>
-        /// <param name="date">Дата</param>
-        /// <param name="timeStamp">Таймстамп значения</param>
-        /// <param name="value">Значение</param>
-        /// <returns></returns>
-        private ValueInfo ValueInfoCreate(long tagId, DateTime date, DateTime timeStamp, double value) =>
-            new()
-            {
-                IdTag = tagId,
-                TimeStamp = timeStamp.TimeOfDay == TimeSpan.Zero
-                    ? date.AddDays(1).Add(timeStamp.TimeOfDay)
-                    : date.Add(timeStamp.TimeOfDay),
-                Value = new ValueUnion
-                {
-                    ValueFloat = value,
-                    IdQuality = "Normal"
-                },
-            };
-
 
         /// <summary>
         /// Возвращает код тега оборудования из параметров задания <see cref="parameters"/> по коду канала <see cref="channelCode"/>

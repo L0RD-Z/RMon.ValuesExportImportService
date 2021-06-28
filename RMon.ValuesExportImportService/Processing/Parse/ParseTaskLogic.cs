@@ -12,10 +12,10 @@ using RMon.Data.Provider.Esb.Entities.ValuesExportImport;
 using RMon.Data.Provider.Values;
 using RMon.ESB.Core.Common;
 using RMon.ESB.Core.ValuesParseTaskDto;
+using RMon.Globalization;
 using RMon.Globalization.String;
 using RMon.Values.ExportImport.Core;
 using RMon.ValuesExportImportService.Data;
-using RMon.ValuesExportImportService.Exceptions;
 using RMon.ValuesExportImportService.Extensions;
 using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Globalization;
@@ -92,7 +92,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                     switch (task.Parameters.FileFormatType)
                     {
                         case ValuesParseFileFormatType.Xml80020:
-                            values = await _parse80020Logic.AnalyzeFormat80020Async(files, task.Parameters.Xml80020Parameters, context, ct).ConfigureAwait(false);
+                            values = await _parse80020Logic.AnalyzeAsync(files, task.Parameters.Xml80020Parameters, context, ct).ConfigureAwait(false);
                             break;
                         case ValuesParseFileFormatType.Matrix24X31:
                             break;
@@ -101,7 +101,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                         case ValuesParseFileFormatType.Table:
                             break;
                         case ValuesParseFileFormatType.Flexible:
-                            values = await _parseFlexibleLogic.AnalyzeFlexibleAsync(files, task.Parameters.TableParameters, context, ct).ConfigureAwait(false);
+                            values = await _parseFlexibleLogic.AnalyzeAsync(files, context, ct).ConfigureAwait(false);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -120,9 +120,9 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 {
                     await context.LogAborted(TextParse.FinishAborted).ConfigureAwait(false);
                 }
-                catch (UserException ex)
+                catch (UserFormattedException ex)
                 {
-                    await context.LogFailed(TextExport.FinishFailed.With(ex.String), ex).ConfigureAwait(false);
+                    await context.LogFailed(TextExport.FinishFailed.With(ex.FormattedMessage), ex).ConfigureAwait(false);
                 }
                 catch (DataProviderException ex)
                 {

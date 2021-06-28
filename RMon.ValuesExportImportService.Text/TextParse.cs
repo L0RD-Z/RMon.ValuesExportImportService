@@ -50,5 +50,21 @@ namespace RMon.ValuesExportImportService.Text
 
         public static I18nString<string, string> MissingTimestampTypeError = new(nameof(MissingTimestampTypeError),
             "Тег \"{tagCode}\" имеет неподдерживаемый тип таймстампа. Импорт значений в формате 80020 возможен только для тегов с таймстампами {supportedTimestampTypes}", "tagCode", "supportedTimestampTypes");
+
+
+        public static I18nString<string, int> RowParseError = new(nameof(RowParseError),
+            "Файл \"{fileName}\", строка \"{rowNumber}\": произошло исключение.", "fileName", "rowNumber");
+        public static I18nString<string> MissingSectionError = new(nameof(MissingSectionError),
+            "Отсутствует секция \"{sectionName}\"", "sectionName");
+        public static I18nString<string, string> MissingSectionsError = new(nameof(MissingSectionsError),
+            "Отсутствуют секции \"{logicDeviceSection}\" и \"{tagSection}\"", "logicDeviceSection", "tagSection");
+        public static I18nString<string> MissingPropertyError = new(nameof(MissingSectionsError),
+            "Отсутствует свойство \"{propertyName}\"", "propertyName");
+        public static I18nString<string> FailedConvertToDateTime = new(nameof(FailedConvertToDateTime),
+            "Не удалось преобразовать значение {value} в дату и время.", "value");
+        public static I18nString<string> FailedConvertToDouble = new(nameof(FailedConvertToDateTime),
+            "Не удалось преобразовать значение {value} в число с плавающей точкой.", "value");
+        public static I18nString<string> FailedConvertToLong= new(nameof(FailedConvertToLong),
+            "Не удалось преобразовать значение {value} в целое число.", "value");
     }
 }

@@ -9,7 +9,9 @@ using RMon.Core.Files;
 using RMon.Data.Provider.Esb.Backend;
 using RMon.Data.Provider.Esb.Entities;
 using RMon.ESB.Core.Common;
+using RMon.Globalization;
 using RMon.Globalization.String;
+using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.ServiceBus.Common;
 using LogLevel = RMon.ESB.Core.Common.LogLevel;
@@ -164,5 +166,8 @@ namespace RMon.ValuesExportImportService.Processing.Common
                 str = $"{str}{Environment.NewLine}{ex.StackTrace}{Environment.NewLine}";
             return ex.InnerException == null ? $"{str}{Environment.NewLine}" : str + ConcatAllExceptionMessage(ex.InnerException, withStackTrace);
         }
+
+        //Todo переделать логирование так, чтобы из вложенных исключений вытаскивался I18nString с помощью этого метода, как в DCom
+        private I18nString ConcatExceptionMessage(Exception ex) => ex.ConcatExceptionMessage();
     }
 }
