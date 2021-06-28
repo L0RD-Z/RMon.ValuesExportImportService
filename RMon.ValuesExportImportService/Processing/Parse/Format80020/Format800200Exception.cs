@@ -1,10 +1,11 @@
 ﻿using System;
+using RMon.Globalization;
 using RMon.Globalization.String;
-using RMon.ValuesExportImportService.Exceptions;
+
 
 namespace RMon.ValuesExportImportService.Processing.Parse.Format80020
 {
-    public class Format800200Exception : UserException
+    public class Format800200Exception : UserFormattedException
     {
         public Format800200Exception(I18nString message) : base(message)
         {

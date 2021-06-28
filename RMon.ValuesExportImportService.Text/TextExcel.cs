@@ -25,6 +25,9 @@ namespace RMon.ValuesExportImportService.Text
         public static I18nString<I18nString, int> ParseUnexpectedError = new (nameof(ParseUnexpectedError), "Лист \"{EntityName}\": не удалось распарсить строку №{rowIndex}.",
             "EntityName", "rowIndex");
 
+        public static I18nString<string> SheetParseUnexpectedError = new(nameof(SheetParseUnexpectedError), "Лист \"{sheetName}\": не удалось распарсить.",
+            "sheetName");
+
         public static I18nString<string> ParseHierarchyNameError = new (nameof(ParseHierarchyNameError), "Не удалось получить название иерархии из строки \"{string}\"",
             "string");
         

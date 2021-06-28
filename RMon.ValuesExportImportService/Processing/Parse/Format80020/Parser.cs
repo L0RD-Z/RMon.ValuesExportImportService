@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Threading;
 using System.Xml.Serialization;
 using RMon.Globalization.String;
 using RMon.ValuesExportImportService.Processing.Parse.Format80020.Entity;

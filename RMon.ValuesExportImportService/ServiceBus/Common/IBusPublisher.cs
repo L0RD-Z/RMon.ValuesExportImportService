@@ -5,7 +5,7 @@ using RMon.ESB.Core.Common;
 
 namespace RMon.ValuesExportImportService.ServiceBus.Common
 {
-    interface IBusPublisher
+    public interface IBusPublisher
     {
         /// <summary>
         /// Отправляет уведомление на шину RabbitMQ о том, что начато выполнение задачи <see cref="receivedTask"/>

@@ -8,7 +8,7 @@ using RMon.ValuesExportImportService.Processing.Common;
 
 namespace RMon.ValuesExportImportService.Processing
 {
-    class ProcessingContext<T> : IProcessingContext 
+    public class ProcessingContext<T> : IProcessingContext 
         where T : DbTask
     {
         protected readonly BaseTaskLogger<T> TaskLogger;

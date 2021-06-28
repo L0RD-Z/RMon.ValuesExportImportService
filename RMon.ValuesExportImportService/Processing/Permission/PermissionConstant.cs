@@ -1,6 +1,4 @@
-﻿using RMon.Commissioning.Core;
-
-namespace RMon.ValuesExportImportService.Processing.Permission
+﻿namespace RMon.ValuesExportImportService.Processing.Permission
 {
     class PermissionConstant
     {

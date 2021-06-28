@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -12,6 +13,7 @@ using RMon.Globalization.String;
 using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Excel.Common;
 using RMon.ValuesExportImportService.Extensions;
+using RMon.ValuesExportImportService.Processing.Parse;
 using RMon.ValuesExportImportService.Text;
 
 namespace RMon.ValuesExportImportService.Excel
@@ -42,7 +44,7 @@ namespace RMon.ValuesExportImportService.Excel
         }
 
         /// <inheritdoc/>
-        public byte[] WriteWorksheet(ExportTable exportTable, IGlobalizationProvider globalizationProvider)
+        public byte[] WriteFile(ExportTable exportTable, IGlobalizationProvider globalizationProvider)
         {
             try
             {
@@ -107,7 +109,6 @@ namespace RMon.ValuesExportImportService.Excel
 
                 _logger.LogInformation($"Лист \"{EntityName}\": заполнение таблицы.");
                 foreach (var entity in exportTable.EntityTable.Entities)
-                {
                     try
                     {
                         colIndex = colStart;
@@ -126,7 +127,6 @@ namespace RMon.ValuesExportImportService.Excel
                     {
                         throw new ExcelException(TextExcel.RowUnexpectedError.With(rowIndex), e);
                     }
-                }
 
                 rowEnd = rowIndex - 1;
 
@@ -159,13 +159,29 @@ namespace RMon.ValuesExportImportService.Excel
         /// </summary>
         /// <param name="fileBody">Файл excel</param>
         /// <returns></returns>
-        public ImportTable ReadWorksheet(byte[] fileBody)
+        public async Task<List<ReadedSheet>> ReadFile(byte[] fileBody, ParseProcessingContext context)
         {
             _logger.LogInformation("Разбор книги Excel начат.");
-            using var stream = new MemoryStream(fileBody);
+            await using var stream = new MemoryStream(fileBody);
             using var excelPackage = new ExcelPackage(stream);
-            var excelSheet = excelPackage.Workbook.Worksheets.First();  //TODO парсить только первый или все листы?
 
+            var result = new List<ReadedSheet>();
+            foreach (var excelSheet in excelPackage.Workbook.Worksheets)
+                try
+                {
+                    var table = ReadWorksheet(excelSheet);
+                    result.Add(new ReadedSheet(excelSheet.Name, table));
+                }
+                catch (Exception e)
+                {
+                    await context.LogWarning(e.ConcatExceptionMessage(TextExcel.SheetParseUnexpectedError.With(excelSheet.Name))).ConfigureAwait(false);
+                }
+
+            return result;
+        }
+
+        private ImportTable ReadWorksheet(ExcelWorksheet excelSheet)
+        {
             const int rowStart = 3; //Первая строка
             const int colStart = 1;
             var rowIndex = rowStart;
@@ -218,7 +234,6 @@ namespace RMon.ValuesExportImportService.Excel
 
             var entities = new List<ImportEntity>();
             while (rowIndex <= rowEnd)
-            {
                 try
                 {
                     var selectorPropertyMap = new Dictionary<int, PropertyValue>();
@@ -250,7 +265,7 @@ namespace RMon.ValuesExportImportService.Excel
                 {
                     throw new ExcelException(TextExcel.ParseUnexpectedError.With(EntityName, rowIndex), e);
                 }
-            }
+
             _logger.LogInformation($"Сущность \"{EntityName}\": процесс парсинга завершен.");
 
             return new ImportTable

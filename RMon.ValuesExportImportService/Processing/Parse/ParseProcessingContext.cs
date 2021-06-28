@@ -8,7 +8,7 @@ using RMon.ValuesExportImportService.Processing.Common;
 
 namespace RMon.ValuesExportImportService.Processing.Parse
 {
-    class ParseProcessingContext : ProcessingContext<DbValuesExportImportTask>
+    public class ParseProcessingContext : ProcessingContext<DbValuesExportImportTask>
     {
         public ParseProcessingContext(ITask task, DbValuesExportImportTask dbTask, BaseTaskLogger<DbValuesExportImportTask> taskLogger, long idUser) 
             : base(task, dbTask, taskLogger, idUser)

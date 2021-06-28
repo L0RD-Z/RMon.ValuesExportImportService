@@ -64,6 +64,7 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<ISimpleFactory<FrontEndContext>, FrontEndContextFactory>();
                     services.AddSingleton<IDataRepository, MsSqlDataRepository>();
                     services.AddSingleton<ILogicDevicesRepository, SqlLogicDevicesRepository>();
+                    services.AddSingleton<ITagsRepository, SqlTagsRepository>();
 
 
                     services.AddSingleton<IEntityReader, EntityReader>();

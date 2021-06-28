@@ -1,10 +1,11 @@
 ﻿using System;
+using RMon.Globalization;
 using RMon.Globalization.String;
-using RMon.ValuesExportImportService.Exceptions;
+
 
 namespace RMon.ValuesExportImportService.Processing.Common
 {
-    class TaskException : UserException
+    class TaskException : UserFormattedException
     {
         public TaskException(I18nString message) : base(message)
         {

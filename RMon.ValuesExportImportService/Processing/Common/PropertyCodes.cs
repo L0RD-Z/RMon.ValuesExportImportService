@@ -1,4 +1,4 @@
-﻿namespace RMon.ValuesExportImportService.Processing.Export
+﻿namespace RMon.ValuesExportImportService.Processing.Common
 {
     class PropertyCodes
     {

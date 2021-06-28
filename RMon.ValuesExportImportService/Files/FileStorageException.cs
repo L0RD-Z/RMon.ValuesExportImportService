@@ -1,10 +1,11 @@
 ﻿using System;
+using RMon.Globalization;
 using RMon.Globalization.String;
-using RMon.ValuesExportImportService.Exceptions;
+
 
 namespace RMon.ValuesExportImportService.Files
 {
-    public class FileStorageException : UserException
+    public class FileStorageException : UserFormattedException
     {
         public FileStorageException(I18nString message)
             : base(message)
