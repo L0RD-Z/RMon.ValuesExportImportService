@@ -12,6 +12,7 @@ using RMon.Context.FrontEndContext;
 using RMon.Core.Base;
 using RMon.Data.Provider.Units.Backend.Interfaces;
 using RMon.Data.Provider.Units.Backend.Sql;
+using RMon.Data.Provider.Units.Frontend;
 using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Excel;
 using RMon.ValuesExportImportService.Files;
