@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using RMon.Data.Provider.Units.Backend.Common;
 using RMon.Globalization;
 using RMon.Globalization.String;
 using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Excel.Common;
 using RMon.ValuesExportImportService.Extensions;
-using RMon.ValuesExportImportService.Processing;
+using RMon.ValuesExportImportService.Processing.Parse;
 using RMon.ValuesExportImportService.Text;
 
 namespace RMon.ValuesExportImportService.Excel
 {
-    class ExcelWorker : IExcelWorker
+    public class ExcelWorker : IExcelWorker
     {
         private readonly ILogger _logger;
 
@@ -29,15 +30,21 @@ namespace RMon.ValuesExportImportService.Excel
         /// </summary>
         protected I18nString EntityName { get; }
 
+        /// <summary>
+        /// Код сущности
+        /// </summary>
+        protected string EntityCode { get; }
+
         public ExcelWorker(ILogger<ExcelWorker> logger)
         {
             _logger = logger;
             EntityName = TextExcel.Values;
+            EntityCode = TextExcel.Values.ToString();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         }
 
         /// <inheritdoc/>
-        public byte[] WriteWorksheet(ExportTable exportTable, IGlobalizationProvider globalizationProvider)
+        public byte[] WriteFile(ExportTable exportTable, IGlobalizationProvider globalizationProvider)
         {
             try
             {
@@ -102,7 +109,6 @@ namespace RMon.ValuesExportImportService.Excel
 
                 _logger.LogInformation($"Лист \"{EntityName}\": заполнение таблицы.");
                 foreach (var entity in exportTable.EntityTable.Entities)
-                {
                     try
                     {
                         colIndex = colStart;
@@ -121,7 +127,6 @@ namespace RMon.ValuesExportImportService.Excel
                     {
                         throw new ExcelException(TextExcel.RowUnexpectedError.With(rowIndex), e);
                     }
-                }
 
                 rowEnd = rowIndex - 1;
 
@@ -147,6 +152,128 @@ namespace RMon.ValuesExportImportService.Excel
             {
                 throw new ExcelException(TextExcel.SheetUnexpectedError.With(EntityName), e);
             }
+        }
+
+        /// <summary>
+        /// Выполняет парсинг файла Excel-файла <see cref="fileBody"/>
+        /// </summary>
+        /// <param name="fileBody">Файл excel</param>
+        /// <returns></returns>
+        public async Task<List<ReadedSheet>> ReadFile(byte[] fileBody, ParseProcessingContext context)
+        {
+            _logger.LogInformation("Разбор книги Excel начат.");
+            await using var stream = new MemoryStream(fileBody);
+            using var excelPackage = new ExcelPackage(stream);
+
+            var result = new List<ReadedSheet>();
+            foreach (var excelSheet in excelPackage.Workbook.Worksheets)
+                try
+                {
+                    var table = ReadWorksheet(excelSheet);
+                    result.Add(new ReadedSheet(excelSheet.Name, table));
+                }
+                catch (Exception e)
+                {
+                    await context.LogWarning(e.ConcatExceptionMessage(TextExcel.SheetParseUnexpectedError.With(excelSheet.Name))).ConfigureAwait(false);
+                }
+
+            return result;
+        }
+
+        private ImportTable ReadWorksheet(ExcelWorksheet excelSheet)
+        {
+            const int rowStart = 3; //Первая строка
+            const int colStart = 1;
+            var rowIndex = rowStart;
+            var colIndex = colStart;
+            var colEnd = excelSheet.Dimension.End.Column;
+            var rowEnd = excelSheet.Dimension.End.Row;
+
+            _logger.LogInformation($"Сущность \"{EntityName}\": начат процесс парсинга.");
+            if (excelSheet == null)
+                throw new ArgumentNullException(nameof(excelSheet));
+
+            _logger.LogInformation($"Сущность \"{EntityName}\": парсинг заголовков.");
+
+            var selectorDescription = new EntityDescription(EntityCode);
+            var entityDescription = new EntityDescription(EntityCode);
+
+            var selectorDescriptionMap = new Dictionary<PropertyDescription, int>();
+            var entityDescriptionMap = new Dictionary<PropertyDescription, int>();
+
+            while (colIndex <= colEnd)
+            {
+                var code = excelSheet.Cells[rowIndex, colIndex].Value?.ToString() ?? "";
+                var isIdentity = false;
+
+                if (!string.IsNullOrEmpty(code))
+                {
+                    if (code.StartsWith(Selector))
+                    {
+                        code = code.Substring(1);
+                        isIdentity = true;
+                    }
+
+                    if (isIdentity)
+                    {
+                        var propertyDescription = selectorDescription.ParsePropertyDescription(code);
+                        selectorDescriptionMap.Add(propertyDescription, colIndex);
+                    }
+                    else
+                    {
+                        var propertyDescription = entityDescription.ParsePropertyDescription(code);
+                        entityDescriptionMap.Add(propertyDescription, colIndex);
+                    }
+                }
+
+                colIndex++;
+            }
+            rowIndex += 3;
+
+            _logger.LogInformation($"Сущность \"{EntityName}\": парсинг тела таблицы.");
+
+            var entities = new List<ImportEntity>();
+            while (rowIndex <= rowEnd)
+                try
+                {
+                    var selectorPropertyMap = new Dictionary<int, PropertyValue>();
+                    var entityPropertyMap = new Dictionary<int, PropertyValue>();
+
+                    var entitySelector = selectorDescription.CreateEntity(selectorDescriptionMap, selectorPropertyMap);
+                    var entity = entityDescription.CreateEntity(entityDescriptionMap, entityPropertyMap);
+
+                    colIndex = colStart;
+                    while (colIndex <= colEnd)
+                    {
+                        var value = excelSheet.Cells[rowIndex, colIndex].Value?.ToString() ?? "";
+                        if (selectorPropertyMap.ContainsKey(colIndex))
+                            selectorPropertyMap[colIndex].Value = value;
+                        if (entityPropertyMap.ContainsKey(colIndex))
+                            entityPropertyMap[colIndex].Value = value;
+
+                        colIndex++;
+                    }
+                    entities.Add(new ImportEntity
+                    {
+                        Selector = entitySelector,
+                        Entity = entity
+                    });
+
+                    rowIndex++;
+                }
+                catch (Exception e)
+                {
+                    throw new ExcelException(TextExcel.ParseUnexpectedError.With(EntityName, rowIndex), e);
+                }
+
+            _logger.LogInformation($"Сущность \"{EntityName}\": процесс парсинга завершен.");
+
+            return new ImportTable
+            {
+                SelectorDescription = selectorDescription,
+                EntityDescription = entityDescription,
+                Entities = entities
+            };
         }
 
         /// <summary>

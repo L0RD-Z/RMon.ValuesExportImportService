@@ -5,11 +5,13 @@ using EsbPublisher.ServiceBus.Entity;
 using MassTransit;
 using RMon.ESB.Core.ValuesExportTaskDto;
 using RMon.ESB.Core.ValuesImportTaskDto;
+using RMon.ESB.Core.ValuesParseTaskDto;
 using RMon.Values.ExportImport.Core;
+using RMon.Values.ExportImport.Core.FileFormatParameters;
 
 namespace EsbPublisher.ServiceBus
 {
-    class BusPublisher
+    public class BusPublisher
     {
         private readonly IBusControl _bus;
 
@@ -30,6 +32,25 @@ namespace EsbPublisher.ServiceBus
         {
             var sendTask = new ValuesExportTaskAbort(correlationId);
             return _bus.Publish((IValuesExportTaskAbort)sendTask);
+        }
+
+        public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, Xml80020ParsingParameters taskParams, long idUser)
+        {
+            var sendTask = new ValuesParseTask(correlationId, filePath, fileType, taskParams, idUser);
+            return _bus.Publish((IValuesParseTask)sendTask);
+        }
+
+        public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, long idUser)
+        {
+            var sendTask = new ValuesParseTask(correlationId, filePath, fileType, idUser);
+            return _bus.Publish((IValuesParseTask)sendTask);
+        }
+
+
+        public Task SendParseTaskAbortAsync(Guid correlationId)
+        {
+            var sendTask = new ValuesParseTaskAbort(correlationId);
+            return _bus.Publish((IValuesParseTaskAbort)sendTask);
         }
 
 

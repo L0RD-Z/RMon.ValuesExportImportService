@@ -1,20 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace EsbPublisher
 {
@@ -44,9 +35,10 @@ namespace EsbPublisher
             Logic = new MainLogic();
             Task.Run(async () =>
             {
-                await Logic.LoadDataAsync().ConfigureAwait(false);
+                await Logic.ExportLogic.LoadDataAsync().ConfigureAwait(false);
             });
         }
+
 
 
 
@@ -62,7 +54,7 @@ namespace EsbPublisher
         [SuppressMessage("ReSharper", "AsyncConverter.AsyncAwaitMayBeElidedHighlighting")]
         private async void Export_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            await Logic.SendExportTaskAsync().ConfigureAwait(true);
+            await Logic.ExportLogic.SendTaskAsync().ConfigureAwait(true);
         }
 
         #endregion
@@ -77,10 +69,111 @@ namespace EsbPublisher
         [SuppressMessage("ReSharper", "AsyncConverter.AsyncAwaitMayBeElidedHighlighting")]
         private async void CancelExport_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            await Logic.SendExportTaskAbortAsync().ConfigureAwait(true);
+            await Logic.ExportLogic.SendTaskAbortAsync().ConfigureAwait(true);
         }
 
         #endregion
+
+
+        #region Парсинг
+
+        #region Точки измерения
+
+        #region Добавить канал
+
+        private void MeasuringAddPoint_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void MeasuringAddPoint_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            Logic.ParseLogic.MeasuringPoint.AddChannel();
+        }
+
+        #endregion
+
+
+        #region Удалить канал
+
+        private void MeasuringRemovePoint_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = Logic?.ParseLogic?.MeasuringPoint?.SelectedChannel != null;
+        }
+
+        private void MeasuringRemovePoint_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            Logic.ParseLogic.MeasuringPoint.RemoveChannel();
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Точки поставки
+
+        #region Добавить канал
+
+        private void DeliveryAddPoint_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void DeliveryAddPoint_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            Logic.ParseLogic.DeliveryPoint.AddChannel();
+        }
+
+        #endregion
+
+
+        #region Удалить канал
+
+        private void DeliveryRemovePoint_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = Logic?.ParseLogic?.DeliveryPoint?.SelectedChannel != null;
+        }
+
+        private void DeliveryRemovePoint_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            Logic.ParseLogic.DeliveryPoint.RemoveChannel();
+        }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        #region Парсинг
+
+        private void Parse_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private async void Parse_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            await Logic.ParseLogic.SendTaskAsync().ConfigureAwait(true);
+        }
+
+        #endregion
+
+        #region Отмена парсинга
+
+        private void CancelParse_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private async void CancelParse_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            await Logic.ParseLogic.SendTaskAbortAsync().ConfigureAwait(true);
+        }
+
+        #endregion
+
+
 
 
         #region Импорт
@@ -125,5 +218,7 @@ namespace EsbPublisher
         }
 
         #endregion
+
+        
     }
 }

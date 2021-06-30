@@ -11,12 +11,12 @@ namespace RMon.ValuesExportImportService.Processing.Export
     class ExportProcessingContext : ProcessingContext<DbValuesExportImportTask>
     {
 
-        public ExportProcessingContext(ITask task, DbValuesExportImportTask dbTask, BaseTaskLogger<DbValuesExportImportTask> taskLogger, long idUser)
+        public ExportProcessingContext(ITask task, DbValuesExportImportTask dbTask, IBaseTaskLogger<DbValuesExportImportTask> taskLogger, long idUser)
             : base(task, dbTask, taskLogger, idUser)
         {
         }
 
-        public Task LogFinished(I18nString msg, IList<FileInStorage> resultFiles) => ((ExportTaskLogger)TaskLogger).LogFinishedAsync(Task, DbTask, msg, resultFiles);
+        public Task LogFinished(I18nString msg, IList<FileInStorage> resultFiles) => ((IExportTaskLogger)TaskLogger).LogFinishedAsync(Task, DbTask, msg, resultFiles);
 
     }
 }

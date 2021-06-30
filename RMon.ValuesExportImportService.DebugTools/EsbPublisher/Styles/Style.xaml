@@ -30,6 +30,10 @@
         <Setter Property="MinWidth" Value="75"/>
     </Style>
 
+    <Style x:Key="SmallButtonStyle" BasedOn="{StaticResource BaseStyle}" TargetType="Button">
+        <Setter Property="MinWidth" Value="25"/>
+    </Style>
+
     <Style x:Key="CheckBoxStyle" BasedOn="{StaticResource BaseStyle}" TargetType="CheckBox"/>
 
     <Style x:Key="ComboBoxStyle" BasedOn="{StaticResource BaseStyle}" TargetType="ComboBox"/>
@@ -37,4 +41,16 @@
     <Style x:Key="GroupBoxStyle" BasedOn="{StaticResource BaseStyle}" TargetType="GroupBox"/>
 
     <Style x:Key="ListBoxStyle" BasedOn="{StaticResource BaseStyle}" TargetType="ListBox"/>
+
+    <Style x:Key="DataGridStyle" BasedOn="{StaticResource BaseStyle}" TargetType="DataGrid">
+        <Style.Setters>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="RowHeaderWidth" Value="0"/>
+            <Setter Property="MinHeight" Value="100"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="CanUserReorderColumns" Value="False"/>
+            <Setter Property="CanUserResizeRows" Value="False"/>
+        </Style.Setters>
+    </Style>
 </ResourceDictionary>

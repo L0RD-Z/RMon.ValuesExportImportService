@@ -8,7 +8,7 @@ namespace RMon.ValuesExportImportService.Processing.Import
 {
     class ImportProcessingContext : ProcessingContext<DbValuesExportImportTask>
     {
-        public ImportProcessingContext(ITask task, DbValuesExportImportTask dbTask, BaseTaskLogger<DbValuesExportImportTask> taskLogger, long idUser)
+        public ImportProcessingContext(ITask task, DbValuesExportImportTask dbTask, IBaseTaskLogger<DbValuesExportImportTask> taskLogger, long idUser)
             : base(task, dbTask, taskLogger, idUser)
         {
         }

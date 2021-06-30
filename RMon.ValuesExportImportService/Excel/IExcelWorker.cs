@@ -1,5 +1,9 @@
-﻿using RMon.Globalization;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using RMon.Globalization;
 using RMon.ValuesExportImportService.Common;
+using RMon.ValuesExportImportService.Excel.Common;
+using RMon.ValuesExportImportService.Processing.Parse;
 
 namespace RMon.ValuesExportImportService.Excel
 {
@@ -10,6 +14,14 @@ namespace RMon.ValuesExportImportService.Excel
         /// </summary>
         /// <param name="exportTable">Список оборудования</param>
         /// <param name="globalizationProvider"></param>
-        byte[] WriteWorksheet(ExportTable exportTable, IGlobalizationProvider globalizationProvider);
+        byte[] WriteFile(ExportTable exportTable, IGlobalizationProvider globalizationProvider);
+
+        /// <summary>
+        /// Выполняет парсинг файла Excel-файла <see cref="fileBody"/>
+        /// </summary>
+        /// <param name="fileBody">Файл excel</param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Task<List<ReadedSheet>> ReadFile(byte[] fileBody, ParseProcessingContext context);
     }
 }

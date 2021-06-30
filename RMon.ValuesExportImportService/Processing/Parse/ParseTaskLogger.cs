@@ -11,12 +11,11 @@ using RMon.Globalization.String;
 using RMon.Values.ExportImport.Core;
 using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Processing.Common;
-using RMon.ValuesExportImportService.ServiceBus.Import;
 using RMon.ValuesExportImportService.ServiceBus.Parse;
 
 namespace RMon.ValuesExportImportService.Processing.Parse
 {
-    class ParseTaskLogger : BaseTaskLogger<DbValuesExportImportTask>
+    class ParseTaskLogger : BaseTaskLogger<DbValuesExportImportTask>, IParseTaskLogger
     {
         /// <summary>
         /// Конструктор 1
@@ -26,20 +25,14 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <param name="dataRepository">Репозиторий данных</param>
         /// <param name="fileLogger">Логгер для записи логов в файл</param>
         /// <param name="esbLogger">Логгер для передачи логов по ESB</param>
-        public ParseTaskLogger(IOptionsMonitor<Service> serviceOptions, IRepositoryFactoryConfigurator repositoryFactoryConfigurator, IDataRepository dataRepository, ILogger<ParseTaskLogger> fileLogger, IImportBusPublisher esbLogger)
+        public ParseTaskLogger(IOptionsMonitor<Service> serviceOptions, IRepositoryFactoryConfigurator repositoryFactoryConfigurator, IDataRepository dataRepository, ILogger<ParseTaskLogger> fileLogger, IParseBusPublisher esbLogger)
             : base(serviceOptions, repositoryFactoryConfigurator, dataRepository, fileLogger, esbLogger)
         {
         }
 
-        /// <summary>
-        /// Выполняет логирование сообщения <see cref="msg"/> о успешном завершении выполнения задачи в лог-файл, в БД и в RabbitMQ
-        /// </summary>
-        /// <param name="receivedTask"></param>
-        /// <param name="dbTask"></param>
-        /// <param name="msg">Текстовое сообщение</param>
-        /// <param name="values">Список считанных значений</param>
-        /// <returns></returns>
-        public virtual async Task LogFinishedAsync(ITask receivedTask, DbValuesExportImportTask dbTask, I18nString msg, IList<ValueInfo> values)
+        
+        /// <inheritdoc/>
+        public async Task LogFinishedAsync(ITask receivedTask, DbValuesExportImportTask dbTask, I18nString msg, IList<ValueInfo> values)
         {
             dbTask.ParseResults = new ValuesParseTaskResults
             {

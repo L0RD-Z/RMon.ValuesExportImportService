@@ -12,10 +12,10 @@ using RMon.Data.Provider;
 using RMon.Data.Provider.Esb.Entities.ValuesExportImport;
 using RMon.ESB.Core.Common;
 using RMon.ESB.Core.ValuesExportTaskDto;
+using RMon.Globalization;
 using RMon.Globalization.String;
 using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Excel;
-using RMon.ValuesExportImportService.Exceptions;
 using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Globalization;
 using RMon.ValuesExportImportService.Processing.Common;
@@ -29,8 +29,9 @@ namespace RMon.ValuesExportImportService.Processing.Export
 {
     class ExportTaskLogic : BaseTaskLogic, IExportTaskLogic
     {
-        private readonly ExportTaskLogger _taskLogger;
+        private readonly IExportTaskLogger _taskLogger;
         private readonly IEntityReader _entityReader;
+        private readonly IExcelWorker _excelWorker;
 
 
         /// <summary>
@@ -52,17 +53,18 @@ namespace RMon.ValuesExportImportService.Processing.Export
             IOptionsMonitor<Service> serviceOptions,
             IRepositoryFactoryConfigurator taskFactoryRepositoryConfigurator,
             IDataRepository dataRepository, 
-            ExportTaskLogger taskLogger,
+            IExportTaskLogger taskLogger,
             IPermissionLogic permissionLogic,
             IFileStorage fileStorage,
             IExcelWorker excelWorker,
             IEntityReader entityReader,
             IGlobalizationProviderFactory globalizationProviderFactory,
             ILanguageRepository languageRepository)
-            : base(logger, serviceOptions, taskFactoryRepositoryConfigurator, dataRepository, permissionLogic, fileStorage, excelWorker, globalizationProviderFactory, languageRepository)
+            : base(logger, serviceOptions, taskFactoryRepositoryConfigurator, dataRepository, permissionLogic, fileStorage, globalizationProviderFactory, languageRepository)
         {
             _taskLogger = taskLogger;
             _entityReader = entityReader;
+            _excelWorker = excelWorker;
         }
 
         
@@ -85,7 +87,7 @@ namespace RMon.ValuesExportImportService.Processing.Export
                     var exportTable = await _entityReader.Read(task.Parameters, task.IdUser.Value, ct).ConfigureAwait(false);
 
                     await context.LogInfo(TextExport.BuildingExcel, 60).ConfigureAwait(false);
-                    var fileBody = ExcelWorker.WriteWorksheet(exportTable, context.GlobalizationProvider);
+                    var fileBody = _excelWorker.WriteFile(exportTable, context.GlobalizationProvider);
                     
                     await context.LogInfo(TextExport.StoringFile, 90).ConfigureAwait(false);
                     var currentDate = await DataRepository.GetDateAsync().ConfigureAwait(false);
@@ -102,9 +104,9 @@ namespace RMon.ValuesExportImportService.Processing.Export
                 {
                     await context.LogAborted(TextExport.FinishAborted).ConfigureAwait(false);
                 }
-                catch (UserException ex)
+                catch (UserFormattedException ex)
                 {
-                    await context.LogFailed(TextExport.FinishFailed.With(ex.String), ex).ConfigureAwait(false);
+                    await context.LogFailed(TextExport.FinishFailed.With(ex.FormattedMessage), ex).ConfigureAwait(false);
                 }
                 catch (DataProviderException ex)
                 {

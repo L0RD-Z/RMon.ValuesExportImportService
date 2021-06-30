@@ -6,7 +6,6 @@ using RMon.Configuration.Options;
 using RMon.Core.CommonTask;
 using RMon.Core.Files;
 using RMon.Data.Provider.Esb.Entities;
-using RMon.Data.Provider.Esb.Entities.Commissioning;
 using RMon.Data.Provider.Esb.Entities.ValuesExportImport;
 using RMon.ESB.Core.Common;
 using RMon.Globalization.String;
@@ -17,7 +16,7 @@ using RMon.ValuesExportImportService.ServiceBus.Export;
 
 namespace RMon.ValuesExportImportService.Processing.Export
 {
-    class ExportTaskLogger : BaseTaskLogger<DbValuesExportImportTask>
+    class ExportTaskLogger : BaseTaskLogger<DbValuesExportImportTask>, IExportTaskLogger
     {
         /// <summary>
         /// Конструктор 1
@@ -32,14 +31,7 @@ namespace RMon.ValuesExportImportService.Processing.Export
         {
         }
 
-        /// <summary>
-        /// Выполняет логирование сообщения <see cref="msg"/> о успешном завершении выполнения задачи в лог-файл, в БД и в RabbitMQ
-        /// </summary>
-        /// <param name="receivedTask"></param>
-        /// <param name="dbTask"></param>
-        /// <param name="msg">Текстовое сообщение</param>
-        /// <param name="files">список файлов</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public virtual async Task LogFinishedAsync(ITask receivedTask, DbValuesExportImportTask dbTask, I18nString msg, IList<FileInStorage> files)
         {
             dbTask.ExportResults = new ValuesExportTaskResults()

@@ -5,7 +5,7 @@ using RMon.Data.Provider.Configuration;
 
 namespace EsbPublisher.Data
 {
-    class DataRepository
+    public class DataRepository
     {
 
         private readonly SqlLogicTagTypeRepository _logicTagTypeRepository;

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using RMon.Configuration.Options;
+using RMon.Core.Base;
 using RMon.Data.Provider;
 using RMon.Data.Provider.Units.Backend.Common;
 using RMon.Data.Provider.Units.Backend.Interfaces;
@@ -14,13 +13,14 @@ using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Extensions;
 using RMon.ValuesExportImportService.Processing.Permission;
 using RMon.Data.Provider.Values;
+using RMon.ValuesExportImportService.Processing.Common;
 using RMon.ValuesExportImportService.Text;
 
 namespace RMon.ValuesExportImportService.Processing.Export
 {
     class EntityReader : IEntityReader
     {
-        private readonly IOptionsMonitor<ValuesDatabase> _valuesDatabaseOptions;
+        private readonly ISimpleFactory<IValueRepository> _valueRepositorySimpleFactory;
 
         private readonly ILogicDevicesRepository _logicDevicesRepository;
         private readonly IDataRepository _dataRepository;
@@ -30,13 +30,13 @@ namespace RMon.ValuesExportImportService.Processing.Export
         /// <summary>
         /// Конструктор
         /// </summary>
-        /// <param name="valuesDatabaseOptions"></param>
+        /// <param name="valueRepositorySimpleFactory">Фабрика для создания репозитория значений</param>
         /// <param name="logicDevicesRepository">Репозиторий доступа к данным</param>
         /// <param name="permissionLogic">Логика работы с правами доступа</param>
         /// <param name="dataRepository"></param>
-        public EntityReader(IOptionsMonitor<ValuesDatabase> valuesDatabaseOptions, ILogicDevicesRepository logicDevicesRepository, IDataRepository dataRepository, IPermissionLogic permissionLogic)
+        public EntityReader(ISimpleFactory<IValueRepository> valueRepositorySimpleFactory, ILogicDevicesRepository logicDevicesRepository, IDataRepository dataRepository, IPermissionLogic permissionLogic)
         {
-            _valuesDatabaseOptions = valuesDatabaseOptions;
+            _valueRepositorySimpleFactory = valueRepositorySimpleFactory;
             _logicDevicesRepository = logicDevicesRepository;
             _permissionLogic = permissionLogic;
             _dataRepository = dataRepository;
@@ -51,11 +51,9 @@ namespace RMon.ValuesExportImportService.Processing.Export
             var entityDescription = newPropertyCodes.ToEntityDescription("LogicDevices");
             var logicDevicesTable = await _logicDevicesRepository.GetLogicDevicesTable(idUserGroups, valuesExportTaskParameters.IdLogicDevices, entityDescription, cancellationToken).ConfigureAwait(false);
 
-            var tags = await _dataRepository.GetTagsAsync(valuesExportTaskParameters.IdLogicDevices, valuesExportTaskParameters.TagTypeCodes).ConfigureAwait(false);
+            var tags = await _dataRepository.GetTagsAsync(valuesExportTaskParameters.IdLogicDevices, valuesExportTaskParameters.TagTypeCodes, cancellationToken).ConfigureAwait(false);
 
-            var valuesRepository = ValueRepositoryFactory.GetRepository(
-                _valuesDatabaseOptions.CurrentValue.IsMongo() ? EProviderEngine.Mongo : EProviderEngine.Sql,
-                _valuesDatabaseOptions.CurrentValue.ConnectionString, _valuesDatabaseOptions.CurrentValue.ConnectionString);
+            var valuesRepository = _valueRepositorySimpleFactory.Create();
 
             var timeRange = new TimeRange(valuesExportTaskParameters.DateTimeStart, valuesExportTaskParameters.DateTimeEnd);
             var values = await valuesRepository.GetValuesAsync(tags.Select(t => t.Id).ToList(), timeRange).ConfigureAwait(false);
