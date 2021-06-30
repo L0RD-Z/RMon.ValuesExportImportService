@@ -71,14 +71,10 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                                 var idLogicDevice = await FindLogicDevice(idUserGroups, logicDeviceEntity, ct).ConfigureAwait(false);
                                 if (row.Entity.Entities.TryGetValue(EntityCodes.Tag, out var tagEntity)) //Поиск тега
                                 {
-                                    var idTags = await _tagsRepository.FindTags(idUserGroups, tagEntity, ct).ConfigureAwait(false);
-                                    idTags = idTags.Where(t => t.IdLogicDevice == idLogicDevice).ToList();
-                                    if (idTags.Any()) //Todo что делать если найдено несколько устройств или тегов?
-                                    {
-                                        var idTag = idTags.First().Id;
-                                        var valueInfo = CreateValue(row, idTag);
-                                        result.Add(valueInfo);
-                                    }
+                                    var tags = await _tagsRepository.FindTags(idUserGroups, tagEntity, ct).ConfigureAwait(false);
+                                    var tag = tags.SingleOrDefault(t => t.IdLogicDevice == idLogicDevice);
+                                    if (tag != null)
+                                        result.Add(CreateValue(row, tag.Id));
                                     else
                                         throw new ParseException(TextDb.FindNoOneTagForLogicDevice.With(tagEntity.ToLogString(), idLogicDevice));
                                 }
@@ -109,6 +105,13 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             return result;
         }
 
+        /// <summary>
+        /// Выполняет поиск оборудования <see cref="entityFilter"/> в БД
+        /// </summary>
+        /// <param name="idUserGroups">Права доступа</param>
+        /// <param name="entityFilter">Набор свойство для поиска оборудования</param>
+        /// <param name="cancellationToken">Токен отмены операции</param>
+        /// <returns></returns>
         private async Task<long> FindLogicDevice(IList<long> idUserGroups, Entity entityFilter, CancellationToken cancellationToken = default)
         {
             var logicDevices = await _logicDevicesRepository.FindLogicDevices(idUserGroups, entityFilter, cancellationToken).ConfigureAwait(false);

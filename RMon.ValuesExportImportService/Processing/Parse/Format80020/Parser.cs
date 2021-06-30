@@ -22,7 +22,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse.Format80020
                 var serializer = new XmlSerializer(typeof(Message));
                 message = serializer.Deserialize(stream);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // ignored
             }
