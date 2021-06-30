@@ -193,16 +193,14 @@ namespace EsbPublisher
 
             var parsingParams = new Xml80020ParsingParameters();
             if (MeasuringPoint.Channels.Any())
-                parsingParams.MeasuringPoint = new Xml80020PointParameters()
+                parsingParams.MeasuringPoint = new Xml80020PointParameters(MeasuringPoint.PropertyCode)
                 {
-                    PointPropertyCode = MeasuringPoint.PropertyCode,
-                    Channels = MeasuringPoint.Channels.Select(t => new Xml80020ChannelParameters {ChannelCode = t.ChannelCode, TagCode = t.TagCode}).ToList()
+                    Channels = MeasuringPoint.Channels.Select(t => new Xml80020ChannelParameters(t.ChannelCode, t.TagCode)).ToList()
                 };
             if (DeliveryPoint.Channels.Any())
-                parsingParams.DeliveryPoint = new Xml80020PointParameters()
+                parsingParams.DeliveryPoint = new Xml80020PointParameters(MeasuringPoint.PropertyCode)
                 {
-                    PointPropertyCode = MeasuringPoint.PropertyCode,
-                    Channels = MeasuringPoint.Channels.Select(t => new Xml80020ChannelParameters { ChannelCode = t.ChannelCode, TagCode = t.TagCode }).ToList()
+                    Channels = MeasuringPoint.Channels.Select(t => new Xml80020ChannelParameters(t.ChannelCode, t.TagCode)).ToList()
                 };
 
             return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, parsingParams, IdUser);

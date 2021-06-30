@@ -29,7 +29,7 @@ namespace RMon.ValuesExportImportService.Processing.Export
 {
     class ExportTaskLogic : BaseTaskLogic, IExportTaskLogic
     {
-        private readonly ExportTaskLogger _taskLogger;
+        private readonly IExportTaskLogger _taskLogger;
         private readonly IEntityReader _entityReader;
         private readonly IExcelWorker _excelWorker;
 
@@ -53,7 +53,7 @@ namespace RMon.ValuesExportImportService.Processing.Export
             IOptionsMonitor<Service> serviceOptions,
             IRepositoryFactoryConfigurator taskFactoryRepositoryConfigurator,
             IDataRepository dataRepository, 
-            ExportTaskLogger taskLogger,
+            IExportTaskLogger taskLogger,
             IPermissionLogic permissionLogic,
             IFileStorage fileStorage,
             IExcelWorker excelWorker,

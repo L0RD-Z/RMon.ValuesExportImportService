@@ -12,12 +12,11 @@ using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Extensions;
 using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Processing.Common;
-using RMon.ValuesExportImportService.Processing.Parse.Common;
 using RMon.ValuesExportImportService.Processing.Parse.Format80020;
-using RMon.ValuesExportImportService.Processing.Parse.Format80020.Entity;
+using RMon.ValuesExportImportService.Processing.Parse.Format80020.Models;
 using RMon.ValuesExportImportService.Text;
 using DateTime = System.DateTime;
-using Message = RMon.ValuesExportImportService.Processing.Parse.Format80020.Entity.Message;
+using Message = RMon.ValuesExportImportService.Processing.Parse.Format80020.Models.Message;
 
 namespace RMon.ValuesExportImportService.Processing.Parse
 {
@@ -141,41 +140,41 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 var timeStampTypeValue = GetTimeStamp(startTime, endTime);
 
                 if (timeStampTypeTag == timeStampTypeValue)
-                    result.Add(Factory.ValueInfoCreate(tag.Id, date, endTime, value));
+                    result.Add(ValueInfoCreate(tag.Id, date, endTime, value));
                 else
                     if (timeStampTypeTag == TimeStampTypeEnum.HalfHour && timeStampTypeValue == TimeStampTypeEnum.Hour)
-                {
-                    result.Add(Factory.ValueInfoCreate(tag.Id, date, endTime.AddMinutes(-30), value / 2));
-                    result.Add(Factory.ValueInfoCreate(tag.Id, date, endTime, value / 2));
-                }
-                else
-                        if (timeStampTypeTag == TimeStampTypeEnum.Hour && timeStampTypeValue == TimeStampTypeEnum.HalfHour)
-                {
-                    if (endTime.Minute == 30)
-                        lastValue = Factory.ValueInfoCreate(tag.Id, date, endTime, value);
-                    else
                     {
-                        if (lastValue == null)
-                            processingContext.LogWarning(TextParse.MissingValueWarning.With(tag.Id, startTime, endTime));
-                        else
+                        result.Add(ValueInfoCreate(tag.Id, date, endTime.AddMinutes(-30), value / 2));
+                        result.Add(ValueInfoCreate(tag.Id, date, endTime, value / 2));
+                    }
+                    else
+                        if (timeStampTypeTag == TimeStampTypeEnum.Hour && timeStampTypeValue == TimeStampTypeEnum.HalfHour)
                         {
-                            var currentValue = Factory.ValueInfoCreate(tag.Id, date, endTime, value + lastValue.Value.ValueFloat.Value);
-                            if ((currentValue.TimeStamp - lastValue.TimeStamp).TotalMinutes == 60)
+                            if (endTime.Minute == 30)
+                                lastValue = ValueInfoCreate(tag.Id, date, endTime, value);
+                            else
                             {
-                                result.Add(currentValue);
-                                lastValue = null;
-                            }
-                            else //Если в периоде наткнулись на пропуск
-                            {
-                                lastValue = null;
-                                if (endTime.Minute == 30)
-                                    lastValue = Factory.ValueInfoCreate(tag.Id, date, endTime, value);
-                                else
+                                if (lastValue == null)
                                     processingContext.LogWarning(TextParse.MissingValueWarning.With(tag.Id, startTime, endTime));
+                                else
+                                {
+                                    var currentValue = ValueInfoCreate(tag.Id, date, endTime, value + lastValue.Value.ValueFloat.Value);
+                                    if ((currentValue.TimeStamp - lastValue.TimeStamp).TotalMinutes == 30)
+                                    {
+                                        result.Add(currentValue);
+                                        lastValue = null;
+                                    }
+                                    else //Если в периоде наткнулись на пропуск
+                                    {
+                                        lastValue = null;
+                                        if (endTime.Minute == 30)
+                                            lastValue = ValueInfoCreate(tag.Id, date, endTime, value);
+                                        else
+                                            processingContext.LogWarning(TextParse.MissingValueWarning.With(tag.Id, startTime, endTime));
+                                    }
+                                }
                             }
                         }
-                    }
-                }
             }
 
             return result;
@@ -234,18 +233,14 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         }
 
         /// <summary>
-        /// Возвращает тип таймстампа значений с таймстампами <see cref="dateTimeStart"/> и <see cref="dateTimeEnd"/>
+        /// Создаёт и возвращает значение <see cref="ValueInfo"/>
         /// </summary>
-        /// <param name="dateTimeStart">Таймштамп первого значения</param>
-        /// <param name="dateTimeEnd">Таймштамп второго значения</param>
+        /// <param name="tagId">Id тега оборудования</param>
+        /// <param name="date">Дата</param>
+        /// <param name="timeStamp">Таймстамп значения</param>
+        /// <param name="value">Значение</param>
         /// <returns></returns>
-        private TimeStampTypeEnum GetTimeStamp(string dateTimeStart, string dateTimeEnd)
-        {
-            if (!DateTime.TryParse(dateTimeStart, out var start))
-                throw new TaskException(TextParse.FailedToConvertToDateTimeError.With(dateTimeStart));
-            if (!DateTime.TryParse(dateTimeEnd, out var end))
-                throw new TaskException(TextParse.FailedToConvertToDateTimeError.With(dateTimeEnd));
-            return GetTimeStamp(start, end);
-        }
+        private ValueInfo ValueInfoCreate(long tagId, DateTime date, DateTime timeStamp, double value) =>
+            new(tagId, timeStamp.TimeOfDay == TimeSpan.Zero ? date.AddDays(1).Add(timeStamp.TimeOfDay) : date.Add(timeStamp.TimeOfDay), value);
     }
 }

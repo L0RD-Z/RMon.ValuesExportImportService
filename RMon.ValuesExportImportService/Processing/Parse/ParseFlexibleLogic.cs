@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using RMon.Data.Provider.Units.Backend.Common;
 using RMon.Data.Provider.Units.Backend.Interfaces;
 using RMon.Values.ExportImport.Core;
 using RMon.ValuesExportImportService.Common;
@@ -114,6 +115,17 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             return result;
         }
 
+        private async Task<long> FindLogicDevice(IList<long> idUserGroups, Entity entityFilter, CancellationToken cancellationToken = default)
+        {
+            var idLogicDevices = await _logicDevicesRepository.FindLogicDevices(idUserGroups, entityFilter, cancellationToken).ConfigureAwait(false);
+            return idLogicDevices.Count switch
+            {
+                0 => throw new TaskException(TextDb.FindLogicDeviceNoOne.With(entityFilter.ToLogString())),
+                1 => idLogicDevices.Single().Id,
+                _ => throw new TaskException(TextParse.SelectedManyChannelsError.With(parameters.GetType().Name, channels.Count, channelCode))
+            };
+        }
+
         /// <summary>
         /// Создаёт из строки <see cref="rowEntity"/> значение для тега <see cref="idTag"/>
         /// </summary>
@@ -127,13 +139,12 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             if (!rowEntity.Entity.Properties.TryGetValue(PropertyCodes.Value, out var valueProperty))
                 throw new ParseException(TextParse.MissingPropertyError.With(PropertyCodes.Value));
 
-            //Todo что значит провалидированы?
             if (!DateTime.TryParseExact(timestampProperty.Value, "dd.MM.yyyy H:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var timeStamp))
                 throw new ParseException(TextParse.FailedConvertToDateTime.With(timestampProperty.Value));
             if (!double.TryParse(valueProperty.Value.Replace(",", "."), NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
                 throw new ParseException(TextParse.FailedConvertToDouble.With(valueProperty.Value));
 
-            return Factory.ValueInfoCreate(idTag, timeStamp, value);
+            return new(idTag, timeStamp, value);
         }
     }
 }

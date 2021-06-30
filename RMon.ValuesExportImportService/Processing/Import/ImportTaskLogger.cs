@@ -14,7 +14,7 @@ using RMon.ValuesExportImportService.ServiceBus.Import;
 
 namespace RMon.ValuesExportImportService.Processing.Import
 {
-    class ImportTaskLogger : BaseTaskLogger<DbValuesExportImportTask>
+    class ImportTaskLogger : BaseTaskLogger<DbValuesExportImportTask>, IImportTaskLogger
     {
         /// <summary>
         /// Конструктор 1
@@ -28,15 +28,9 @@ namespace RMon.ValuesExportImportService.Processing.Import
             : base(serviceOptions, repositoryFactoryConfigurator, dataRepository, fileLogger, esbLogger)
         {
         }
-        
 
-        /// <summary>
-        /// Выполняет логирование сообщения <see cref="msg"/> о успешном завершении выполнения задачи в лог-файл, в БД и в RabbitMQ
-        /// </summary>
-        /// <param name="receivedTask"></param>
-        /// <param name="dbTask"></param>
-        /// <param name="msg">Текстовое сообщение</param>
-        /// <returns></returns>
+
+        /// <inheritdoc/>
         public virtual async Task LogFinishedAsync(ITask receivedTask, DbValuesExportImportTask dbTask, I18nString msg)
         {
             dbTask.ImportResults = new ValuesImportTaskResults();
