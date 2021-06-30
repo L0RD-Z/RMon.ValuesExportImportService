@@ -68,28 +68,22 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                         {
                             if (row.Entity.Entities.TryGetValue(EntityCodes.LogicDevice, out var logicDeviceEntity)) //Поиск оборудовавние
                             {
-                                var idLogicDevices = await _logicDevicesRepository.FindLogicDevices(idUserGroups, logicDeviceEntity, ct).ConfigureAwait(false);
-                                if (idLogicDevices.Any())
+                                var idLogicDevice = await FindLogicDevice(idUserGroups, logicDeviceEntity, ct).ConfigureAwait(false);
+                                if (row.Entity.Entities.TryGetValue(EntityCodes.Tag, out var tagEntity)) //Поиск тега
                                 {
-                                    if (row.Entity.Entities.TryGetValue(EntityCodes.Tag, out var tagEntity)) //Поиск тега
+                                    var idTags = await _tagsRepository.FindTags(idUserGroups, tagEntity, ct).ConfigureAwait(false);
+                                    idTags = idTags.Where(t => t.IdLogicDevice == idLogicDevice).ToList();
+                                    if (idTags.Any()) //Todo что делать если найдено несколько устройств или тегов?
                                     {
-                                        var idLogicDevice = idLogicDevices.First().Id;
-                                        var idTags = await _tagsRepository.FindTags(idUserGroups, tagEntity, ct).ConfigureAwait(false);
-                                        idTags = idTags.Where(t => t.IdLogicDevice == idLogicDevice).ToList();
-                                        if (idTags.Any()) //Todo что делать если найдено несколько устройств или тегов?
-                                        {
-                                            var idTag = idTags.First().Id;
-                                            var valueInfo = CreateValue(row, idTag);
-                                            result.Add(valueInfo);
-                                        }
-                                        else
-                                            throw new ParseException(TextDb.FindTagForLogicDeviceNoOne.With(idLogicDevice, tagEntity.ToLogString()));
+                                        var idTag = idTags.First().Id;
+                                        var valueInfo = CreateValue(row, idTag);
+                                        result.Add(valueInfo);
                                     }
                                     else
-                                        throw new ParseException(TextParse.MissingSectionError.With(EntityCodes.Tag));
+                                        throw new ParseException(TextDb.FindTagForLogicDeviceNoOne.With(idLogicDevice, tagEntity.ToLogString()));
                                 }
                                 else
-                                    throw new ParseException(TextDb.FindLogicDeviceNoOne.With(logicDeviceEntity.ToLogString()));
+                                    throw new ParseException(TextParse.MissingSectionError.With(EntityCodes.Tag));
                             }
                             else //По Tag.Id
                             {
@@ -117,12 +111,12 @@ namespace RMon.ValuesExportImportService.Processing.Parse
 
         private async Task<long> FindLogicDevice(IList<long> idUserGroups, Entity entityFilter, CancellationToken cancellationToken = default)
         {
-            var idLogicDevices = await _logicDevicesRepository.FindLogicDevices(idUserGroups, entityFilter, cancellationToken).ConfigureAwait(false);
-            return idLogicDevices.Count switch
+            var logicDevices = await _logicDevicesRepository.FindLogicDevices(idUserGroups, entityFilter, cancellationToken).ConfigureAwait(false);
+            return logicDevices.Count switch
             {
-                0 => throw new TaskException(TextDb.FindLogicDeviceNoOne.With(entityFilter.ToLogString())),
-                1 => idLogicDevices.Single().Id,
-                _ => throw new TaskException(TextParse.SelectedManyChannelsError.With(parameters.GetType().Name, channels.Count, channelCode))
+                0 => throw new TaskException(TextDb.FindLogicDeviceNoOneError.With(entityFilter.ToLogString())),
+                1 => logicDevices.Single().Id,
+                _ => throw new TaskException(TextDb.FindManyLogicDevicesError.With(logicDevices.Count, entityFilter.ToLogString()))
             };
         }
 
