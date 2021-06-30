@@ -30,7 +30,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
     class ParseTaskLogic : BaseTaskLogic, IParseTaskLogic
     {
         private readonly IOptionsMonitor<ValuesDatabase> _valuesDatabaseOptions;
-        private readonly ParseTaskLogger _taskLogger;
+        private readonly IParseTaskLogger _taskLogger;
         private readonly Parse80020Logic _parse80020Logic;
         private readonly ParseFlexibleLogic _parseFlexibleLogic;
 
@@ -39,6 +39,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// </summary>
         /// <param name="logger">Логгер</param>
         /// <param name="serviceOptions">Опции сервиса</param>
+        /// <param name="valuesDatabaseOptions"></param>
         /// <param name="taskFactoryRepositoryConfigurator">Конфигуратор репозиторияя для логирования хода выполнения задач</param>
         /// <param name="dataRepository">Репозиторий данных</param>
         /// <param name="taskLogger">Логгер для заданий</param>
@@ -54,7 +55,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             IOptionsMonitor<ValuesDatabase> valuesDatabaseOptions,
             IRepositoryFactoryConfigurator taskFactoryRepositoryConfigurator,
             IDataRepository dataRepository,
-            ParseTaskLogger taskLogger,
+            IParseTaskLogger taskLogger,
             IPermissionLogic permissionLogic,
             IFileStorage fileStorage,
             Parse80020Logic parse80020Logic,

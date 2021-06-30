@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Text;
 using System.Xml.Serialization;
 using RMon.Globalization.String;
 using RMon.ValuesExportImportService.Processing.Parse.Format80020.Entity;
@@ -21,7 +23,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse.Format80020
                 var serializer = new XmlSerializer(typeof(Message));
                 message = serializer.Deserialize(stream);
             }
-            catch
+            catch (Exception ex)
             {
                 // ignored
             }

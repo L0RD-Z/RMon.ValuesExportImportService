@@ -11,14 +11,14 @@ namespace RMon.ValuesExportImportService.Processing
     public class ProcessingContext<T> : IProcessingContext 
         where T : DbTask
     {
-        protected readonly BaseTaskLogger<T> TaskLogger;
+        protected readonly IBaseTaskLogger<T> TaskLogger;
         protected readonly ITask Task;
         protected readonly T DbTask;
 
         public long IdUser { get; set; }
         public IGlobalizationProvider GlobalizationProvider { get; set; }
 
-        public ProcessingContext(ITask task, T dbTask, BaseTaskLogger<T> taskLogger, long idUser)
+        public ProcessingContext(ITask task, T dbTask, IBaseTaskLogger<T> taskLogger, long idUser)
         {
             IdUser = idUser;
             TaskLogger = taskLogger;

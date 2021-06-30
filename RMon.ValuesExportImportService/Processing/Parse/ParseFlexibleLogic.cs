@@ -133,7 +133,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             if (!double.TryParse(valueProperty.Value.Replace(",", "."), NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
                 throw new ParseException(TextParse.FailedConvertToDouble.With(valueProperty.Value));
 
-            return Factory.ValueInfoCreate(idTag, timeStamp, value);
+            return new(idTag, timeStamp, value);
         }
     }
 }

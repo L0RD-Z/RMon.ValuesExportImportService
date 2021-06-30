@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EsbPublisher.Annotations;
 using EsbPublisher.Data;
 using EsbPublisher.Model;
 using EsbPublisher.ServiceBus;
-using MassTransit;
 using RMon.Data.Provider.Configuration;
-using RMon.Values.ExportImport.Core;
 
 namespace EsbPublisher
 {
@@ -120,9 +117,9 @@ namespace EsbPublisher
         {
             var devicePropertyTypes = await _dataRepository.GetDevicePropertyTypesAsync(CancellationToken.None).ConfigureAwait(false);
             var tagTypes = await _dataRepository.GetTagTypesAsync(CancellationToken.None).ConfigureAwait(false);
-            DevicePropertyTypes = devicePropertyTypes.Select(t => new Selected<RMon.Data.Provider.Configuration.DevicePropertyType>(t)).OrderBy(t => t.Entity.Name).ToList();
+            DevicePropertyTypes = devicePropertyTypes.Select(t => new Selected<DevicePropertyType>(t)).OrderBy(t => t.Entity.Name).ToList();
 
-            TagTypes = tagTypes.Select(t => new Selected<RMon.Data.Provider.Configuration.LogicTagType>(t, true)).OrderBy(t => t.Entity.Name).ToList();
+            TagTypes = tagTypes.Select(t => new Selected<LogicTagType>(t, true)).OrderBy(t => t.Entity.Name).ToList();
         }
 
 

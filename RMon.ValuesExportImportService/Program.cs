@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using RMon.Configuration.DependencyInjection;
 using RMon.Configuration.MassTransit;
@@ -12,7 +13,6 @@ using RMon.Context.FrontEndContext;
 using RMon.Core.Base;
 using RMon.Data.Provider.Units.Backend.Interfaces;
 using RMon.Data.Provider.Units.Backend.Sql;
-using RMon.Data.Provider.Units.Frontend;
 using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Excel;
 using RMon.ValuesExportImportService.Files;
@@ -26,8 +26,10 @@ using RMon.ValuesExportImportService.ServiceBus.Export;
 using RMon.ValuesExportImportService.ServiceBus.Import;
 using RMon.ValuesExportImportService.ServiceBus.Parse;
 
+[assembly: InternalsVisibleTo("RMon.ValuesExportImportService.Tests")]
 namespace RMon.ValuesExportImportService
 {
+
     public class Program
     {
         public static void Main(string[] args)
@@ -75,9 +77,9 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<Parse80020Logic>();
                     services.AddSingleton<ParseFlexibleLogic>();
 
-                    services.AddSingleton<ImportTaskLogger>();
-                    services.AddSingleton<ParseTaskLogger>();
-                    services.AddSingleton<ExportTaskLogger>();
+                    services.AddSingleton<IImportTaskLogger, ImportTaskLogger>();
+                    services.AddSingleton<IParseTaskLogger, ParseTaskLogger>();
+                    services.AddSingleton<IExportTaskLogger, ExportTaskLogger>();
                     services.AddSingleton<IPermissionLogic, PermissionLogic>();
                     services.AddSingleton<IExportTaskLogic, ExportTaskLogic>();
                     services.AddSingleton<IParseTaskLogic, ParseTaskLogic>();

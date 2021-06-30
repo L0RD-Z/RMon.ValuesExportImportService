@@ -7,7 +7,6 @@ using RMon.Core.CommonTask;
 using RMon.Data.Provider.Esb.Backend;
 using RMon.Data.Provider.Esb.Entities;
 using RMon.ESB.Core.Common;
-using RMon.Globalization;
 using RMon.Globalization.String;
 using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Data;
@@ -16,7 +15,7 @@ using LogLevel = RMon.ESB.Core.Common.LogLevel;
 
 namespace RMon.ValuesExportImportService.Processing.Common
 {
-    public abstract class BaseTaskLogger<T> where T : DbTask
+    public abstract class BaseTaskLogger<T> : IBaseTaskLogger<T> where T : DbTask
     {
         protected readonly IOptionsMonitor<Service> ServiceOptions;
         protected readonly IRepositoryFactoryConfigurator RepositoryFactoryConfigurator;
@@ -52,15 +51,8 @@ namespace RMon.ValuesExportImportService.Processing.Common
             EsbLogger = esbLogger;
         }
 
-        /// <summary>
-        /// Выполняет логирование информационного сообщения <see cref="msg"/> в лог-файл, в БД и в ESB
-        /// </summary>
-        /// <param name="dbTask"></param>
-        /// <param name="msg">Текстовое сообщение</param>
-        /// <param name="receivedTask"></param>
-        /// <param name="level"></param>
-        /// <param name="progress"></param>
-        /// <returns></returns>
+        
+        /// <inheritdoc />
         public async Task Log(ITask receivedTask, T dbTask, I18nString msg, LogLevel level, float? progress)
         {
             var currentDate = await DataRepository.GetDateAsync().ConfigureAwait(false);
@@ -86,13 +78,7 @@ namespace RMon.ValuesExportImportService.Processing.Common
             await EsbLogger.SendTaskLogAsync(receivedTask, currentDate, level, msg.ToString()).ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// Выполняет логирование сообщения <see cref="msg"/> о старте выполнения задачи в лог-файл, в БД и в ESB 
-        /// </summary>
-        /// <param name="dbTask"></param>
-        /// <param name="msg">Текстовое сообщение</param>
-        /// <param name="receivedTask"></param>
-        /// <returns></returns>
+        /// <inheritdoc />
         public async Task LogStartedAsync(ITask receivedTask, T dbTask, I18nString msg)
         {
             FileLogger.LogInformation($"{receivedTask.CorrelationId}: {msg}");
@@ -110,14 +96,8 @@ namespace RMon.ValuesExportImportService.Processing.Common
             await EsbLogger.SendTaskStartedAsync(receivedTask, currentDate, ServiceOptions.CurrentValue.InstanceName).ConfigureAwait(false);
             await EsbLogger.SendTaskLogAsync(receivedTask, currentDate, msg.ToString()).ConfigureAwait(false);
         }
-        
-        /// <summary>
-        /// Выполняет логирование сообщения <see cref="msg"/> об отмене выполнения задачи в лог-файл, в БД и в RabbitMQ
-        /// </summary>
-        /// <param name="dbTask"></param>
-        /// <param name="msg">Текстовое сообщение</param>
-        /// <param name="receivedTask"></param>
-        /// <returns></returns>
+
+        /// <inheritdoc />
         public async Task LogAbortedAsync(ITask receivedTask, T dbTask, I18nString msg)
         {
             FileLogger.LogInformation($"{receivedTask.CorrelationId}: {msg}");
@@ -134,14 +114,7 @@ namespace RMon.ValuesExportImportService.Processing.Common
             await EsbLogger.SendTaskFinishedAsync(receivedTask, currentDate, ServiceOptions.CurrentValue.InstanceName, TaskState.Aborted).ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// Выполняет логирование сообщения <see cref="msg"/> об ошибке выполнения задачи в лог-файл, в БД и в RabbitMQ
-        /// </summary>
-        /// <param name="dbTask"></param>
-        /// <param name="msg">Текстовое сообщение</param>
-        /// <param name="ex"></param>
-        /// <param name="receivedTask"></param>
-        /// <returns></returns>
+        /// <inheritdoc />
         public async Task LogFailedAsync(ITask receivedTask, T dbTask, I18nString msg, Exception ex)
         {
             FileLogger.LogError(ex, $"{receivedTask.CorrelationId}: {msg}");

@@ -17,4 +17,14 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\RMon.ValuesExportImportService\RMon.ValuesExportImportService.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Parse80020\Files\80020_7713076301_20190101_6599155.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
