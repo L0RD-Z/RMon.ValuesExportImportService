@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using RMon.Data.Provider.Units.Backend.Common;
 using RMon.Data.Provider.Units.Backend.Interfaces;
+using RMon.Globalization.String;
 using RMon.Values.ExportImport.Core;
 using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Excel;
@@ -56,6 +58,10 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             var result = new List<ValueInfo>();
             
             var idUserGroups = await _permissionLogic.GetUserGroupIdsWithPermissionAsync(EntityTypes.Values, CrudOperations.Read, context.IdUser).ConfigureAwait(false);
+            var logicDevicesCache = new Dictionary<long, long>();
+            var tagsCache = new Dictionary<long, long>();
+
+            var timer = Stopwatch.StartNew();
 
             foreach (var table in tables)
                 foreach (var sheet in table.Sheets)
@@ -68,15 +74,22 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                         {
                             if (row.Entity.Entities.TryGetValue(EntityCodes.LogicDevice, out var logicDeviceEntity)) //Поиск оборудовавние
                             {
-                                var idLogicDevice = await FindLogicDevice(idUserGroups, logicDeviceEntity, ct).ConfigureAwait(false);
+                                var logicDeviceHash = GetHash(logicDeviceEntity);
+                                if (!logicDevicesCache.TryGetValue(logicDeviceHash, out var logicDeviceId))
+                                {
+                                    logicDeviceId = await FindLogicDeviceId(idUserGroups, logicDeviceEntity, ct).ConfigureAwait(false);
+                                    logicDevicesCache[logicDeviceHash] = logicDeviceId;
+                                }
+
                                 if (row.Entity.Entities.TryGetValue(EntityCodes.Tag, out var tagEntity)) //Поиск тега
                                 {
-                                    var tags = await _tagsRepository.FindTags(idUserGroups, tagEntity, ct).ConfigureAwait(false);
-                                    var tag = tags.SingleOrDefault(t => t.IdLogicDevice == idLogicDevice);
-                                    if (tag != null)
-                                        result.Add(CreateValue(row, tag.Id));
-                                    else
-                                        throw new ParseException(TextDb.FindNoOneTagForLogicDevice.With(tagEntity.ToLogString(), idLogicDevice));
+                                    var tagHash = GetHash(tagEntity);
+                                    if (!tagsCache.TryGetValue(tagHash, out var tagId))
+                                    {
+                                        tagId = await FindTagId(idUserGroups, logicDeviceId, tagEntity, ct).ConfigureAwait(false);
+                                        tagsCache[tagHash] = tagId;
+                                    }
+                                    result.Add(CreateValue(row, tagId));
                                 }
                                 else
                                     throw new ParseException(TextParse.MissingSectionError.With(EntityCodes.Tag));
@@ -102,17 +115,38 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                     }
                 }
 
+            await context.LogInfo(I18nString.FromString($"Время: {timer.ElapsedMilliseconds} мс.")).ConfigureAwait(false);
+
+
             return result;
         }
+        
+        /// <summary>
+        /// Вычисляет hash для <see cref="entity"/>
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public long GetHash(Entity entity)
+        {
+            long hash = 0;
+            foreach (var property in entity.Properties)
+                hash = HashCode.Combine(property.Value?.Code, property.Value?.Value);
+
+            hash += HashCode.Combine(entity.Code, entity.Name);
+
+            hash += entity.Entities.Sum(childEntity => GetHash(childEntity.Value));
+            return hash;
+        }
+
 
         /// <summary>
-        /// Выполняет поиск оборудования <see cref="entityFilter"/> в БД
+        /// Выполняет поиск оборудования в БД в соответствии с критериями поиска <see cref="entityFilter"/> и возвращает его Id
         /// </summary>
         /// <param name="idUserGroups">Права доступа</param>
         /// <param name="entityFilter">Набор свойство для поиска оборудования</param>
         /// <param name="cancellationToken">Токен отмены операции</param>
         /// <returns></returns>
-        private async Task<long> FindLogicDevice(IList<long> idUserGroups, Entity entityFilter, CancellationToken cancellationToken = default)
+        private async Task<long> FindLogicDeviceId(IList<long> idUserGroups, Entity entityFilter, CancellationToken cancellationToken = default)
         {
             var logicDevices = await _logicDevicesRepository.FindLogicDevices(idUserGroups, entityFilter, cancellationToken).ConfigureAwait(false);
             return logicDevices.Count switch
@@ -121,6 +155,24 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 1 => logicDevices.Single().Id,
                 _ => throw new TaskException(TextDb.FindManyLogicDevicesError.With(entityFilter.ToLogString()))
             };
+        }
+
+        /// <summary>
+        /// Выполняет поиск тега для оборудования <see cref="logicDeviceId"/> в БД в соответствии с критериями поиска <see cref="entityFilter"/> и возвращает его Id
+        /// </summary>
+        /// <param name="idUserGroups"></param>
+        /// <param name="logicDeviceId"></param>
+        /// <param name="entityFilter"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        private async Task<long> FindTagId(IList<long> idUserGroups, long logicDeviceId, Entity entityFilter, CancellationToken cancellationToken = default)
+        {
+            var tags = await _tagsRepository.FindTags(idUserGroups, entityFilter, cancellationToken).ConfigureAwait(false);
+            var tag = tags.SingleOrDefault(t => t.IdLogicDevice == logicDeviceId);
+            if (tag != null)
+                return tag.Id;
+            else
+                throw new ParseException(TextDb.FindNoOneTagForLogicDevice.With(entityFilter.ToLogString(), logicDeviceId));
         }
 
         /// <summary>

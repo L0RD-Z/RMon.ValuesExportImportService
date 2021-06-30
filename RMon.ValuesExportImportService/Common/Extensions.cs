@@ -1,4 +1,5 @@
 ﻿using System;
+using RMon.Data.Provider.Units.Backend.Common;
 using RMon.Globalization;
 using RMon.Globalization.String;
 
@@ -42,5 +43,8 @@ namespace RMon.ValuesExportImportService.Common
         /// <returns></returns>
         public static I18nString ConcatExceptionMessage(this Exception ex, I18nString msg) =>
             msg.Clone().Append(" ").Append(ex.ConcatExceptionMessage());
+
+
+        
     }
 }
