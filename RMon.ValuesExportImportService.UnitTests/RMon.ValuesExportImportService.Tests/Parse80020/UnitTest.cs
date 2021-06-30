@@ -54,10 +54,10 @@ namespace RMon.ValuesExportImportService.Tests.Parse80020
             try
             {
                 var values = await logic.AnalyzeAsync(new List<LocalFile> {new(fileName, fileBody)}, taskParams, context, CancellationToken.None).ConfigureAwait(false);
-                Assert.AreEqual(214, values.Count, "Количество всех полученных значений неверно.");
-                var aa = values.Count(t => t.TimeStamp.Year == 2021 && t.TimeStamp.Month == 03 && t.TimeStamp.Day == 20);
-                Assert.AreEqual(209, values.Count(t => t.TimeStamp.Year == 2021 && t.TimeStamp.Month == 03 && t.TimeStamp.Day == 20), "Таймстамп одного из значений определен не верно.");
-                Assert.AreEqual(5, values.Count(t => t.TimeStamp.Year == 2021 && t.TimeStamp.Month == 03 && t.TimeStamp.Day == 21), "Таймстамп одного из значений за следующие сутки определен не верно.");
+                Assert.AreEqual(310, values.Count, "Количество всех полученных значений неверно.");
+                //var aa = values.Count(t => t.TimeStamp.Year == 2021 && t.TimeStamp.Month == 03 && t.TimeStamp.Day == 21);
+                Assert.AreEqual(303, values.Count(t => t.TimeStamp.Year == 2021 && t.TimeStamp.Month == 03 && t.TimeStamp.Day == 20), "Таймстамп одного из значений определен не верно.");
+                Assert.AreEqual(7, values.Count(t => t.TimeStamp.Year == 2021 && t.TimeStamp.Month == 03 && t.TimeStamp.Day == 21), "Таймстамп одного из значений за следующие сутки определен не верно.");
 
                 var normalValues = values.Where(t => t.IdTag == 1).ToList();
                 Assert.AreEqual(96, normalValues.Count, "Количество значений для тега dHHA+ неверно.");
@@ -66,7 +66,7 @@ namespace RMon.ValuesExportImportService.Tests.Parse80020
 
                 /*У этих значений таймстамп тега - получасовой, а таймстамп значений - часовой*/
                 var hourValues = values.Where(t => t.IdTag == 3).ToList();
-                Assert.AreEqual(48, hourValues.Count, "Количество часовых значений для получасового тега неверно.");
+                Assert.AreEqual(96, hourValues.Count, "Количество часовых значений для получасового тега неверно.");
                 Assert.IsTrue(hourValues.All(t => t.Value.ValueFloat == 0.5 || t.Value.ValueFloat == 1.5), "Величина одного из часовых значений для получасового тега не совпадает.");
 
                 /*У этих значений таймстамп тега - часовой, а таймстамп значений - получасовой*/

@@ -66,7 +66,7 @@ namespace RMon.ValuesExportImportService.Data
             {
                 0 => throw new DataLayerException(TextDb.SelectedNoOneLogicDeviceError.With(propertyCode, propertyValue)),
                 1 => logicDevices.Single(),
-                _ => throw new DataLayerException(TextDb.SelectedManyLogicDeviceError.With(logicDevices.Count, propertyCode, propertyValue))
+                _ => throw new DataLayerException(TextDb.SelectedManyLogicDeviceError.With(propertyCode, propertyValue))
             };
         }
 

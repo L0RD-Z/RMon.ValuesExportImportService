@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RMon.Configuration.Options;
+using RMon.Core.Base;
 using RMon.Core.Files;
 using RMon.Data.Provider;
 using RMon.Data.Provider.Esb.Entities.ValuesExportImport;
@@ -29,7 +30,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
 {
     class ParseTaskLogic : BaseTaskLogic, IParseTaskLogic
     {
-        private readonly IOptionsMonitor<ValuesDatabase> _valuesDatabaseOptions;
+        private readonly ISimpleFactory<IValueRepository> _valueRepositorySimpleFactory;
         private readonly IParseTaskLogger _taskLogger;
         private readonly Parse80020Logic _parse80020Logic;
         private readonly ParseFlexibleLogic _parseFlexibleLogic;
@@ -39,7 +40,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// </summary>
         /// <param name="logger">Логгер</param>
         /// <param name="serviceOptions">Опции сервиса</param>
-        /// <param name="valuesDatabaseOptions"></param>
+        /// <param name="valueRepositorySimpleFactory">Фабрика для создания репозитория значений</param>
         /// <param name="taskFactoryRepositoryConfigurator">Конфигуратор репозиторияя для логирования хода выполнения задач</param>
         /// <param name="dataRepository">Репозиторий данных</param>
         /// <param name="taskLogger">Логгер для заданий</param>
@@ -52,7 +53,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         public ParseTaskLogic(
             ILogger<ParseTaskLogic> logger,
             IOptionsMonitor<Service> serviceOptions,
-            IOptionsMonitor<ValuesDatabase> valuesDatabaseOptions,
+            ISimpleFactory<IValueRepository> valueRepositorySimpleFactory,
             IRepositoryFactoryConfigurator taskFactoryRepositoryConfigurator,
             IDataRepository dataRepository,
             IParseTaskLogger taskLogger,
@@ -64,7 +65,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             ILanguageRepository languageRepository)
             : base(logger, serviceOptions,  taskFactoryRepositoryConfigurator, dataRepository, permissionLogic, fileStorage, globalizationProviderFactory, languageRepository)
         {
-            _valuesDatabaseOptions = valuesDatabaseOptions;
+            _valueRepositorySimpleFactory = valueRepositorySimpleFactory;
             _taskLogger = taskLogger;
             _parse80020Logic = parse80020Logic;
             _parseFlexibleLogic = parseFlexibleLogic;
@@ -78,7 +79,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             {
                 var instanceName = ServiceOptions.CurrentValue.InstanceName;
                 var dbTask = task.ToDbTask(instanceName);
-                var context = CreateProcessingContext(task, dbTask);
+                var context = new ParseProcessingContext(task, dbTask, _taskLogger, task.IdUser.Value);
 
                 try
                 {
@@ -170,13 +171,6 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             return storedFiles;
         }
 
-        private ParseProcessingContext CreateProcessingContext(IValuesParseTask task, DbValuesExportImportTask dbTask)
-        {
-            var processingContext = new ParseProcessingContext(task, dbTask, _taskLogger, task.IdUser.Value);
-
-            return processingContext;
-        }
-
         /// <summary>
         /// Выполняет загрузку текущих значений из БД
         /// </summary>
@@ -185,59 +179,26 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <returns></returns>
         private async Task LoadCurrentValuesFromDb(ParseProcessingContext context, List<ValueInfo> values)
         {
-            var valuesRepository = ValueRepositoryFactory.GetRepository(
-                _valuesDatabaseOptions.CurrentValue.IsMongo() ? EProviderEngine.Mongo : EProviderEngine.Sql,
-                _valuesDatabaseOptions.CurrentValue.ConnectionString, _valuesDatabaseOptions.CurrentValue.ConnectionString);
+            var valuesRepository = _valueRepositorySimpleFactory.Create();
 
             var groupValues = values.GroupBy(t => t.IdTag);
             foreach (var groupValue in groupValues)
             {
-                var sourceTimeRange = new TimeRange(groupValue.Min(t => t.TimeStamp), groupValue.Max(t => t.TimeStamp));
-                var timeRanges = SplitTimeRange(sourceTimeRange, TimeSpan.FromDays(30));
-                foreach (var timeRange in timeRanges)
+                var timeRange = new TimeRange(groupValue.Min(t => t.TimeStamp), groupValue.Max(t => t.TimeStamp));
+                await context.LogInfo(TextParse.LoadingCurrentValuesForTag.With(groupValue.Key, timeRange.DateStart.Value, timeRange.DateEnd.Value)).ConfigureAwait(false);
+                var dbValues = await valuesRepository.GetValuesAsync(groupValue.Key, timeRange).ConfigureAwait(false);
+                foreach (var value in groupValue)
                 {
-                    await context.LogInfo(TextParse.LoadingCurrentValuesForTag.With(groupValue.Key, timeRange.DateStart.Value, timeRange.DateEnd.Value)).ConfigureAwait(false);
-                    var dbValues = await valuesRepository.GetValuesAsync(groupValue.Key, sourceTimeRange).ConfigureAwait(false);
-                    foreach (var value in groupValue)
-                    {
-                        var dbValue = dbValues.SingleOrDefault(t => t.Datetime == value.TimeStamp);
-                        if (dbValue != null)
-                            value.CurrentValue = new ValueUnion()
-                            {
-                                IdQuality = "Normal",
-                                ValueFloat = dbValue.ValueFloat
-                            };
-                    }
+                    var dbValue = dbValues.SingleOrDefault(t => t.Datetime == value.TimeStamp);
+                    if (dbValue != null)
+                        value.CurrentValue = new ValueUnion()
+                        {
+                            IdQuality = "Normal",
+                            ValueFloat = dbValue.ValueFloat
+                        };
                 }
             }
         }
 
-        /// <summary>
-        /// Разбивает временной диапазон <see cref="timeRange"/> на диапазоны времен не больше <see cref="timeInterval"/>
-        /// </summary>
-        /// <param name="timeRange">Исходный временной диапазон</param>
-        /// <param name="timeInterval">Интервал времени, накоторые разбивать исходный диапазон</param>
-        /// <returns></returns>
-        private List<TimeRange> SplitTimeRange(TimeRange timeRange, TimeSpan timeInterval)
-        {
-            var result = new List<TimeRange>();
-            if (timeRange.DateEnd.Value - timeRange.DateStart.Value > timeInterval)
-            {
-                var dateTimeIterator = timeRange.DateStart.Value;
-                while (dateTimeIterator <= timeRange.DateEnd.Value)
-                {
-                    var dateEnd = dateTimeIterator + timeInterval;
-                    if (dateEnd > timeRange.DateEnd.Value)
-                        dateEnd = timeRange.DateEnd.Value;
-
-                    result.Add(new TimeRange(dateTimeIterator, dateEnd));
-                    dateTimeIterator = dateEnd.AddSeconds(1);
-                }
-            }
-            else
-                result.Add(timeRange);
-
-            return result;
-        }
     }
 }

@@ -26,7 +26,7 @@
     <PackageReference Include="RMon.Data.Provider.Esb" Version="3.1.2" />
     <PackageReference Include="RMon.Data.Provider.Security" Version="3.3.1" />
     <PackageReference Include="RMon.Data.Provider.Units" Version="3.7.1" />
-    <PackageReference Include="RMon.Data.Provider.Values" Version="2.1.1" />
+    <PackageReference Include="RMon.Data.Provider.Values" Version="2.2.0" />
     <PackageReference Include="RMon.DriverCore" Version="3.1.0" />
     <PackageReference Include="RMon.ESB.Common" Version="3.3.0" />
     <PackageReference Include="RMon.ESB.Core" Version="2.13.0" />

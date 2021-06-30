@@ -100,8 +100,11 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 {
                     await context.LogInfo(TextParse.AnalyzePoint.With(measuringPoint.Name, measuringPoint.Code)).ConfigureAwait(false);
                     var logicDevice = await _dataRepository.GetLogicDeviceByPropertyValueAsync(pointParameters.PointPropertyCode, measuringPoint.Code, ct).ConfigureAwait(false);
-                    foreach (var measuringChannel in measuringPoint.MeasuringChannels)
-                        result.AddRange(AnalyzeChannel(measuringChannel, pointParameters, logicDevice, date, context));
+                    foreach (var channel in pointParameters.Channels)
+                    {
+                        var measuringChannel = GetChannel(measuringPoint, channel.ChannelCode);
+                        result.AddRange(AnalyzeChannel(measuringChannel, channel.TagCode, logicDevice, date, context));
+                    }
                 }
             else
                 await context.LogWarning(TextParse.NotFoundSectionWarning.With(fileName, areaName, nameof(DeliveryPoint))).ConfigureAwait(false);
@@ -112,16 +115,17 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// Выполняет парсинг канала поставки
         /// </summary>
         /// <param name="measuringChannel">Канал</param>
-        /// <param name="pointParameters">Параметры задания</param>
+        /// <param name="tagCode">Код тега</param>
         /// <param name="logicDevice">Логическое устройство</param>
         /// <param name="date">Дата</param>
         /// <param name="processingContext">Контекст выполнения задания</param>
         /// <returns></returns>
-        private List<ValueInfo> AnalyzeChannel(MeasuringChannel measuringChannel, Xml80020PointParameters pointParameters, LogicDevice logicDevice, DateTime date, ParseProcessingContext processingContext)
+        private List<ValueInfo> AnalyzeChannel(MeasuringChannel measuringChannel, string tagCode, LogicDevice logicDevice, DateTime date, ParseProcessingContext processingContext)
         {
             var result = new List<ValueInfo>();
-            var tagCode = GetTagCode(pointParameters, measuringChannel.Code);
-            var tag = GetTag(logicDevice, tagCode);
+            var tag = logicDevice.Tags.SingleOrDefault(t => t.LogicTagLink.LogicTagType.Code == tagCode);
+            if (tag == null)
+                throw new TaskException(TextParse.SelectedNoOneTagsError.With(logicDevice.Id, tagCode));
 
             var timeStampTypeTag = TimeStampTypeEnum.GetTypeByValue(tag.DeviceTag.IdTimeStampType);
             if (!_supportedTimestampTypes.Contains(timeStampTypeTag))
@@ -181,36 +185,19 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         }
 
         /// <summary>
-        /// Возвращает код тега оборудования из параметров задания <see cref="parameters"/> по коду канала <see cref="channelCode"/>
+        /// Возвращает канал с кодом <see cref="channelCode"/>
         /// </summary>
-        /// <param name="parameters">Параметры задания</param>
+        /// <param name="measuringPoint">Точка поставки/измерения</param>
         /// <param name="channelCode">Код канала</param>
         /// <returns></returns>
-        private string GetTagCode(Xml80020PointParameters parameters, string channelCode)
+        private MeasuringChannel GetChannel(MeasuringPoint measuringPoint, string channelCode)
         {
-            var channels = parameters.Channels.Where(t => t.ChannelCode == channelCode).ToList();
+            var channels = measuringPoint.MeasuringChannels.Where(t => t.Code == channelCode).ToList();
             return channels.Count switch
             {
-                0 => throw new TaskException(TextParse.SelectedNoOneChannelsError.With(parameters.GetType().Name, channelCode)),
-                1 => channels.Single().TagCode,
-                _ => throw new TaskException(TextParse.SelectedManyChannelsError.With(parameters.GetType().Name, channels.Count, channelCode))
-            };
-        }
-
-        /// <summary>
-        /// Возвращает тег оборудования <see cref="LogicDevice"/> по коду <see cref="tagCode"/>
-        /// </summary>
-        /// <param name="logicDevice">Оборудование</param>
-        /// <param name="tagCode">Код тега</param>
-        /// <returns></returns>
-        private Tag GetTag(LogicDevice logicDevice, string tagCode)
-        {
-            var tags = logicDevice.Tags.Where(t => t.LogicTagLink.LogicTagType.Code == tagCode).ToList();
-            return tags.Count switch
-            {
-                0 => throw new TaskException(TextParse.SelectedNoOneTagsError.With(logicDevice.Id, tagCode)),
-                1 => tags.Single(),
-                _ => throw new TaskException(TextParse.SelectedManyTagsError.With(logicDevice.Id, tags.Count, tagCode))
+                0 => throw new TaskException(TextParse.SelectedNoOneChannelsError.With(measuringPoint.Name, measuringPoint.Code, channelCode)),
+                1 => channels.Single(),
+                _ => throw new TaskException(TextParse.SelectedManyChannelsError.With(measuringPoint.Name, measuringPoint.Code, channelCode))
             };
         }
 

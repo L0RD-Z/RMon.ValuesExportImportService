@@ -30,15 +30,15 @@ namespace RMon.ValuesExportImportService.Text
         public static I18nString<string, string, string> NotFoundSectionWarning = new(nameof(NotFoundSectionWarning),
             "В файле \"{fileName}\" у узла \"{areaName}\" отсутствует секция \"{sectionName}\".", "fileName", "areaName", "sectionName");
 
-        public static I18nString<string, string> SelectedNoOneChannelsError = new(nameof(SelectedNoOneChannelsError),
-            "В настройках задания \"{settingsName}\" не найдено каналов с кодом \"{channelCode}\".", "settingsName", "channelCode");
-        public static I18nString<string, int, string> SelectedManyChannelsError = new(nameof(SelectedNoOneChannelsError),
-            "В настройках задания \"{settingsName}\" найдено {channelsCount} каналов с кодом \"{channelCode}\".", "settingsName", "channelsCount", "channelCode");
+        public static I18nString<string, string, string> SelectedNoOneChannelsError = new(nameof(SelectedNoOneChannelsError),
+            "У точки \"{pointName}\" (код: {pointCode}) не найдено каналов с кодом \"{channelCode}\".", "pointName", "pointCode", "channelCode");
+        public static I18nString<string, string, string> SelectedManyChannelsError = new(nameof(SelectedNoOneChannelsError),
+            "У точки \"{pointName}\" (код: {pointCode}) найдено более одного канала с кодом \"{channelCode}\".", "pointName", "pointCode", "channelCode");
 
         public static I18nString<long, string> SelectedNoOneTagsError = new(nameof(SelectedNoOneTagsError),
             "У оборудования (id = logicDeviceId) не найдено тегов с кодом \"{tagCode}\".", "logicDeviceId", "tagCode");
-        public static I18nString<long, int, string> SelectedManyTagsError = new(nameof(SelectedManyTagsError),
-            "У оборудования (id = logicDeviceId) найдено {tagCount} тегов с кодом \"{tagCode}\".", "logicDeviceId", "tagCount", "tagCode");
+        public static I18nString<long, string> SelectedManyTagsError = new(nameof(SelectedManyTagsError),
+            "У оборудования (id = logicDeviceId) найдено более одного тега с кодом \"{tagCode}\".", "logicDeviceId", "tagCode");
 
         public static I18nString<DateTime, DateTime> UndefinedTimestampError = new(nameof(UndefinedTimestampError),
             "Не удалось определить таймштамп у значения с {DateTimeStart} по {DateTimeEnd}", "DateTimeStart", "DateTimeEnd");

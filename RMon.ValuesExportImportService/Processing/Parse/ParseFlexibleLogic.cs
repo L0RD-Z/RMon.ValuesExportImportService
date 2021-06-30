@@ -80,7 +80,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                                         result.Add(valueInfo);
                                     }
                                     else
-                                        throw new ParseException(TextDb.FindTagForLogicDeviceNoOne.With(idLogicDevice, tagEntity.ToLogString()));
+                                        throw new ParseException(TextDb.FindNoOneTagForLogicDevice.With(tagEntity.ToLogString(), idLogicDevice));
                                 }
                                 else
                                     throw new ParseException(TextParse.MissingSectionError.With(EntityCodes.Tag));
@@ -114,9 +114,9 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             var logicDevices = await _logicDevicesRepository.FindLogicDevices(idUserGroups, entityFilter, cancellationToken).ConfigureAwait(false);
             return logicDevices.Count switch
             {
-                0 => throw new TaskException(TextDb.FindLogicDeviceNoOneError.With(entityFilter.ToLogString())),
+                0 => throw new TaskException(TextDb.FindNoOneLogicDeviceError.With(entityFilter.ToLogString())),
                 1 => logicDevices.Single().Id,
-                _ => throw new TaskException(TextDb.FindManyLogicDevicesError.With(logicDevices.Count, entityFilter.ToLogString()))
+                _ => throw new TaskException(TextDb.FindManyLogicDevicesError.With(entityFilter.ToLogString()))
             };
         }
 
