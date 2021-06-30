@@ -56,16 +56,14 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             }
 
             var result = new List<ValueInfo>();
-            
-            var idUserGroups = await _permissionLogic.GetUserGroupIdsWithPermissionAsync(EntityTypes.Values, CrudOperations.Read, context.IdUser).ConfigureAwait(false);
             var logicDevicesCache = new Dictionary<long, long>();
             var tagsCache = new Dictionary<long, long>();
-
-            var timer = Stopwatch.StartNew();
-
+            var idUserGroups = await _permissionLogic.GetUserGroupIdsWithPermissionAsync(EntityTypes.Values, CrudOperations.Read, context.IdUser).ConfigureAwait(false);
+            
             foreach (var table in tables)
                 foreach (var sheet in table.Sheets)
                 {
+                    await context.LogInfo(TextParse.AnalyzeInfoFromFlexibleFile.With(table.FileName, sheet.Name)).ConfigureAwait(false);
                     var rowNumber = StartRowNumber;
                     foreach (var row in sheet.Table.Entities)
                     {
@@ -114,9 +112,6 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                         }
                     }
                 }
-
-            await context.LogInfo(I18nString.FromString($"Время: {timer.ElapsedMilliseconds} мс.")).ConfigureAwait(false);
-
 
             return result;
         }
