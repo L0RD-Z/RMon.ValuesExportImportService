@@ -108,7 +108,7 @@ namespace RMon.ValuesExportImportService.Data
                     ? queryable.Where(t => t.LogicTagLink.LogicTagType.Code == propertyValue.Value)
                     : queryable,
                 TagPropertyCodes.Name => !string.IsNullOrEmpty(propertyValue.Value)
-                    ? queryable.Where(t => t.LogicTagLink.LogicTagType.Code == propertyValue.Value)
+                    ? queryable.Where(t => t.LogicTagLink.LogicTagType.Name == propertyValue.Value)
                     : queryable,
                 _ => queryable
             };
