@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using EsbPublisher.Controls;
+using RMon.Values.ExportImport.Core;
 
 namespace EsbPublisher
 {
@@ -15,6 +20,8 @@ namespace EsbPublisher
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private MainLogic _logic;
+        private readonly Dictionary<Type, UserControl> _parseControls;
+        private UserControl _selectedParseControl;
 
         public MainLogic Logic
         {
@@ -29,17 +36,56 @@ namespace EsbPublisher
             }
         }
 
+
+        public UserControl SelectedParseControl
+        {
+            get => _selectedParseControl;
+            set
+            {
+                if (_selectedParseControl != value)
+                {
+                    _selectedParseControl = value;
+                    OnPropertyChanged(nameof(SelectedParseControl));
+                }
+            }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
+            
             Logic = new MainLogic();
+            Logic.ParseLogic.ChangeParseType += ParseLogic_ChangeParseType;
+
+            _parseControls = new Dictionary<Type, UserControl>()
+            {
+                {typeof(ParseXml80020Control), new ParseXml80020Control(Logic.ParseLogic.Xml80020Logic)},
+                {typeof(ParseMatrix24X31Control), new ParseMatrix24X31Control(Logic.ParseLogic.Matrix24X31Logic)},
+            };
+            SelectedParseControl = ParseFormatToUserControlConvert(Logic.ParseLogic.SelectedFileType);
+
+
             Task.Run(async () =>
             {
                 await Logic.ExportLogic.LoadDataAsync().ConfigureAwait(false);
             });
         }
 
+        private void ParseLogic_ChangeParseType(object sender, ValuesParseFileFormatType e)
+        {
+            SelectedParseControl = ParseFormatToUserControlConvert(e);
+        }
 
+        UserControl ParseFormatToUserControlConvert(ValuesParseFileFormatType format) =>
+            format switch
+            {
+                ValuesParseFileFormatType.Xml80020 => _parseControls[typeof(ParseXml80020Control)],
+                ValuesParseFileFormatType.Matrix24X31 => _parseControls[typeof(ParseMatrix24X31Control)],
+                ValuesParseFileFormatType.Matrix31X24 => null,
+                ValuesParseFileFormatType.Table => null,
+                ValuesParseFileFormatType.Flexible => null,
+                _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
+            };
 
 
         #region Комманды
@@ -75,75 +121,7 @@ namespace EsbPublisher
         #endregion
 
 
-        #region Парсинг
-
-        #region Точки измерения
-
-        #region Добавить канал
-
-        private void MeasuringAddPoint_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-        }
-
-        private void MeasuringAddPoint_OnExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            Logic.ParseLogic.MeasuringPoint.AddChannel();
-        }
-
-        #endregion
-
-
-        #region Удалить канал
-
-        private void MeasuringRemovePoint_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = Logic?.ParseLogic?.MeasuringPoint?.SelectedChannel != null;
-        }
-
-        private void MeasuringRemovePoint_OnExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            Logic.ParseLogic.MeasuringPoint.RemoveChannel();
-        }
-
-        #endregion
-
-        #endregion
-
-        #region Точки поставки
-
-        #region Добавить канал
-
-        private void DeliveryAddPoint_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = true;
-        }
-
-        private void DeliveryAddPoint_OnExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            Logic.ParseLogic.DeliveryPoint.AddChannel();
-        }
-
-        #endregion
-
-
-        #region Удалить канал
-
-        private void DeliveryRemovePoint_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = Logic?.ParseLogic?.DeliveryPoint?.SelectedChannel != null;
-        }
-
-        private void DeliveryRemovePoint_OnExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            Logic.ParseLogic.DeliveryPoint.RemoveChannel();
-        }
-
-        #endregion
-
-        #endregion
-
-        #endregion
+        
 
         #region Парсинг
 

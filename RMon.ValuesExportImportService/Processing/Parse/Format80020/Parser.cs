@@ -7,7 +7,7 @@ using RMon.ValuesExportImportService.Text;
 
 namespace RMon.ValuesExportImportService.Processing.Parse.Format80020
 {
-    public static class Parser
+    public static class Parser //Todo сделать не статическим
     {
         private const string Class80020 = "80020";
         private const string SupportedVersion = "2";

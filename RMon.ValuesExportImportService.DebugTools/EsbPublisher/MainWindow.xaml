@@ -8,7 +8,7 @@
         xmlns:converters="clr-namespace:EsbPublisher.Converters"
         mc:Ignorable="d"
         Title="EsbPublisher" Height="700" Width="543"
-        DataContext="{Binding Logic, RelativeSource={RelativeSource Self}}" WindowStartupLocation="CenterScreen"
+        DataContext="{Binding ., RelativeSource={RelativeSource Self}}" WindowStartupLocation="CenterScreen"
         >
     <Window.Resources>
         <Style BasedOn="{StaticResource TextBlockStyle}" TargetType="TextBlock"/>
@@ -30,11 +30,6 @@
         <CommandBinding Command="commands:MainCommands.CancelParse" CanExecute="CancelParse_OnCanExecute" Executed="CancelParse_OnExecuted"/>
         <CommandBinding Command="commands:MainCommands.Import" CanExecute="Import_OnCanExecute" Executed="Import_OnExecuted"/>
         <CommandBinding Command="commands:MainCommands.CancelImport" CanExecute="CancelImport_OnCanExecute" Executed="CancelImport_OnExecuted"/>
-
-        <CommandBinding Command="commands:PointsCommands.MeasuringAddPoint" CanExecute="MeasuringAddPoint_OnCanExecute" Executed="MeasuringAddPoint_OnExecuted"/>
-        <CommandBinding Command="commands:PointsCommands.MeasuringRemovePoint" CanExecute="MeasuringRemovePoint_OnCanExecute" Executed="MeasuringRemovePoint_OnExecuted"/>
-        <CommandBinding Command="commands:PointsCommands.DeliveryAddPoint" CanExecute="DeliveryAddPoint_OnCanExecute" Executed="DeliveryAddPoint_OnExecuted"/>
-        <CommandBinding Command="commands:PointsCommands.DeliveryRemovePoint" CanExecute="DeliveryRemovePoint_OnCanExecute" Executed="DeliveryRemovePoint_OnExecuted"/>
     </Window.CommandBindings>
     <Grid>
         <Grid.RowDefinitions>
@@ -42,7 +37,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <GroupBox Grid.Row="0" Header="Экспорт" DataContext="{Binding ExportLogic}">
+        <GroupBox Grid.Row="0" Header="Экспорт" DataContext="{Binding Logic.ExportLogic}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -114,12 +109,10 @@
                     <Button Content="Экспорт" Command="commands:MainCommands.Export"/>
                     <Button Content="Отмена" Command="commands:MainCommands.CancelExport"/>
                 </StackPanel>
-
-
             </Grid>
         </GroupBox>
 
-        <GroupBox Grid.Row="1" Header="Парсинг" DataContext="{Binding ParseLogic}">
+        <GroupBox Grid.Row="1" Header="Парсинг" DataContext="{Binding Logic.ParseLogic}">
             <StackPanel Orientation="Vertical">
                 <ComboBox ItemsSource="{Binding SupportedFileTypes}" SelectedItem="{Binding SelectedFileType}">
                     <ComboBox.ItemTemplate>
@@ -130,66 +123,8 @@
                 </ComboBox>
                 <TextBlock Text="Путь к файлу (внутри RMon.FileStorageService)"/>
                 <TextBox   Text="{Binding FilePath}"/>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <GroupBox Grid.Column="0" Header="Точки измерения" DataContext="{Binding MeasuringPoint}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Grid Grid.Row="0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="Код свойства устройства"/>
-                                <TextBox Grid.Column="1"   Text="{Binding PropertyCode}"/>
-                            </Grid>
-                            <DataGrid Grid.Row="1" ItemsSource="{Binding Channels}" SelectedItem="{Binding SelectedChannel}" Style="{StaticResource DataGridStyle}">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Код канала" Binding="{Binding ChannelCode}" Width="*"/>
-                                    <DataGridTextColumn Header="Код тега" Binding="{Binding TagCode}" Width="*"/>
-                                </DataGrid.Columns>
-                            </DataGrid>
-                            <StackPanel Grid.Row="2"  Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Button Content="+" Command="commands:PointsCommands.MeasuringAddPoint" Style="{StaticResource SmallButtonStyle}"/>
-                                <Button Content="-" Command="commands:PointsCommands.MeasuringRemovePoint" Style="{StaticResource SmallButtonStyle}"/>
-                            </StackPanel>
-                        </Grid>
-                    </GroupBox>
-                    <GroupBox Grid.Column="1" Header="Точки поставки" DataContext="{Binding DeliveryPoint}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Grid Grid.Row="0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="Код свойства устройства"/>
-                                <TextBox Grid.Column="1"   Text="{Binding PropertyCode}"/>
-                            </Grid>
-                            <DataGrid Grid.Row="1" ItemsSource="{Binding Channels}" SelectedItem="{Binding SelectedChannel}"  Style="{StaticResource DataGridStyle}">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Код канала" Binding="{Binding ChannelCode}" Width="*"/>
-                                    <DataGridTextColumn Header="Код тега" Binding="{Binding TagCode}" Width="*"/>
-                                </DataGrid.Columns>
-                            </DataGrid>
-                            <StackPanel Grid.Row="2"  Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Button Content="+" Command="commands:PointsCommands.DeliveryAddPoint" Style="{StaticResource SmallButtonStyle}"/>
-                                <Button Content="-" Command="commands:PointsCommands.DeliveryRemovePoint" Style="{StaticResource SmallButtonStyle}"/>
-                            </StackPanel>
-                        </Grid>
-                    </GroupBox>
-                </Grid>
+
+                <ContentControl  Content="{Binding SelectedParseControl, RelativeSource={RelativeSource AncestorType=Window}}"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button Content="Парсинг" Command="commands:MainCommands.Parse"/>
                     <Button Content="Отмена" Command="commands:MainCommands.CancelParse"/>

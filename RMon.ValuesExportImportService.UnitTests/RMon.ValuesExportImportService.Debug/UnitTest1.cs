@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RMon.Data.Provider;
+using RMon.ValuesExportImportService.Excel;
 
 namespace RMon.ValuesExportImportService.Debug
 {
@@ -37,6 +38,21 @@ namespace RMon.ValuesExportImportService.Debug
                 result.Add(timeRange);
 
             return result;
+        }
+
+        [TestMethod]
+        public void TestMethod2()
+        {
+            var num = AddressConverter.ColNumberConvert("XFC"); //16383
+
+            var a = AddressConverter.CellAddressConvert("G14");
+        }
+
+        [TestMethod]
+        public void TestMethod3()
+        {
+            var date = new DateTime(2021, 06, 15);
+            var date1 = date.AddHours(24);
         }
     }
 }

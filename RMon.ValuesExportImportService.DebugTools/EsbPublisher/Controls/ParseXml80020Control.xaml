@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="EsbPublisher.Controls.ParseXml80020Control"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:EsbPublisher"
+             xmlns:commands="clr-namespace:EsbPublisher.Commands"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             DataContext="{Binding Logic, RelativeSource={RelativeSource Self}}"
+>
+    <UserControl.Resources>
+        <Style BasedOn="{StaticResource TextBlockStyle}" TargetType="TextBlock"/>
+        <Style BasedOn="{StaticResource TextBoxStyle}" TargetType="TextBox"/>
+        <Style BasedOn="{StaticResource DatePickerStyle}" TargetType="DatePicker"/>
+
+        <Style BasedOn="{StaticResource ButtonStyle}" TargetType="Button"/>
+        <Style BasedOn="{StaticResource ComboBoxStyle}" TargetType="ComboBox"/>
+        <Style BasedOn="{StaticResource CheckBoxStyle}" TargetType="CheckBox"/>
+        <Style BasedOn="{StaticResource GroupBoxStyle}" TargetType="GroupBox"/>
+        <Style BasedOn="{StaticResource ListBoxStyle}" TargetType="ListBox"/>
+    </UserControl.Resources>
+    <UserControl.CommandBindings>
+        <CommandBinding Command="commands:PointsCommands.MeasuringAddPoint" CanExecute="MeasuringAddPoint_OnCanExecute" Executed="MeasuringAddPoint_OnExecuted"/>
+        <CommandBinding Command="commands:PointsCommands.MeasuringRemovePoint" CanExecute="MeasuringRemovePoint_OnCanExecute" Executed="MeasuringRemovePoint_OnExecuted"/>
+        <CommandBinding Command="commands:PointsCommands.DeliveryAddPoint" CanExecute="DeliveryAddPoint_OnCanExecute" Executed="DeliveryAddPoint_OnExecuted"/>
+        <CommandBinding Command="commands:PointsCommands.DeliveryRemovePoint" CanExecute="DeliveryRemovePoint_OnCanExecute" Executed="DeliveryRemovePoint_OnExecuted"/>
+    </UserControl.CommandBindings>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <GroupBox Grid.Column="0" Header="Точки измерения" DataContext="{Binding MeasuringPoint}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Код свойства оборудования"/>
+                    <TextBox Grid.Column="1"   Text="{Binding PropertyCode}"/>
+                </Grid>
+                <DataGrid Grid.Row="1" ItemsSource="{Binding Channels}" SelectedItem="{Binding SelectedChannel}" Style="{StaticResource DataGridStyle}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Код канала" Binding="{Binding ChannelCode}" Width="*"/>
+                        <DataGridTextColumn Header="Код тега" Binding="{Binding TagCode}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <StackPanel Grid.Row="2"  Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="+" Command="commands:PointsCommands.MeasuringAddPoint" Style="{StaticResource SmallButtonStyle}"/>
+                    <Button Content="-" Command="commands:PointsCommands.MeasuringRemovePoint" Style="{StaticResource SmallButtonStyle}"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Header="Точки поставки" DataContext="{Binding DeliveryPoint}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Код свойства оборудования"/>
+                    <TextBox Grid.Column="1"   Text="{Binding PropertyCode}"/>
+                </Grid>
+                <DataGrid Grid.Row="1" ItemsSource="{Binding Channels}" SelectedItem="{Binding SelectedChannel}"  Style="{StaticResource DataGridStyle}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Код канала" Binding="{Binding ChannelCode}" Width="*"/>
+                        <DataGridTextColumn Header="Код тега" Binding="{Binding TagCode}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <StackPanel Grid.Row="2"  Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="+" Command="commands:PointsCommands.DeliveryAddPoint" Style="{StaticResource SmallButtonStyle}"/>
+                    <Button Content="-" Command="commands:PointsCommands.DeliveryRemovePoint" Style="{StaticResource SmallButtonStyle}"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

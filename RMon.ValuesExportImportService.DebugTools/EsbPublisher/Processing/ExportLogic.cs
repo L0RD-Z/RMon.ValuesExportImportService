@@ -11,7 +11,7 @@ using EsbPublisher.Model;
 using EsbPublisher.ServiceBus;
 using RMon.Data.Provider.Configuration;
 
-namespace EsbPublisher
+namespace EsbPublisher.Processing
 {
     public class ExportLogic : INotifyPropertyChanged
     {

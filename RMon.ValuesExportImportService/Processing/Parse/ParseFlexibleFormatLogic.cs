@@ -20,7 +20,7 @@ using RMon.ValuesExportImportService.Text;
 
 namespace RMon.ValuesExportImportService.Processing.Parse
 {
-    class ParseFlexibleLogic
+    class ParseFlexibleFormatLogic
     {
         private readonly ILogicDevicesRepository _logicDevicesRepository;
         private readonly IPermissionLogic _permissionLogic;
@@ -28,7 +28,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         private readonly IExcelWorker _excelWorker;
         private const int StartRowNumber = 5;
 
-        public ParseFlexibleLogic(ILogicDevicesRepository logicDevicesRepository, IDataRepository dataRepository, IPermissionLogic permissionLogic, IExcelWorker excelWorker)
+        public ParseFlexibleFormatLogic(ILogicDevicesRepository logicDevicesRepository, IDataRepository dataRepository, IPermissionLogic permissionLogic, IExcelWorker excelWorker)
         {
             _logicDevicesRepository = logicDevicesRepository;
             _dataRepository = dataRepository;

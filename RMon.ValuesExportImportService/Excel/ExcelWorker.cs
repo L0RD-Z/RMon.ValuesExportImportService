@@ -263,7 +263,7 @@ namespace RMon.ValuesExportImportService.Excel
                 }
                 catch (Exception e)
                 {
-                    throw new ExcelException(TextExcel.ParseUnexpectedError.With(EntityName, rowIndex), e);
+                    throw new ExcelException(TextExcel.RowParseUnexpectedError.With(rowIndex), e);
                 }
 
             _logger.LogInformation($"Сущность \"{EntityName}\": процесс парсинга завершен.");
