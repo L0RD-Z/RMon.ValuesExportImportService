@@ -25,6 +25,9 @@
     <None Update="Parse80020\Files\80020_7713076301_20190101_6599155.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="ParseFlexible\Files\Выгрузка значений 20210622 001252.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

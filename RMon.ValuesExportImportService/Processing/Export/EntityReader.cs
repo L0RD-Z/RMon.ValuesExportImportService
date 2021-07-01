@@ -47,7 +47,7 @@ namespace RMon.ValuesExportImportService.Processing.Export
             var idUserGroups = await _permissionLogic.GetUserGroupIdsWithPermissionAsync(EntityTypes.Values, CrudOperations.Read, idUser).ConfigureAwait(false);
 
             var newPropertyCodes = valuesExportTaskParameters.PropertyCodes.ToList();
-            newPropertyCodes.Add(PropertyCodes.Id);
+            newPropertyCodes.Add(LogicDevicePropertyCodes.Id);
             var entityDescription = newPropertyCodes.ToEntityDescription("LogicDevices");
             var logicDevicesTable = await _logicDevicesRepository.GetLogicDevicesTable(idUserGroups, valuesExportTaskParameters.IdLogicDevices, entityDescription, cancellationToken).ConfigureAwait(false);
 
@@ -65,7 +65,7 @@ namespace RMon.ValuesExportImportService.Processing.Export
 
             foreach (var logicDevice in logicDevicesTable.Entities)
             {
-                var idLogicDevice = long.Parse(logicDevice.Properties[PropertyCodes.Id].Value);
+                var idLogicDevice = long.Parse(logicDevice.Properties[LogicDevicePropertyCodes.Id].Value);
                 var tagsLogicDevice = tags.Where(t => t.IdLogicDevice == idLogicDevice).ToList();
                 foreach (var tag in tagsLogicDevice)
                 {
@@ -102,31 +102,31 @@ namespace RMon.ValuesExportImportService.Processing.Export
         List<PropertyDescription> CreateTagPropertyDescriptions() =>
             new()
             {
-                new(PropertyCodes.Id, TextExcel.Id),
-                new(PropertyCodes.Code, TextExcel.Code),
-                new(PropertyCodes.Name, TextExcel.Name)
+                new(TagPropertyCodes.Id, TextExcel.Id),
+                new(TagPropertyCodes.Code, TextExcel.Code),
+                new(TagPropertyCodes.Name, TextExcel.Name)
             };
 
         List<PropertyDescription> CreateValuesPropertyDescriptions() =>
             new()
             {
-                new(PropertyCodes.Timestamp, TextExcel.Timestamp),
-                new(PropertyCodes.Value, TextExcel.Value),
+                new(ValuesPropertyCodes.Timestamp, TextExcel.Timestamp),
+                new(ValuesPropertyCodes.Value, TextExcel.Value),
             };
 
         List<PropertyValue> CreateTagPropertyValues(long tagId, string tagCode, string tagName) =>
             new()
             {
-                new(PropertyCodes.Id, tagId.ToString()),
-                new(PropertyCodes.Code, tagCode),
-                new(PropertyCodes.Name, tagName),
+                new(TagPropertyCodes.Id, tagId.ToString()),
+                new(TagPropertyCodes.Code, tagCode),
+                new(TagPropertyCodes.Name, tagName),
             };
 
         List<PropertyValue> CreateValuesPropertyValues(DateTime timestamp, double value) =>
             new()
             {
-                new(PropertyCodes.Timestamp, timestamp.ToString()),
-                new(PropertyCodes.Value, value.ToString())
+                new(ValuesPropertyCodes.Timestamp, timestamp.ToString()),
+                new(ValuesPropertyCodes.Value, value.ToString())
             };
     }
 }

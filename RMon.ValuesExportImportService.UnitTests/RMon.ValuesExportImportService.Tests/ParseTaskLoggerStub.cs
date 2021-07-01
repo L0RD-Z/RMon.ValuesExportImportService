@@ -8,7 +8,7 @@ using RMon.Values.ExportImport.Core;
 using RMon.ValuesExportImportService.Processing.Parse;
 using LogLevel = RMon.ESB.Core.Common.LogLevel;
 
-namespace RMon.ValuesExportImportService.Tests.Parse80020
+namespace RMon.ValuesExportImportService.Tests
 {
     class ParseTaskLoggerStub : IParseTaskLogger
     {

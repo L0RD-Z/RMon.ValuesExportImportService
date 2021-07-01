@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using RMon.Context.EntityStore;
+using RMon.Data.Provider.Units.Backend.Common;
 
 namespace RMon.ValuesExportImportService.Data
 {
@@ -31,5 +32,15 @@ namespace RMon.ValuesExportImportService.Data
         /// <param name="cancellationToken">Токен отмены операции</param>
         /// <returns></returns>
         Task<LogicDevice> GetLogicDeviceByPropertyValueAsync(string propertyCode, string propertyValue, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Выполняет поиск тегов для указанного оборудования с указанными значениями свойств
+        /// </summary>
+        /// <param name="idUserGroups">Группа пользователей</param>
+        /// <param name="idLogicDevice">Id оборудования</param>
+        /// <param name="entityFilter">Коды свойств со значениями</param>
+        /// <param name="ct">Токен отмены операции</param>
+        /// <returns>Список id тегов</returns>
+        Task<IList<long>> FindTags(IList<long> idUserGroups, long idLogicDevice, Entity entityFilter, CancellationToken ct = default);
     }
 }

@@ -191,11 +191,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 {
                     var dbValue = dbValues.SingleOrDefault(t => t.Datetime == value.TimeStamp);
                     if (dbValue != null)
-                        value.CurrentValue = new ValueUnion()
-                        {
-                            IdQuality = "Normal",
-                            ValueFloat = dbValue.ValueFloat
-                        };
+                        value.CurrentValue = new ValueUnion("Normal", dbValue.ValueFloat);
                 }
             }
         }

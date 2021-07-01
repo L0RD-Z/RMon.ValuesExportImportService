@@ -13,6 +13,7 @@ namespace RMon.ValuesExportImportService.Text
         public static I18nString FinishAborted = new(nameof(FinishAborted), "Задание отменено");
         public static I18nString<I18nString> FinishFailed = new(nameof(FinishFailed), "Ошибка при выполнении задания: {error}", "error");
         public static I18nString<string> AnalyzeInfoFromFile = new(nameof(AnalyzeInfoFromFile), "Анализ информации из файла \"{fileName}\"", "fileName");
+        public static I18nString<string, string> AnalyzeInfoFromFlexibleFile = new(nameof(AnalyzeInfoFromFlexibleFile), "Анализ информации из файла \"{fileName}\", страница \"{sheetName}\"", "fileName", "sheetName");
         public static I18nString<string, string> AnalyzeArea = new(nameof(AnalyzeArea), 
             "Анализ организации \"{name}\" (ИНН {inn})", "name", "inn");
         public static I18nString AnalyzeMeasuringPoints = new(nameof(AnalyzeMeasuringPoints), "Анализ точек измерения");

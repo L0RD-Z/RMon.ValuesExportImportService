@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using RMon.Context.EntityStore;
+using RMon.Data.Provider.Units.Backend.Common;
 using RMon.DriverCore;
 using RMon.ValuesExportImportService.Data;
 using Task = System.Threading.Tasks.Task;
@@ -40,6 +41,11 @@ namespace RMon.ValuesExportImportService.Tests.Parse80020
                 }
             };
             return Task.FromResult(logicDevice);
+        }
+
+        public Task<IList<long>> FindTags(IList<long> idUserGroups, long idLogicDevice, Entity entityFilter, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
         }
 
 
