@@ -7,6 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using RMon.Context.BackEndContext;
 using RMon.Context.EntityStore;
 using RMon.Core.Base;
+using RMon.Data.Provider.Units.Backend.Common;
+using RMon.Data.Provider.Units.Backend.Common.FindResults;
+using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Text;
 
 namespace RMon.ValuesExportImportService.Data
@@ -73,6 +76,44 @@ namespace RMon.ValuesExportImportService.Data
 
         #endregion
 
+
+        #region Flexiable
+
+        /// <inheritdoc/>
+        public async Task<IList<long>> FindTags(IList<long> idUserGroups, long idLogicDevice, Entity entityFilter, CancellationToken ct = default)
+        {
+            await using var context = _factory.Create();
+
+            IQueryable<Tag> tags = context.Tags
+                .Where(t => t.LogicDevice.Id == idLogicDevice && t.LogicDevice.UserGroupLogicDevices.Any(ugs => idUserGroups.Contains(ugs.IdUserGroup)));
+
+            
+            foreach (var property in entityFilter.Properties) 
+                tags = AddTagPropertyCondition(tags, property.Value);
+
+
+            return await tags.AsNoTracking()
+                .Select(t => t.Id)
+                .ToListAsync(ct)
+                .ConfigureAwait(false);
+        }
+
+        private IQueryable<Tag> AddTagPropertyCondition(IQueryable<Tag> queryable, PropertyValue propertyValue) =>
+            propertyValue.Code switch
+            {
+                TagPropertyCodes.Id => long.TryParse(propertyValue.Value, out var lValue)
+                    ? queryable.Where(t => t.Id == lValue)
+                    : queryable,
+                TagPropertyCodes.Code => !string.IsNullOrEmpty(propertyValue.Value)
+                    ? queryable.Where(t => t.LogicTagLink.LogicTagType.Code == propertyValue.Value)
+                    : queryable,
+                TagPropertyCodes.Name => !string.IsNullOrEmpty(propertyValue.Value)
+                    ? queryable.Where(t => t.LogicTagLink.LogicTagType.Code == propertyValue.Value)
+                    : queryable,
+                _ => queryable
+            };
+
+        #endregion
 
 
         #endregion

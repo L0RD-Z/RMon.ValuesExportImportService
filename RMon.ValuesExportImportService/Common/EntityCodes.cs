@@ -1,4 +1,4 @@
-﻿namespace RMon.ValuesExportImportService.Processing.Common
+﻿namespace RMon.ValuesExportImportService.Common
 {
     class EntityCodes
     {

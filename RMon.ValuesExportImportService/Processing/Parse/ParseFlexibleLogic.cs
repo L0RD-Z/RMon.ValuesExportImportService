@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using RMon.Data.Provider.Units.Backend.Common;
 using RMon.Data.Provider.Units.Backend.Interfaces;
-using RMon.Globalization.String;
 using RMon.Values.ExportImport.Core;
 using RMon.ValuesExportImportService.Common;
+using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Excel;
 using RMon.ValuesExportImportService.Excel.Common;
 using RMon.ValuesExportImportService.Extensions;
@@ -25,14 +24,14 @@ namespace RMon.ValuesExportImportService.Processing.Parse
     {
         private readonly ILogicDevicesRepository _logicDevicesRepository;
         private readonly IPermissionLogic _permissionLogic;
-        private readonly ITagsRepository _tagsRepository;
+        private readonly IDataRepository _dataRepository;
         private readonly IExcelWorker _excelWorker;
         private const int StartRowNumber = 5;
 
-        public ParseFlexibleLogic(ILogicDevicesRepository logicDevicesRepository, ITagsRepository tagsRepository, IPermissionLogic permissionLogic, IExcelWorker excelWorker)
+        public ParseFlexibleLogic(ILogicDevicesRepository logicDevicesRepository, IDataRepository dataRepository, IPermissionLogic permissionLogic, IExcelWorker excelWorker)
         {
             _logicDevicesRepository = logicDevicesRepository;
-            _tagsRepository = tagsRepository;
+            _dataRepository = dataRepository;
             _permissionLogic = permissionLogic;
             _excelWorker = excelWorker;
         }
@@ -70,7 +69,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                         rowNumber++;
                         try
                         {
-                            if (row.Entity.Entities.TryGetValue(EntityCodes.LogicDevice, out var logicDeviceEntity)) //Поиск оборудовавние
+                            if (row.Entity.Entities.TryGetValue(EntityCodes.LogicDevice, out var logicDeviceEntity)) //Поиск оборудования
                             {
                                 var logicDeviceHash = GetHash(logicDeviceEntity);
                                 if (!logicDevicesCache.TryGetValue(logicDeviceHash, out var logicDeviceId))
@@ -81,7 +80,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
 
                                 if (row.Entity.Entities.TryGetValue(EntityCodes.Tag, out var tagEntity)) //Поиск тега
                                 {
-                                    var tagHash = GetHash(tagEntity);
+                                    var tagHash = HashCode.Combine(GetHash(tagEntity), logicDeviceHash);
                                     if (!tagsCache.TryGetValue(tagHash, out var tagId))
                                     {
                                         tagId = await FindTagId(idUserGroups, logicDeviceId, tagEntity, ct).ConfigureAwait(false);
@@ -97,11 +96,11 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                                 if (!row.Entity.Entities.TryGetValue(EntityCodes.Tag, out var tagEntity))
                                     throw new ParseException(TextParse.MissingSectionsError.With(EntityCodes.LogicDevice, EntityCodes.Tag));
 
-                                if (!tagEntity.Properties.TryGetValue(PropertyCodes.Id, out var tagId))
-                                    throw new ParseException(TextParse.MissingPropertyError.With($"{EntityCodes.Tag}.{PropertyCodes.Id}"));
+                                if (!tagEntity.Properties.TryGetValue(TagPropertyCodes.Id, out var tagId))
+                                    throw new ParseException(TextParse.MissingPropertyError.With($"{EntityCodes.Tag}.{TagPropertyCodes.Id}"));
 
                                 if (!long.TryParse(tagId.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out var idTag))
-                                    throw new ParseException(TextParse.FailedConvertToLong.With(PropertyCodes.Value));
+                                    throw new ParseException(TextParse.FailedConvertToLong.With(ValuesPropertyCodes.Value));
                                     
                                 result.Add(CreateValue(row, idTag));
                             }
@@ -162,10 +161,9 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <returns></returns>
         private async Task<long> FindTagId(IList<long> idUserGroups, long logicDeviceId, Entity entityFilter, CancellationToken cancellationToken = default)
         {
-            var tags = await _tagsRepository.FindTags(idUserGroups, entityFilter, cancellationToken).ConfigureAwait(false);
-            var tag = tags.SingleOrDefault(t => t.IdLogicDevice == logicDeviceId);
-            if (tag != null)
-                return tag.Id;
+            var tags = await _dataRepository.FindTags(idUserGroups, logicDeviceId, entityFilter, cancellationToken).ConfigureAwait(false);
+            if (tags.Any())
+                return tags.SingleOrDefault();
             else
                 throw new ParseException(TextDb.FindNoOneTagForLogicDevice.With(entityFilter.ToLogString(), logicDeviceId));
         }
@@ -178,10 +176,10 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <returns></returns>
         private static ValueInfo CreateValue(ImportEntity rowEntity, long idTag)
         {
-            if (!rowEntity.Entity.Properties.TryGetValue(PropertyCodes.Timestamp, out var timestampProperty))
-                throw new ParseException(TextParse.MissingPropertyError.With(PropertyCodes.Timestamp));
-            if (!rowEntity.Entity.Properties.TryGetValue(PropertyCodes.Value, out var valueProperty))
-                throw new ParseException(TextParse.MissingPropertyError.With(PropertyCodes.Value));
+            if (!rowEntity.Entity.Properties.TryGetValue(ValuesPropertyCodes.Timestamp, out var timestampProperty))
+                throw new ParseException(TextParse.MissingPropertyError.With(ValuesPropertyCodes.Timestamp));
+            if (!rowEntity.Entity.Properties.TryGetValue(ValuesPropertyCodes.Value, out var valueProperty))
+                throw new ParseException(TextParse.MissingPropertyError.With(ValuesPropertyCodes.Value));
 
             if (!DateTime.TryParseExact(timestampProperty.Value, "dd.MM.yyyy H:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var timeStamp))
                 throw new ParseException(TextParse.FailedConvertToDateTime.With(timestampProperty.Value));
