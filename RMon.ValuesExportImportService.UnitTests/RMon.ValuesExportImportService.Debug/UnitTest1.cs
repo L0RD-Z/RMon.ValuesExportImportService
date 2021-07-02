@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RMon.Data.Provider;
 using RMon.ValuesExportImportService.Excel;
+using RMon.ValuesExportImportService.Excel.Matrix;
 
 namespace RMon.ValuesExportImportService.Debug
 {
@@ -43,9 +44,9 @@ namespace RMon.ValuesExportImportService.Debug
         [TestMethod]
         public void TestMethod2()
         {
-            var num = AddressConverter.ColNumberConvert("XFC"); //16383
+            var num = ExcelCellAddressConverter.ColNumberConvert("XFC"); //16383
 
-            var a = AddressConverter.CellAddressConvert("G14");
+            var a = ExcelCellAddressConverter.CellAddressConvert("G14");
         }
 
         [TestMethod]

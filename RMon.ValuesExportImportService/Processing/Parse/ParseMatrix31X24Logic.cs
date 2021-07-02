@@ -11,29 +11,29 @@ using RMon.ValuesExportImportService.Text;
 
 namespace RMon.ValuesExportImportService.Processing.Parse
 {
-    class ParseMatrix24X31Logic
+    class ParseMatrix31X24Logic
     {
         private readonly IMatrixReader _matrixReader;
 
-        public ParseMatrix24X31Logic(Matrix24X31Reader matrixReader)
+        public ParseMatrix31X24Logic(Matrix31X24Reader matrixReader)
         {
             _matrixReader = matrixReader;
         }
 
-        public async Task<List<ValueInfo>> AnalyzeAsync(IList<LocalFile> files, Matrix24X31ParsingParameters taskParams, ParseProcessingContext context, CancellationToken ct)
+        public async Task<List<ValueInfo>> AnalyzeAsync(IList<LocalFile> files, Matrix31X24ParsingParameters taskParams, ParseProcessingContext context, CancellationToken ct)
         {
             ValidateParameters(taskParams);
             var logicDevicePropertyValueCell = ExcelCellAddressConverter.CellAddressConvert(taskParams.LogicDevicePropertyCell);
             var cellStart = ExcelCellAddressConverter.CellAddressConvert(taskParams.FirstValueCell);
-            var dateColumnNumber = ExcelCellAddressConverter.ColNumberConvert(taskParams.DateColumn);
-            var timeRowNumber = int.Parse(taskParams.TimeRow);
+            var dateRowNumber = int.Parse(taskParams.DateRow);
+            var timeColumnNumber = ExcelCellAddressConverter.ColNumberConvert(taskParams.TimeColumn);
 
             var messages = new List<(string FileName, IList<MatrixResult>)>();
             foreach (var file in files)
             {
                 await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Matrix24X31.ToString())).ConfigureAwait(false);
 
-                var message = _matrixReader.ReadExcelBook(file.Body, logicDevicePropertyValueCell, cellStart, dateColumnNumber, timeRowNumber, context);
+                var message = _matrixReader.ReadExcelBook(file.Body, logicDevicePropertyValueCell, cellStart, dateRowNumber, timeColumnNumber, context);
                 messages.Add((file.Path, message));
             }
 
@@ -48,7 +48,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// Выполняет валидацию полученных параметров задания
         /// </summary>
         /// <param name="taskParams"></param>
-        private void ValidateParameters(Matrix24X31ParsingParameters taskParams)
+        private void ValidateParameters(Matrix31X24ParsingParameters taskParams)
         {
             if (string.IsNullOrEmpty(taskParams.LogicDevicePropertyCode))
                 throw new TaskException(TextParse.MissingLogicDevicePropertyCode);
@@ -58,12 +58,13 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 throw new TaskException(TextParse.MissingTagCode);
             if (string.IsNullOrEmpty(taskParams.FirstValueCell))
                 throw new TaskException(TextParse.MissingFirstValueCellAddress);
-            if (string.IsNullOrEmpty(taskParams.DateColumn))
-                throw new TaskException(TextParse.MissingDateColumnNumber);
-            if (string.IsNullOrEmpty(taskParams.TimeRow))
-                throw new TaskException(TextParse.MissingTimeRowNumber);
-            if (!int.TryParse(taskParams.TimeRow, out _))
-                throw new TaskException(TextParse.IncorrectTimeRowNumber);
+            if (string.IsNullOrEmpty(taskParams.DateRow))
+                throw new TaskException(TextParse.MissingDateRowNumber);
+            if (!int.TryParse(taskParams.DateRow, out _))
+                throw new TaskException(TextParse.IncorrectDateRowNumber);
+            if (string.IsNullOrEmpty(taskParams.TimeColumn))
+                throw new TaskException(TextParse.MissingTimeColumnNumber);
+            
         }
     }
 }

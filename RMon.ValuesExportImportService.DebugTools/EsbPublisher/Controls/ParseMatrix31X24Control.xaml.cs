@@ -9,11 +9,11 @@ namespace EsbPublisher.Controls
     /// <summary>
     /// Логика взаимодействия для ParseMatrix24X31Control.xaml
     /// </summary>
-    public partial class ParseMatrix24X31Control : UserControl, INotifyPropertyChanged
+    public partial class ParseMatrix31X24Control : UserControl, INotifyPropertyChanged
     {
-        private ParseMatrix24X31Logic _logic;
+        private ParseMatrix31X24Logic _logic;
 
-        public ParseMatrix24X31Logic Logic
+        public ParseMatrix31X24Logic Logic
         {
             get => _logic;
             set
@@ -26,7 +26,7 @@ namespace EsbPublisher.Controls
             }
         }
 
-        public ParseMatrix24X31Control(ParseMatrix24X31Logic logic)
+        public ParseMatrix31X24Control(ParseMatrix31X24Logic logic)
         {
             InitializeComponent();
             Logic = logic;

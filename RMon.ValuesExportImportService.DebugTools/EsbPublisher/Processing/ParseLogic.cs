@@ -22,8 +22,12 @@ namespace EsbPublisher.Processing
         private long _idUser;
 
         private Guid _correlationId;
-        private ParseMatrix24X31Logic _matrix24X31Logic;
+        
         private ParseXml80020Logic _xml80020Logic;
+        private ParseMatrix24X31Logic _matrix24X31Logic;
+        private ParseMatrix31X24Logic _matrix31X24Logic;
+        
+        
 
         public ParseXml80020Logic Xml80020Logic
         {
@@ -51,6 +55,18 @@ namespace EsbPublisher.Processing
             }
         }
 
+        public ParseMatrix31X24Logic Matrix31X24Logic
+        {
+            get => _matrix31X24Logic;
+            set
+            {
+                if (_matrix31X24Logic != value)
+                {
+                    _matrix31X24Logic = value;
+                    OnPropertyChanged(nameof(Matrix31X24Logic));
+                }
+            }
+        }
 
         /// <summary>
         /// Поддерживаемые типы файлов
@@ -117,6 +133,7 @@ namespace EsbPublisher.Processing
             _busService = busService;
             Xml80020Logic = new ParseXml80020Logic();
             Matrix24X31Logic = new ParseMatrix24X31Logic();
+            Matrix31X24Logic = new ParseMatrix31X24Logic();
         }
 
 
@@ -135,6 +152,7 @@ namespace EsbPublisher.Processing
 
             Xml80020Logic.InitializeProperties();
             Matrix24X31Logic.InitializeProperties();
+            Matrix31X24Logic.InitializeProperties();
         }
 
         /// <summary>
@@ -147,7 +165,7 @@ namespace EsbPublisher.Processing
             {
                 ValuesParseFileFormatType.Xml80020 => SendParseXml80020Async(),
                 ValuesParseFileFormatType.Matrix24X31 => SendParseMatrix24X31Async(),
-                ValuesParseFileFormatType.Matrix31X24 => throw new NotImplementedException(),
+                ValuesParseFileFormatType.Matrix31X24 => SendParseMatrix31X24Async(),
                 ValuesParseFileFormatType.Table => throw new NotImplementedException(),
                 ValuesParseFileFormatType.Flexible => SendParseFlexibleAsync(),
                 _ => throw new NotImplementedException()
@@ -209,6 +227,27 @@ namespace EsbPublisher.Processing
                 FirstValueCell = Matrix24X31Logic.FirstValueCell,
                 DateColumn = Matrix24X31Logic.DateColumn,
                 TimeRow = Matrix24X31Logic.TimeRow.ToString()
+            };
+
+            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, parsingParams, IdUser);
+        }
+
+        /// <summary>
+        /// Отправляет задание на парсинг матрицы 31x24
+        /// </summary>
+        /// <returns></returns>
+        private Task SendParseMatrix31X24Async()
+        {
+            _correlationId = Guid.NewGuid();
+
+            var parsingParams = new Matrix31X24ParsingParameters()
+            {
+                LogicDevicePropertyCode = Matrix31X24Logic.LogicDevicePropertyCode,
+                LogicDevicePropertyCell = Matrix31X24Logic.LogicDevicePropertyCell,
+                TagCode = Matrix31X24Logic.TagCode,
+                FirstValueCell = Matrix31X24Logic.FirstValueCell,
+                DateRow = Matrix31X24Logic.DateRow.ToString(),
+                TimeColumn = Matrix31X24Logic.TimeColumn
             };
 
             return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, parsingParams, IdUser);

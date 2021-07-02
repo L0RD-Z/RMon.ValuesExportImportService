@@ -74,7 +74,10 @@ namespace RMon.ValuesExportImportService.Text
         public static I18nString MissingTagCode = new(nameof(MissingTagCode), "В параметрах задания отсутствует код тега.");
         public static I18nString MissingFirstValueCellAddress = new(nameof(MissingFirstValueCellAddress), "В параметрах задания отсутствует адрес начальной ячейки матрицы.");
         public static I18nString MissingDateColumnNumber = new(nameof(MissingDateColumnNumber), "В параметрах задания отсутствует номер столбца с датами.");
+        public static I18nString MissingDateRowNumber = new(nameof(MissingDateRowNumber), "В параметрах задания отсутствует номер строки с датами.");
+        public static I18nString MissingTimeColumnNumber = new(nameof(MissingTimeColumnNumber), "В параметрах задания отсутствует номер столбца с часами.");
         public static I18nString MissingTimeRowNumber = new(nameof(MissingTimeRowNumber), "В параметрах задания отсутствует номер строки с часами.");
+        public static I18nString IncorrectDateRowNumber = new(nameof(IncorrectDateRowNumber), "В параметрах задания номер строки с датами задан некорректно.");
         public static I18nString IncorrectTimeRowNumber = new(nameof(IncorrectTimeRowNumber), "В параметрах задания номер строки с часами задан некорректно.");
 
         public static I18nString<string, char> InvalidCharactersError = new(nameof(InvalidCharactersError), 

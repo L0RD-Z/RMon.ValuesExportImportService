@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="EsbPublisher.Controls.ParseMatrix24X31Control"
+﻿<UserControl x:Class="EsbPublisher.Controls.ParseMatrix31X24Control"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -19,7 +19,6 @@
         <Style BasedOn="{StaticResource GroupBoxStyle}" TargetType="GroupBox"/>
         <Style BasedOn="{StaticResource ListBoxStyle}" TargetType="ListBox"/>
     </UserControl.Resources>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -70,10 +69,10 @@
                 <TextBlock Grid.Column="0" Grid.Row="0" Text="Адрес левой верхней ячейки таблицы"/>
                 <TextBox   Grid.Column="1" Grid.Row="0" Text="{Binding FirstValueCell}"/>
 
-                <TextBlock Grid.Column="0" Grid.Row="1" Text="Номер столбца с датами"/>
-                <TextBox   Grid.Column="1" Grid.Row="1" Text="{Binding DateColumn}"/>
-                <TextBlock Grid.Column="0" Grid.Row="2" Text="Номер строки с часами"/>
-                <TextBox   Grid.Column="1" Grid.Row="2" Text="{Binding TimeRow}"/>
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="Номер строки с датами"/>
+                <TextBox   Grid.Column="1" Grid.Row="1" Text="{Binding DateRow}"/>
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Номер столбца с часами"/>
+                <TextBox   Grid.Column="1" Grid.Row="2" Text="{Binding TimeColumn}"/>
             </Grid>
         </GroupBox>
     </Grid>

@@ -34,6 +34,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         private readonly IParseTaskLogger _taskLogger;
         private readonly ParseXml80020Logic _parseXml80020Logic;
         private readonly ParseMatrix24X31Logic _parseMatrix24X31Logic;
+        private readonly ParseMatrix31X24Logic _parseMatrix31X24Logic;
         private readonly ParseFlexibleFormatLogic _parseFlexibleFormatLogic;
 
         /// <summary>
@@ -48,7 +49,8 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <param name="permissionLogic">Логика работы с прадвами доступа</param>
         /// <param name="fileStorage">Файловое хранилище</param>
         /// <param name="parseXml80020Logic">Логика для парсинга формата 80020</param>
-        /// <param name="parseMatrix24X31Logic">Логика для парсинга vfnhbws 24x31</param>
+        /// <param name="parseMatrix24X31Logic">Логика для парсинга матрицы 24x31</param>
+        /// <param name="parseMatrix31X24Logic">Логика для парсинга матрицы 31x24</param>
         /// <param name="parseFlexibleFormatLogic">Логика для парсинга гибкого формата</param>
         /// <param name="globalizationProviderFactory"></param>
         /// <param name="languageRepository"></param>
@@ -63,6 +65,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             IFileStorage fileStorage,
             ParseXml80020Logic parseXml80020Logic,
             ParseMatrix24X31Logic parseMatrix24X31Logic,
+            ParseMatrix31X24Logic parseMatrix31X24Logic,
             ParseFlexibleFormatLogic parseFlexibleFormatLogic,
             IGlobalizationProviderFactory globalizationProviderFactory,
             ILanguageRepository languageRepository)
@@ -72,6 +75,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             _taskLogger = taskLogger;
             _parseXml80020Logic = parseXml80020Logic;
             _parseMatrix24X31Logic = parseMatrix24X31Logic;
+            _parseMatrix31X24Logic = parseMatrix31X24Logic;
             _parseFlexibleFormatLogic = parseFlexibleFormatLogic;
         }
 
@@ -104,6 +108,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                             values = await _parseMatrix24X31Logic.AnalyzeAsync(files, task.Parameters.Matrix24X31Parameters, context, ct).ConfigureAwait(false);
                             break;
                         case ValuesParseFileFormatType.Matrix31X24:
+                            values = await _parseMatrix31X24Logic.AnalyzeAsync(files, task.Parameters.Matrix31X24Parameters, context, ct).ConfigureAwait(false);
                             break;
                         case ValuesParseFileFormatType.Table:
                             break;

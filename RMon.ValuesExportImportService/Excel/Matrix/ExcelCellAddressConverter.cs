@@ -4,11 +4,11 @@ using System.Linq;
 using RMon.ValuesExportImportService.Excel.Common;
 using RMon.ValuesExportImportService.Text;
 
-namespace RMon.ValuesExportImportService.Excel
+namespace RMon.ValuesExportImportService.Excel.Matrix
 {
-    static class AddressConverter
+    static class ExcelCellAddressConverter
     {
-        private static readonly Dictionary<char, uint> _map = new()
+        private static readonly Dictionary<char, uint> Map = new()
         {
             { 'A', 1 },
             { 'B', 2 },
@@ -48,8 +48,8 @@ namespace RMon.ValuesExportImportService.Excel
             int result = 0;
             var digit = 0;
             foreach (var ch in colNumber.Trim().ToUpperInvariant().Reverse())
-                if (_map.TryGetValue(ch, out var number))
-                    result += Convert.ToInt32(number * Math.Pow(_map.Count, digit++));
+                if (Map.TryGetValue(ch, out var number))
+                    result += Convert.ToInt32(number * Math.Pow(Map.Count, digit++));
                 else
                     throw new ExcelException(TextParse.InvalidCharactersError.With(colNumber, ch));
             return result;

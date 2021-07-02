@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RMon.ValuesExportImportService.Excel
+namespace RMon.ValuesExportImportService.Excel.Matrix
 {
     class MatrixResult
     {

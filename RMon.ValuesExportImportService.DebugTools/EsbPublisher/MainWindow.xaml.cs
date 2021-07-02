@@ -61,6 +61,7 @@ namespace EsbPublisher
             {
                 {typeof(ParseXml80020Control), new ParseXml80020Control(Logic.ParseLogic.Xml80020Logic)},
                 {typeof(ParseMatrix24X31Control), new ParseMatrix24X31Control(Logic.ParseLogic.Matrix24X31Logic)},
+                {typeof(ParseMatrix31X24Control), new ParseMatrix31X24Control(Logic.ParseLogic.Matrix31X24Logic)},
             };
             SelectedParseControl = ParseFormatToUserControlConvert(Logic.ParseLogic.SelectedFileType);
 
@@ -81,7 +82,7 @@ namespace EsbPublisher
             {
                 ValuesParseFileFormatType.Xml80020 => _parseControls[typeof(ParseXml80020Control)],
                 ValuesParseFileFormatType.Matrix24X31 => _parseControls[typeof(ParseMatrix24X31Control)],
-                ValuesParseFileFormatType.Matrix31X24 => null,
+                ValuesParseFileFormatType.Matrix31X24 => _parseControls[typeof(ParseMatrix31X24Control)],
                 ValuesParseFileFormatType.Table => null,
                 ValuesParseFileFormatType.Flexible => null,
                 _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)

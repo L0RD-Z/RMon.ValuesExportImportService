@@ -20,4 +20,17 @@
     <PackageReference Include="RMon.Values.ExportImport.Core" Version="1.1.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Controls\ParseMatrix31X24Control.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Controls\ParseMatrix31X24Control.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
 </Project>
