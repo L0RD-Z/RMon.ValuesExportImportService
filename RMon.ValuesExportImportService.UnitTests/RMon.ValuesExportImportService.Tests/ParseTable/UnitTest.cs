@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RMon.ValuesExportImportService.Excel.Matrix;
-using RMon.ValuesExportImportService.Files;
-using RMon.ValuesExportImportService.Processing.Parse;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RMon.Values.ExportImport.Core.FileFormatParameters;
+using RMon.ValuesExportImportService.Excel.Table;
+using RMon.ValuesExportImportService.Files;
+using RMon.ValuesExportImportService.Processing.Parse;
 
-namespace RMon.ValuesExportImportService.Tests.ParseMatrix24x31
+namespace RMon.ValuesExportImportService.Tests.ParseTable
 {
     [TestClass]
     public class UnitTest
@@ -19,20 +19,20 @@ namespace RMon.ValuesExportImportService.Tests.ParseMatrix24x31
         {
             var dataRepository = new DataRepositoryStub();
             var dbValuesAnalyzer = new DbValuesAnalyzer(dataRepository);
-            var matrixReader = new Matrix24X31Reader();
-            var logic = new ParseMatrix24X31Logic(dbValuesAnalyzer, matrixReader);
+            var excelReader = new TableReader();
+            var logic = new ParseTableLogic(dbValuesAnalyzer, excelReader);
 
-            var fileName = @"ParseMatrix24x31\Files\24x31.xls";
+            var fileName = @"ParseTable\Files\Февраль 2021.xlsx";
             var fileBody = await File.ReadAllBytesAsync(fileName).ConfigureAwait(false);
 
-            var taskParams = new Matrix24X31ParsingParameters()
+            var taskParams = new TableParsingParameters()
             {
                 LogicDevicePropertyCode = "AgrNo",
-                LogicDevicePropertyCell = "H3",
+                LogicDevicePropertyRow = "2",
                 TagCode = "dHHA+",
-                FirstValueCell = "C14",
+                FirstValueCell = "C3",
                 DateColumn = "A",
-                TimeRow = "13",
+                TimeColumn = "B",
             };
             var idUser = 51;
 
@@ -40,7 +40,7 @@ namespace RMon.ValuesExportImportService.Tests.ParseMatrix24x31
             var context = new ParseProcessingContext(null, null, taskLogger, idUser);
 
             var values = await logic.AnalyzeAsync(new List<LocalFile> {new(fileName, fileBody)}, taskParams, context, CancellationToken.None).ConfigureAwait(false);
-            Assert.AreEqual(672, values.Count, "Количество полученных значений неверно");
+            Assert.AreEqual(4704, values.Count, "Количество полученных значений неверно");
 
             var timestamps = values.Select(t => t.TimeStamp).Distinct().ToList();
             Assert.AreEqual(672, timestamps.Count, "Количество полученных таймстампов значений неверно");
@@ -51,20 +51,20 @@ namespace RMon.ValuesExportImportService.Tests.ParseMatrix24x31
         {
             var dataRepository = new DataRepositoryStub();
             var dbValuesAnalyzer = new DbValuesAnalyzer(dataRepository);
-            var matrixReader = new Matrix24X31Reader();
-            var logic = new ParseMatrix24X31Logic(dbValuesAnalyzer, matrixReader);
+            var excelReader = new TableReader();
+            var logic = new ParseTableLogic(dbValuesAnalyzer, excelReader);
 
-            var fileName = @"ParseMatrix24x31\Files\24x31 (31 день).xls";
+            var fileName = @"ParseTable\Files\Март 2021.xlsx";
             var fileBody = await File.ReadAllBytesAsync(fileName).ConfigureAwait(false);
 
-            var taskParams = new Matrix24X31ParsingParameters()
+            var taskParams = new TableParsingParameters()
             {
                 LogicDevicePropertyCode = "AgrNo",
-                LogicDevicePropertyCell = "H3",
+                LogicDevicePropertyRow = "2",
                 TagCode = "dHHA+",
-                FirstValueCell = "C14",
+                FirstValueCell = "C3",
                 DateColumn = "A",
-                TimeRow = "13",
+                TimeColumn = "B",
             };
             var idUser = 51;
 
@@ -72,7 +72,7 @@ namespace RMon.ValuesExportImportService.Tests.ParseMatrix24x31
             var context = new ParseProcessingContext(null, null, taskLogger, idUser);
 
             var values = await logic.AnalyzeAsync(new List<LocalFile> { new(fileName, fileBody) }, taskParams, context, CancellationToken.None).ConfigureAwait(false);
-            Assert.AreEqual(744, values.Count, "Количество полученных значений неверно");
+            Assert.AreEqual(5208, values.Count, "Количество полученных значений неверно");
 
             var timestamps = values.Select(t => t.TimeStamp).Distinct().ToList();
             Assert.AreEqual(744, timestamps.Count, "Количество полученных таймстампов значений неверно");

@@ -18,8 +18,9 @@ namespace RMon.ValuesExportImportService.Tests.ParseMatrix31x24
         public async Task Test1()
         {
             var dataRepository = new DataRepositoryStub();
+            var dbValuesAnalyzer = new DbValuesAnalyzer(dataRepository);
             var matrixReader = new Matrix31X24Reader();
-            var logic = new ParseMatrix31X24Logic(dataRepository, matrixReader);
+            var logic = new ParseMatrix31X24Logic(dbValuesAnalyzer, matrixReader);
 
             var fileName = @"ParseMatrix31x24\Files\31x24.xls";
             var fileBody = await File.ReadAllBytesAsync(fileName).ConfigureAwait(false);
@@ -50,7 +51,8 @@ namespace RMon.ValuesExportImportService.Tests.ParseMatrix31x24
         {
             var dataRepository = new DataRepositoryStub();
             var matrixReader = new Matrix31X24Reader();
-            var logic = new ParseMatrix31X24Logic(dataRepository, matrixReader);
+            var dbValuesAnalyzer = new DbValuesAnalyzer(dataRepository);
+            var logic = new ParseMatrix31X24Logic(dbValuesAnalyzer, matrixReader);
 
             var fileName = @"ParseMatrix31x24\Files\31x24 (31 день).xls";
             var fileBody = await File.ReadAllBytesAsync(fileName).ConfigureAwait(false);

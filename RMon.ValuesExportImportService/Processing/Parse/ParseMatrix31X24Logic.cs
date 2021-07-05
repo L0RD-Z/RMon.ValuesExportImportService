@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using RMon.Values.ExportImport.Core;
 using RMon.Values.ExportImport.Core.FileFormatParameters;
-using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Excel.Common;
 using RMon.ValuesExportImportService.Excel.Matrix;
 using RMon.ValuesExportImportService.Extensions;
@@ -19,7 +18,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         private readonly IMatrixReader _matrixReader;
         private readonly DbValuesAnalyzer _dbValuesAnalyzer;
 
-        public ParseMatrix31X24Logic(Matrix31X24Reader matrixReader, DbValuesAnalyzer dbValuesAnalyzer)
+        public ParseMatrix31X24Logic(DbValuesAnalyzer dbValuesAnalyzer, Matrix31X24Reader matrixReader)
         {
             _matrixReader = matrixReader;
             _dbValuesAnalyzer = dbValuesAnalyzer;

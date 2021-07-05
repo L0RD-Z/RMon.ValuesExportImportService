@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Text;
 using ExcelDataReader;
 using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Excel.Common;
@@ -13,6 +14,11 @@ namespace RMon.ValuesExportImportService.Excel.Table
 {
     class TableReader : ITableReader
     {
+        public TableReader()
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        }
+
 
         /// <inheritdoc />
         public List<ExcelLogicDeviceValues> ReadExcelBook(byte[] fileBody, int logicDevicePropertyValueRowNumber, ExcelCellAddress cellStart, int dateColumnNumber, int timeColumnNumber, ParseProcessingContext context)
