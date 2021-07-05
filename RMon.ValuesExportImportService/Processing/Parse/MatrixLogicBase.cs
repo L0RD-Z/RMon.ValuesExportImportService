@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using RMon.Values.ExportImport.Core;
 using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Data;
-using RMon.ValuesExportImportService.Excel.Matrix;
+using RMon.ValuesExportImportService.Excel.Common;
 using RMon.ValuesExportImportService.Extensions;
 using RMon.ValuesExportImportService.Processing.Common;
 using RMon.ValuesExportImportService.Text;
@@ -22,7 +22,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             _dataRepository = dataRepository;
         }
 
-        protected async Task<List<ValueInfo>> Analyze(List<(string FileName, IList<MatrixResult>)> messages, string logicDevicePropertyCode, string tagCode, ParseProcessingContext context, CancellationToken ct)
+        protected async Task<List<ValueInfo>> Analyze(List<(string FileName, IList<ExcelLogicDeviceValues>)> messages, string logicDevicePropertyCode, string tagCode, ParseProcessingContext context, CancellationToken ct)
         {
             var result = new List<ValueInfo>();
             foreach (var message in messages)

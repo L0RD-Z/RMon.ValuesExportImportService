@@ -9,7 +9,6 @@ using RMon.Configuration.Options;
 using RMon.Core.Base;
 using RMon.Core.Files;
 using RMon.Data.Provider;
-using RMon.Data.Provider.Esb.Entities.ValuesExportImport;
 using RMon.Data.Provider.Values;
 using RMon.ESB.Core.Common;
 using RMon.ESB.Core.ValuesParseTaskDto;
@@ -35,6 +34,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         private readonly ParseXml80020Logic _parseXml80020Logic;
         private readonly ParseMatrix24X31Logic _parseMatrix24X31Logic;
         private readonly ParseMatrix31X24Logic _parseMatrix31X24Logic;
+        private readonly ParseTableLogic _parseTableLogic;
         private readonly ParseFlexibleFormatLogic _parseFlexibleFormatLogic;
 
         /// <summary>
@@ -51,6 +51,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <param name="parseXml80020Logic">Логика для парсинга формата 80020</param>
         /// <param name="parseMatrix24X31Logic">Логика для парсинга матрицы 24x31</param>
         /// <param name="parseMatrix31X24Logic">Логика для парсинга матрицы 31x24</param>
+        /// <param name="parseTableLogic">Логика для парсинга "Таблицы"</param>
         /// <param name="parseFlexibleFormatLogic">Логика для парсинга гибкого формата</param>
         /// <param name="globalizationProviderFactory"></param>
         /// <param name="languageRepository"></param>
@@ -66,6 +67,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             ParseXml80020Logic parseXml80020Logic,
             ParseMatrix24X31Logic parseMatrix24X31Logic,
             ParseMatrix31X24Logic parseMatrix31X24Logic,
+            ParseTableLogic parseTableLogic,
             ParseFlexibleFormatLogic parseFlexibleFormatLogic,
             IGlobalizationProviderFactory globalizationProviderFactory,
             ILanguageRepository languageRepository)
@@ -76,6 +78,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             _parseXml80020Logic = parseXml80020Logic;
             _parseMatrix24X31Logic = parseMatrix24X31Logic;
             _parseMatrix31X24Logic = parseMatrix31X24Logic;
+            _parseTableLogic = parseTableLogic;
             _parseFlexibleFormatLogic = parseFlexibleFormatLogic;
         }
 
@@ -98,27 +101,15 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                     await context.LogInfo(TextParse.LoadingFiles, 10).ConfigureAwait(false);
                     var files = await ReceiveFilesAsync(task.Parameters.Files, ct).ConfigureAwait(false);
 
-                    var values = new List<ValueInfo>();
-                    switch (task.Parameters.FileFormatType)
+                    var values = task.Parameters.FileFormatType switch
                     {
-                        case ValuesParseFileFormatType.Xml80020:
-                            values = await _parseXml80020Logic.AnalyzeAsync(files, task.Parameters.Xml80020Parameters, context, ct).ConfigureAwait(false);
-                            break;
-                        case ValuesParseFileFormatType.Matrix24X31:
-                            values = await _parseMatrix24X31Logic.AnalyzeAsync(files, task.Parameters.Matrix24X31Parameters, context, ct).ConfigureAwait(false);
-                            break;
-                        case ValuesParseFileFormatType.Matrix31X24:
-                            values = await _parseMatrix31X24Logic.AnalyzeAsync(files, task.Parameters.Matrix31X24Parameters, context, ct).ConfigureAwait(false);
-                            break;
-                        case ValuesParseFileFormatType.Table:
-                            break;
-                        case ValuesParseFileFormatType.Flexible:
-                            values = await _parseFlexibleFormatLogic.AnalyzeAsync(files, context, ct).ConfigureAwait(false);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-
+                        ValuesParseFileFormatType.Xml80020 => await _parseXml80020Logic.AnalyzeAsync(files, task.Parameters.Xml80020Parameters, context, ct).ConfigureAwait(false),
+                        ValuesParseFileFormatType.Matrix24X31 => await _parseMatrix24X31Logic.AnalyzeAsync(files, task.Parameters.Matrix24X31Parameters, context, ct).ConfigureAwait(false),
+                        ValuesParseFileFormatType.Matrix31X24 => await _parseMatrix31X24Logic.AnalyzeAsync(files, task.Parameters.Matrix31X24Parameters, context, ct).ConfigureAwait(false),
+                        ValuesParseFileFormatType.Table => await _parseTableLogic.AnalyzeAsync(files, task.Parameters.TableParameters, context, ct).ConfigureAwait(false),
+                        ValuesParseFileFormatType.Flexible => await _parseFlexibleFormatLogic.AnalyzeAsync(files, context, ct).ConfigureAwait(false),
+                        _ => throw new ArgumentOutOfRangeException(),
+                    };
                     await context.LogInfo(TextParse.LoadingCurrentValues, 70).ConfigureAwait(false);
                     await LoadCurrentValuesFromDb(context, values).ConfigureAwait(false);
 

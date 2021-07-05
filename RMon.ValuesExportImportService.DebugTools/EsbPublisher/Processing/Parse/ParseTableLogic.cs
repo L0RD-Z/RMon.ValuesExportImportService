@@ -7,7 +7,7 @@ namespace EsbPublisher.Processing.Parse
     public class ParseTableLogic : INotifyPropertyChanged
     {
         private string _logicDevicePropertyCode;
-        private string _logicDevicePropertyRow;
+        private int _logicDevicePropertyRow;
         private string _tagCode;
         private string _firstValueCell;
         private string _dateColumn;
@@ -32,7 +32,7 @@ namespace EsbPublisher.Processing.Parse
         /// <summary>
         /// Номер строки со значениями свойств оборудования
         /// </summary>
-        public string LogicDevicePropertyRow
+        public int LogicDevicePropertyRow
         {
             get => _logicDevicePropertyRow;
             set
@@ -112,11 +112,11 @@ namespace EsbPublisher.Processing.Parse
         public void InitializeProperties()
         {
             LogicDevicePropertyCode = "AgrNo";
-            LogicDevicePropertyRow = "2";
+            LogicDevicePropertyRow = 2;
             TagCode = "dHHA+";
             FirstValueCell = "C3";
-            DateColumn = "A1";
-            TimeColumn = "B1";
+            DateColumn = "A";
+            TimeColumn = "B";
         }
 
 

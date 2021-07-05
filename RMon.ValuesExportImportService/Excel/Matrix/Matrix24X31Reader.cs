@@ -7,7 +7,7 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
 {
     class Matrix24X31Reader : MatrixReaderBase
     {
-        protected override MatrixResult ParseTable(DataTable dataTable, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateColumnNumber, int timeRowNumber)
+        protected override ExcelLogicDeviceValues ParseTable(DataTable dataTable, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateColumnNumber, int timeRowNumber)
         {
             var rowIndex = 0;
 
@@ -30,7 +30,7 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
                 throw new ExcelException(TextExcel.FailedParseLogicDevicePropertyValueError);
             }
 
-            var result = new MatrixResult
+            var result = new ExcelLogicDeviceValues
             {
                 SheetName = dataTable.TableName,
                 LogicDevicePropertyValue = logicDevicePropertyValue

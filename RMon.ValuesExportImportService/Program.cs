@@ -15,8 +15,9 @@ using RMon.Data.Provider.Units.Backend.Interfaces;
 using RMon.Data.Provider.Units.Backend.Sql;
 using RMon.Data.Provider.Values;
 using RMon.ValuesExportImportService.Data;
-using RMon.ValuesExportImportService.Excel;
+using RMon.ValuesExportImportService.Excel.Flexible;
 using RMon.ValuesExportImportService.Excel.Matrix;
+using RMon.ValuesExportImportService.Excel.Table;
 using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Globalization;
 using RMon.ValuesExportImportService.Processing.Export;
@@ -79,10 +80,12 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<IExcelWorker, ExcelWorker>();
                     services.AddSingleton<Matrix24X31Reader>();
                     services.AddSingleton<Matrix31X24Reader>();
+                    services.AddSingleton<ITableReader, TableReader>();
 
                     services.AddSingleton<ParseXml80020Logic>();
                     services.AddSingleton<ParseMatrix24X31Logic>();
                     services.AddSingleton<ParseMatrix31X24Logic>();
+                    services.AddSingleton<ParseTableLogic>();
                     services.AddSingleton<ParseFlexibleFormatLogic>();
                     
 

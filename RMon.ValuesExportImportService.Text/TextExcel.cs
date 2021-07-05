@@ -35,6 +35,8 @@ namespace RMon.ValuesExportImportService.Text
 
         public static I18nString<string> IncorrectDateFormatError = new(nameof(IncorrectDateFormatError), 
             "Не удалось распарсить дату \"{date}\".", "date");
+        public static I18nString<string> IncorrectTimeFormatError = new(nameof(IncorrectTimeFormatError),
+            "Не удалось распарсить время \"{time}\".", "time");
         public static I18nString<string> IncorrectHoursFormatError = new(nameof(IncorrectHoursFormatError), 
             "Не удалось распарсить строку с часами \"{hours}\".", "hours");
         public static I18nString<string> IncorrectValueFormatError = new(nameof(IncorrectValueFormatError), 

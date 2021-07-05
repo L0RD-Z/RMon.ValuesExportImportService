@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using RMon.ValuesExportImportService.Excel.Common;
 using RMon.ValuesExportImportService.Processing.Parse;
 
 namespace RMon.ValuesExportImportService.Excel.Matrix
@@ -15,6 +16,6 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
         /// <param name="timeNumber">Номер столбца (строки) с часами</param>
         /// <param name="context">Контекст</param>
         /// <returns></returns>
-        List<MatrixResult> ReadExcelBook(byte[] fileBody, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateNumber, int timeNumber, ParseProcessingContext context);
+        List<ExcelLogicDeviceValues> ReadExcelBook(byte[] fileBody, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateNumber, int timeNumber, ParseProcessingContext context);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RMon.ValuesExportImportService.Excel.Matrix
+namespace RMon.ValuesExportImportService.Excel.Common
 {
     class ExcelCellAddress : IEquatable<ExcelCellAddress>
     {

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using RMon.ValuesExportImportService.Excel.Common;
 using RMon.ValuesExportImportService.Text;
 
-namespace RMon.ValuesExportImportService.Excel.Matrix
+namespace RMon.ValuesExportImportService.Excel.Common
 {
     static class ExcelCellAddressConverter
     {

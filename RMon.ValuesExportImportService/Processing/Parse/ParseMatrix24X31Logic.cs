@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using RMon.Values.ExportImport.Core;
 using RMon.Values.ExportImport.Core.FileFormatParameters;
 using RMon.ValuesExportImportService.Data;
+using RMon.ValuesExportImportService.Excel.Common;
 using RMon.ValuesExportImportService.Excel.Matrix;
 using RMon.ValuesExportImportService.Extensions;
 using RMon.ValuesExportImportService.Files;
@@ -31,7 +32,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             var dateColumnNumber = ExcelCellAddressConverter.ColNumberConvert(taskParams.DateColumn);
             var timeRowNumber = int.Parse(taskParams.TimeRow);
 
-            var messages = new List<(string FileName, IList<MatrixResult>)>();
+            var messages = new List<(string FileName, IList<ExcelLogicDeviceValues>)>();
             foreach (var file in files)
             {
                 await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Matrix24X31.ToString())).ConfigureAwait(false);

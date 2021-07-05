@@ -277,7 +277,7 @@ namespace EsbPublisher.Processing
             var parsingParams = new TableParsingParameters
             {
                 LogicDevicePropertyCode = TableLogic.LogicDevicePropertyCode,
-                LogicDevicePropertyRow = TableLogic.LogicDevicePropertyRow,
+                LogicDevicePropertyRow = TableLogic.LogicDevicePropertyRow.ToString(),
                 TagCode = TableLogic.TagCode,
                 FirstValueCell = TableLogic.FirstValueCell,
                 DateColumn = TableLogic.DateColumn,

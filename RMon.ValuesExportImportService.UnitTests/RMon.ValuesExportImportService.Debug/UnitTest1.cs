@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RMon.Data.Provider;
 using RMon.ValuesExportImportService.Excel;
+using RMon.ValuesExportImportService.Excel.Common;
 using RMon.ValuesExportImportService.Excel.Matrix;
 
 namespace RMon.ValuesExportImportService.Debug

@@ -16,7 +16,7 @@ using RMon.ValuesExportImportService.Extensions;
 using RMon.ValuesExportImportService.Processing.Parse;
 using RMon.ValuesExportImportService.Text;
 
-namespace RMon.ValuesExportImportService.Excel
+namespace RMon.ValuesExportImportService.Excel.Flexible
 {
     public class ExcelWorker : IExcelWorker
     {
