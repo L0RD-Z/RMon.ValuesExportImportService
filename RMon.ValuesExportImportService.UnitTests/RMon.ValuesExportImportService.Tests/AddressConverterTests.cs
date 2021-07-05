@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RMon.ValuesExportImportService.Excel;
 using RMon.ValuesExportImportService.Excel.Matrix;
 
 namespace RMon.ValuesExportImportService.Tests
@@ -11,13 +10,13 @@ namespace RMon.ValuesExportImportService.Tests
         public void ConvertColNumberTest()
         {
             var colNumber = ExcelCellAddressConverter.ColNumberConvert("XFC");
-            Assert.AreEqual((uint)16383, colNumber, "Некорректное преобразование формата представления номера столбца Excel 1");
+            Assert.AreEqual(16383, colNumber, "Некорректное преобразование формата представления номера столбца Excel 1");
             colNumber = ExcelCellAddressConverter.ColNumberConvert("A");
-            Assert.AreEqual((uint)1, colNumber, "Некорректное преобразование формата представления номера столбца Excel 2");
+            Assert.AreEqual(1, colNumber, "Некорректное преобразование формата представления номера столбца Excel 2");
             colNumber = ExcelCellAddressConverter.ColNumberConvert("Z");
-            Assert.AreEqual((uint)26, colNumber, "Некорректное преобразование формата представления номера столбца Excel 3");
+            Assert.AreEqual(26, colNumber, "Некорректное преобразование формата представления номера столбца Excel 3");
             colNumber = ExcelCellAddressConverter.ColNumberConvert("AA");
-            Assert.AreEqual((uint)27, colNumber, "Некорректное преобразование формата представления номера столбца Excel 4");
+            Assert.AreEqual(27, colNumber, "Некорректное преобразование формата представления номера столбца Excel 4");
         }
 
         [TestMethod]
