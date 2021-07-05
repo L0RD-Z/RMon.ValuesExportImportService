@@ -82,6 +82,7 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<Matrix31X24Reader>();
                     services.AddSingleton<ITableReader, TableReader>();
 
+                    services.AddSingleton<DbValuesAnalyzer>();
                     services.AddSingleton<ParseXml80020Logic>();
                     services.AddSingleton<ParseMatrix24X31Logic>();
                     services.AddSingleton<ParseMatrix31X24Logic>();

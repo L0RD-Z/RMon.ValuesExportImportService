@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using OfficeOpenXml.Drawing.Chart;
 using RMon.Values.ExportImport.Core;
 using RMon.Values.ExportImport.Core.FileFormatParameters;
 using RMon.ValuesExportImportService.Data;
@@ -14,14 +15,15 @@ using RMon.ValuesExportImportService.Text;
 
 namespace RMon.ValuesExportImportService.Processing.Parse
 {
-    class ParseMatrix24X31Logic : MatrixLogicBase
+    class ParseMatrix24X31Logic
     {
         private readonly IMatrixReader _matrixReader;
+        private readonly DbValuesAnalyzer _dbValuesAnalyzer;
 
-        public ParseMatrix24X31Logic(IDataRepository dataRepository, Matrix24X31Reader matrixReader)
-            :base(dataRepository)
+        public ParseMatrix24X31Logic(Matrix24X31Reader matrixReader, DbValuesAnalyzer dbValuesAnalyzer)
         {
             _matrixReader = matrixReader;
+            _dbValuesAnalyzer = dbValuesAnalyzer;
         }
 
         public async Task<List<ValueInfo>> AnalyzeAsync(IList<LocalFile> files, Matrix24X31ParsingParameters taskParams, ParseProcessingContext context, CancellationToken ct)
@@ -32,7 +34,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             var dateColumnNumber = ExcelCellAddressConverter.ColNumberConvert(taskParams.DateColumn);
             var timeRowNumber = int.Parse(taskParams.TimeRow);
 
-            var messages = new List<(string FileName, IList<ExcelLogicDeviceValues>)>();
+            var excelResults = new List<ExcelResult>();
             foreach (var file in files)
             {
                 await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Matrix24X31.ToString())).ConfigureAwait(false);
@@ -41,10 +43,10 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 if (!message.Any())
                     throw new TaskException(TextParse.ReadFileError.With(file.Path));
 
-                messages.Add((file.Path, message));
+                excelResults.Add(new(file.Path, message));
             }
 
-            return await Analyze(messages, taskParams.LogicDevicePropertyCode, taskParams.TagCode, context, ct).ConfigureAwait(false);
+            return await _dbValuesAnalyzer.Analyze(excelResults, taskParams.LogicDevicePropertyCode, taskParams.TagCode, context, ct).ConfigureAwait(false);
         }
 
         /// <summary>

@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using RMon.Values.ExportImport.Core;
 using RMon.Values.ExportImport.Core.FileFormatParameters;
-using RMon.ValuesExportImportService.Data;
+using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Excel.Common;
 using RMon.ValuesExportImportService.Excel.Table;
 using RMon.ValuesExportImportService.Extensions;
@@ -16,10 +17,12 @@ namespace RMon.ValuesExportImportService.Processing.Parse
 {
     class ParseTableLogic
     {
+        private readonly DbValuesAnalyzer _dbValuesAnalyzer;
         private readonly ITableReader _tableReader;
 
-        public ParseTableLogic(IDataRepository dataRepository, ITableReader tableReader)
+        public ParseTableLogic(DbValuesAnalyzer dbValuesAnalyzer, ITableReader tableReader)
         {
+            _dbValuesAnalyzer = dbValuesAnalyzer;
             _tableReader = tableReader;
         }
 
@@ -31,7 +34,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             var dateColumnNumber = ExcelCellAddressConverter.ColNumberConvert(taskParams.DateColumn);
             var timeColumnNumber = ExcelCellAddressConverter.ColNumberConvert(taskParams.TimeColumn);
 
-            var messages = new List<(string FileName, IList<ExcelLogicDeviceValues>)>();
+            var excelResults = new List<ExcelResult>();
             foreach (var file in files)
             {
                 await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Matrix31X24.ToString())).ConfigureAwait(false);
@@ -39,11 +42,10 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 var message = _tableReader.ReadExcelBook(file.Body, logicDevicePropertyValueRow, cellStart, dateColumnNumber, timeColumnNumber, context);
                 if (!message.Any())
                     throw new TaskException(TextParse.ReadFileError.With(file.Path));
-                messages.Add((file.Path, message));
+                excelResults.Add(new(file.Path, message));
             }
 
-            return null;
-            //return await Analyze(messages, taskParams.LogicDevicePropertyCode, taskParams.TagCode, context, ct).ConfigureAwait(false);
+            return await _dbValuesAnalyzer.Analyze(excelResults, taskParams.LogicDevicePropertyCode, taskParams.TagCode, context, ct).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -66,7 +68,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 throw new TaskException(TextParse.MissingDateColumnNumber);
             if (string.IsNullOrEmpty(taskParams.TimeColumn))
                 throw new TaskException(TextParse.MissingTimeColumnNumber);
-            
         }
+        
     }
 }
