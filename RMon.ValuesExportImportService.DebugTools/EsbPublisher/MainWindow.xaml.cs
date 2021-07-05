@@ -166,7 +166,7 @@ namespace EsbPublisher
         [SuppressMessage("ReSharper", "AsyncConverter.AsyncAwaitMayBeElidedHighlighting")]
         private async void Import_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            await Logic.SendImportTaskAsync().ConfigureAwait(true);
+            //await Logic.SendImportTaskAsync().ConfigureAwait(true);
         }
 
         #endregion
@@ -181,7 +181,7 @@ namespace EsbPublisher
         [SuppressMessage("ReSharper", "AsyncConverter.AsyncAwaitMayBeElidedHighlighting")]
         private async void CancelImport_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            await Logic.SendImportTaskAbortAsync().ConfigureAwait(true);
+            //await Logic.SendImportTaskAbortAsync().ConfigureAwait(true);
         }
 
         #endregion

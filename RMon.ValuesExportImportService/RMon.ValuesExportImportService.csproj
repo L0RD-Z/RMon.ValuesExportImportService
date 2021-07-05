@@ -24,7 +24,7 @@
     <PackageReference Include="RMon.Configuration.Options" Version="1.3.1" />
     <PackageReference Include="RMon.Context.BackEndContext" Version="4.5.1" />
     <PackageReference Include="RMon.Context.FrontEndContext" Version="3.5.1" />
-    <PackageReference Include="RMon.Data.Provider" Version="5.15.2" />
+    <PackageReference Include="RMon.Data.Provider" Version="5.16.1" />
     <PackageReference Include="RMon.Data.Provider.Esb" Version="3.1.2" />
     <PackageReference Include="RMon.Data.Provider.Security" Version="3.3.1" />
     <PackageReference Include="RMon.Data.Provider.Units" Version="3.7.1" />

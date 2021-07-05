@@ -16,6 +16,10 @@ namespace EsbPublisher.Processing
     {
         private readonly BusService _busService;
 
+        private ParseXml80020Logic _xml80020Logic;
+        private ParseMatrix24X31Logic _matrix24X31Logic;
+        private ParseMatrix31X24Logic _matrix31X24Logic;
+        private ParseTableLogic _tableLogic;
         private List<ValuesParseFileFormatType> _supportedFileTypes;
         private ValuesParseFileFormatType _selectedFileType;
         private string _filePath;
@@ -23,11 +27,6 @@ namespace EsbPublisher.Processing
 
         private Guid _correlationId;
         
-        private ParseXml80020Logic _xml80020Logic;
-        private ParseMatrix24X31Logic _matrix24X31Logic;
-        private ParseMatrix31X24Logic _matrix31X24Logic;
-        private ParseTableLogic _tableLogic;
-
 
         public ParseXml80020Logic Xml80020Logic
         {
@@ -41,7 +40,6 @@ namespace EsbPublisher.Processing
                 }
             }
         }
-
         public ParseMatrix24X31Logic Matrix24X31Logic
         {
             get => _matrix24X31Logic;
@@ -54,7 +52,6 @@ namespace EsbPublisher.Processing
                 }
             }
         }
-
         public ParseMatrix31X24Logic Matrix31X24Logic
         {
             get => _matrix31X24Logic;
@@ -67,7 +64,6 @@ namespace EsbPublisher.Processing
                 }
             }
         }
-
         public ParseTableLogic TableLogic
         {
             get => _tableLogic;

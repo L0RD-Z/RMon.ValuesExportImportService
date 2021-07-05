@@ -8,7 +8,7 @@ using RMon.DriverCore;
 using RMon.ValuesExportImportService.Data;
 using Task = System.Threading.Tasks.Task;
 
-namespace RMon.ValuesExportImportService.Tests.ParseMatrix24x31
+namespace RMon.ValuesExportImportService.Tests
 {
     class DataRepositoryStub : IDataRepository
     {

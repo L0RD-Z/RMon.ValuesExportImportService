@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RMon.Values.ExportImport.Core.FileFormatParameters;
 using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Processing.Parse;
+using RMon.ValuesExportImportService.Processing.Parse.Format80020;
 
 namespace RMon.ValuesExportImportService.Tests.Parse80020
 {
@@ -40,7 +41,7 @@ namespace RMon.ValuesExportImportService.Tests.Parse80020
         [TestMethod]
         public async Task TestMethod1()
         {
-            var logic = new ParseXml80020Logic(new DataRepositoryStub());
+            var logic = new ParseXml80020Logic(new DataRepositoryStub(), new Format80020Parser());
 
             var fileName = @"Parse80020\Files\80020_7713076301_20190101_6599155.xml";
             var fileBody = await File.ReadAllBytesAsync(fileName).ConfigureAwait(false);
@@ -54,7 +55,6 @@ namespace RMon.ValuesExportImportService.Tests.Parse80020
             {
                 var values = await logic.AnalyzeAsync(new List<LocalFile> {new(fileName, fileBody)}, taskParams, context, CancellationToken.None).ConfigureAwait(false);
                 Assert.AreEqual(310, values.Count, "Количество всех полученных значений неверно.");
-                //var aa = values.Count(t => t.TimeStamp.Year == 2021 && t.TimeStamp.Month == 03 && t.TimeStamp.Day == 21);
                 Assert.AreEqual(303, values.Count(t => t.TimeStamp.Year == 2021 && t.TimeStamp.Month == 03 && t.TimeStamp.Day == 20), "Таймстамп одного из значений определен не верно.");
                 Assert.AreEqual(7, values.Count(t => t.TimeStamp.Year == 2021 && t.TimeStamp.Month == 03 && t.TimeStamp.Day == 21), "Таймстамп одного из значений за следующие сутки определен не верно.");
 

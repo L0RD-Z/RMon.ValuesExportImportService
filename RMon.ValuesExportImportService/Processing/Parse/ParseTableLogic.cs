@@ -35,7 +35,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             var excelResults = new List<ExcelResult>();
             foreach (var file in files)
             {
-                await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Matrix31X24.ToString())).ConfigureAwait(false);
+                await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Table.ToString())).ConfigureAwait(false);
 
                 var message = _tableReader.ReadExcelBook(file.Body, logicDevicePropertyValueRow, cellStart, dateColumnNumber, timeColumnNumber, context);
                 if (!message.Any())
@@ -67,6 +67,5 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             if (string.IsNullOrEmpty(taskParams.TimeColumn))
                 throw new TaskException(TextParse.MissingTimeColumnNumber);
         }
-        
     }
 }

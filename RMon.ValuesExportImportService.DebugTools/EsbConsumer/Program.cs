@@ -47,9 +47,7 @@ namespace EsbConsumer
 
             await bus.StartAsync().ConfigureAwait(false);
 
-
             Console.WriteLine("Для ввыхода из программы нажмите Enter...");
-
             Console.ReadKey();
         }
     }
