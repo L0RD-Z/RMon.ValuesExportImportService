@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using Microsoft.Extensions.Logging;
 using RMon.ValuesExportImportService.Excel.Common;
 using RMon.ValuesExportImportService.Text;
 
@@ -8,10 +7,6 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
 {
     class Matrix24X31Reader : MatrixReaderBase
     {
-        public Matrix24X31Reader(ILogger<MatrixReaderBase> logger) : base(logger)
-        {
-        }
-
         protected override MatrixResult ParseTable(DataTable dataTable, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateColumnNumber, int timeRowNumber)
         {
             var rowIndex = 0;
@@ -35,7 +30,11 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
                 throw new ExcelException(TextExcel.FailedParseLogicDevicePropertyValueError);
             }
 
-            var result = new MatrixResult { LogicDevicePropertyValue = logicDevicePropertyValue };
+            var result = new MatrixResult
+            {
+                SheetName = dataTable.TableName,
+                LogicDevicePropertyValue = logicDevicePropertyValue
+            };
 
             foreach (DataRow row in dataTable.Rows)
                 try

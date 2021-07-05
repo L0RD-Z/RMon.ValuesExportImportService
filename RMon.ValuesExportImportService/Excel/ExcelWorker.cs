@@ -177,6 +177,7 @@ namespace RMon.ValuesExportImportService.Excel
                     await context.LogWarning(e.ConcatExceptionMessage(TextExcel.SheetParseUnexpectedError.With(excelSheet.Name))).ConfigureAwait(false);
                 }
 
+            _logger.LogInformation("Разбор книги Excel завершен.");
             return result;
         }
 

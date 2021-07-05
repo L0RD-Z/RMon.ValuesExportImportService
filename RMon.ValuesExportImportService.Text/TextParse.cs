@@ -9,11 +9,12 @@ namespace RMon.ValuesExportImportService.Text
         public static I18nString ValidateParameters = new(nameof(ValidateParameters), "Проверка корректности параметров");
         public static I18nString LoadingFiles = new(nameof(LoadingFiles), "Загрузка файлов");
         public static I18nString<string, string> ReadingFile = new(nameof(ReadingFile), "Чтение файла формата \"{fileType}\": {fileName}", "fileName", "fileType");
+        public static I18nString<string> ReadFileError = new I18nString<string>(nameof(ReadFileError), "Не удалось выполнить чтение файла \"{fileName}\"", "fileName");
         public static I18nString FinishSuccess = new(nameof(FinishSuccess), "Задание завершено успешно");
         public static I18nString FinishAborted = new(nameof(FinishAborted), "Задание отменено");
         public static I18nString<I18nString> FinishFailed = new(nameof(FinishFailed), "Ошибка при выполнении задания: {error}", "error");
         public static I18nString<string> AnalyzeInfoFromFile = new(nameof(AnalyzeInfoFromFile), "Анализ информации из файла \"{fileName}\"", "fileName");
-        public static I18nString<string, string> AnalyzeInfoFromFlexibleFile = new(nameof(AnalyzeInfoFromFlexibleFile), "Анализ информации из файла \"{fileName}\", страница \"{sheetName}\"", "fileName", "sheetName");
+        public static I18nString<string, string> AnalyzeInfoFromExcelFile = new(nameof(AnalyzeInfoFromExcelFile), "Анализ информации из файла \"{fileName}\", страница \"{sheetName}\"", "fileName", "sheetName");
         public static I18nString<string, string> AnalyzeArea = new(nameof(AnalyzeArea), 
             "Анализ организации \"{name}\" (ИНН {inn})", "name", "inn");
         public static I18nString AnalyzeMeasuringPoints = new(nameof(AnalyzeMeasuringPoints), "Анализ точек измерения");
@@ -52,7 +53,8 @@ namespace RMon.ValuesExportImportService.Text
         public static I18nString<string, string> MissingTimestampTypeError = new(nameof(MissingTimestampTypeError),
             "Тег \"{tagCode}\" имеет неподдерживаемый тип таймстампа. Импорт значений в формате 80020 возможен только для тегов с таймстампами {supportedTimestampTypes}", "tagCode", "supportedTimestampTypes");
 
-
+        public static I18nString<string, string> SheetParseError = new(nameof(SheetParseError),
+            "Файл \"{fileName}\" лист \"{sheetName}\": произошло исключение.", "fileName", "sheetName");
         public static I18nString<string, string, int> RowParseError = new(nameof(RowParseError),
             "Файл \"{fileName}\" лист \"{sheetName}\" строка \"{rowNumber}\": произошло исключение.", "fileName", "sheetName", "rowNumber");
         public static I18nString<string> MissingSectionError = new(nameof(MissingSectionError),

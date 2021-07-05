@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using ExcelDataReader;
-using Microsoft.Extensions.Logging;
 using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Excel.Common;
 using RMon.ValuesExportImportService.Extensions;
@@ -16,11 +15,8 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
 {
     abstract class MatrixReaderBase : IMatrixReader
     {
-        private readonly ILogger _logger;
-
-        protected MatrixReaderBase(ILogger<MatrixReaderBase> logger)
+        protected MatrixReaderBase()
         {
-            _logger = logger;
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
@@ -28,9 +24,6 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
         /// <inheritdoc />
         public List<MatrixResult> ReadExcelBook(byte[] fileBody, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateNumber, int timeNumber, ParseProcessingContext context)
         {
-            _logger.LogInformation("Разбор книги Excel начат.");
-            var timer = Stopwatch.StartNew();
-
             using var stream = new MemoryStream(fileBody);
             // Авто-определение форматов, поддерживаются:
             //  - Binary Excel files (2.0-2003 format; *.xls)
@@ -53,10 +46,6 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
                 {
                     context.LogWarning(e.ConcatExceptionMessage(TextExcel.SheetParseUnexpectedError.With(table.TableName)));
                 }
-
-
-            timer.Stop();
-            _logger.LogInformation($"Разбор книги Excel завершен. Затрачено {timer.ElapsedMilliseconds} мс.");
 
             return result;
         }

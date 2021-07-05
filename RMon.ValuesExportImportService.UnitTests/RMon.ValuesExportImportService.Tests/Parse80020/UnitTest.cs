@@ -43,7 +43,6 @@ namespace RMon.ValuesExportImportService.Tests.Parse80020
             var logic = new ParseXml80020Logic(new DataRepositoryStub());
 
             var fileName = @"Parse80020\Files\80020_7713076301_20190101_6599155.xml";
-
             var fileBody = await File.ReadAllBytesAsync(fileName).ConfigureAwait(false);
 
             var taskParams = TaskParamsCreate();

@@ -51,6 +51,8 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Flexible.ToString())).ConfigureAwait(false);
 
                 var table = await _excelWorker.ReadFile(file.Body, context).ConfigureAwait(false);
+                if (!table.Any())
+                    throw new TaskException(TextParse.ReadFileError.With(file.Path));
                 tables.Add((file.Path, table));
             }
 
@@ -62,7 +64,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             foreach (var table in tables)
                 foreach (var sheet in table.Sheets)
                 {
-                    await context.LogInfo(TextParse.AnalyzeInfoFromFlexibleFile.With(table.FileName, sheet.Name)).ConfigureAwait(false);
+                    await context.LogInfo(TextParse.AnalyzeInfoFromExcelFile.With(table.FileName, sheet.Name)).ConfigureAwait(false);
                     var rowNumber = StartRowNumber;
                     foreach (var row in sheet.Table.Entities)
                     {

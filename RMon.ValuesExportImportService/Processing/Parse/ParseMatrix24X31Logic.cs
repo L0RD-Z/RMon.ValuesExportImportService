@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using RMon.Values.ExportImport.Core;
 using RMon.Values.ExportImport.Core.FileFormatParameters;
+using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Excel.Matrix;
 using RMon.ValuesExportImportService.Extensions;
 using RMon.ValuesExportImportService.Files;
@@ -11,11 +13,12 @@ using RMon.ValuesExportImportService.Text;
 
 namespace RMon.ValuesExportImportService.Processing.Parse
 {
-    class ParseMatrix24X31Logic
+    class ParseMatrix24X31Logic : MatrixLogicBase
     {
         private readonly IMatrixReader _matrixReader;
 
-        public ParseMatrix24X31Logic(Matrix24X31Reader matrixReader)
+        public ParseMatrix24X31Logic(IDataRepository dataRepository, Matrix24X31Reader matrixReader)
+            :base(dataRepository)
         {
             _matrixReader = matrixReader;
         }
@@ -34,14 +37,13 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Matrix24X31.ToString())).ConfigureAwait(false);
 
                 var message = _matrixReader.ReadExcelBook(file.Body, logicDevicePropertyValueCell, cellStart, dateColumnNumber, timeRowNumber, context);
+                if (!message.Any())
+                    throw new TaskException(TextParse.ReadFileError.With(file.Path));
+
                 messages.Add((file.Path, message));
             }
 
-            var result = new List<ValueInfo>();
-
-
-
-            return result;
+            return await Analyze(messages, taskParams.LogicDevicePropertyCode, taskParams.TagCode, context, ct).ConfigureAwait(false);
         }
 
         /// <summary>

@@ -6,6 +6,11 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
     class MatrixResult
     {
         /// <summary>
+        /// Название листа
+        /// </summary>
+        public string SheetName { get; set; }
+
+        /// <summary>
         /// Значене свофства оборудования
         /// </summary>
         public string LogicDevicePropertyValue { get; set; }
