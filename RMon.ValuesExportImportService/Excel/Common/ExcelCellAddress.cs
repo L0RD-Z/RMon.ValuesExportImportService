@@ -2,42 +2,13 @@
 {
     record ExcelCellAddress
     {
-        private int _colNumber;
-        private int _rowNumber;
-
         /// <summary>
-        /// Номер столбца (с отсчетом от 1)
-        /// </summary>
-        public int ColNumber
-        {
-            get => _colNumber;
-            set
-            {
-                _colNumber = value;
-                ColIndex = value - 1;
-            }
-        }
-
-        /// <summary>
-        /// Номер строки (с отсчетом от 1)
-        /// </summary>
-        public int RowNumber
-        {
-            get => _rowNumber;
-            set
-            {
-                _rowNumber = value;
-                RowIndex = value - 1;
-            }
-        }
-
-        /// <summary>
-        /// Номер столбца (с отсчетом от 0)
+        /// Индекс столбца (с отсчетом от 0)
         /// </summary>
         public int ColIndex { get; private set; }
 
         /// <summary>
-        /// Номер строки (с отсчетом от 0)
+        /// Индекс строки (с отсчетом от 0)
         /// </summary>
         public int RowIndex { get; private set; }
 
@@ -47,10 +18,15 @@
             
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="colNumber">Номер столбца (с отсчетом от 1)</param>
+        /// <param name="rowNumber">Индекс строки (с отсчетом от 1)</param>
         public ExcelCellAddress(int colNumber, int rowNumber)
         {
-            ColNumber = colNumber;
-            RowNumber = rowNumber;
+            ColIndex = colNumber - 1;
+            RowIndex = rowNumber - 1;
         }
 
     }

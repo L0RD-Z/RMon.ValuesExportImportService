@@ -29,15 +29,15 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             ValidateParameters(taskParams);
             var logicDevicePropertyValueCell = ExcelCellAddressConverter.CellAddressConvert(taskParams.LogicDevicePropertyCell);
             var cellStart = ExcelCellAddressConverter.CellAddressConvert(taskParams.FirstValueCell);
-            var dateRowNumber = int.Parse(taskParams.DateRow);
-            var timeColumnNumber = ExcelCellAddressConverter.ColNumberConvert(taskParams.TimeColumn);
+            var dateRowIndex = int.Parse(taskParams.DateRow) - 1;
+            var timeColumnIndex = ExcelCellAddressConverter.ColNumberConvert(taskParams.TimeColumn) - 1;
 
             var excelResults = new List<ExcelResult>();
             foreach (var file in files)
             {
                 await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Matrix31X24.ToString())).ConfigureAwait(false);
 
-                var excelResult = _matrixReader.ReadExcelBook(file.Body, logicDevicePropertyValueCell, cellStart, dateRowNumber, timeColumnNumber, context);
+                var excelResult = _matrixReader.ReadExcelBook(file.Body, logicDevicePropertyValueCell, cellStart, dateRowIndex, timeColumnIndex, context);
                 if (!excelResult.Any())
                     throw new TaskException(TextParse.ReadFileError.With(file.Path));
                 excelResults.Add(new(file.Path, excelResult));

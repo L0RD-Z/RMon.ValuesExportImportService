@@ -51,23 +51,15 @@ namespace RMon.ValuesExportImportService.Excel.Table
 
         private List<ExcelLogicDeviceValues> ParseTable(DataTable dataTable, int logicDevicePropertyValueRowNumber, ExcelCellAddress cellStart, int dateColumnNumber, int timeColumnNumber)
         {
-            var rowIndex = 0;
             var colIndex = 0;
-
-            /*т.к. нумерация ячеек в библиотеке ведется от нуля*/
-            logicDevicePropertyValueRowNumber = logicDevicePropertyValueRowNumber - 1;
-            cellStart = new ExcelCellAddress(cellStart.ColNumber - 1, cellStart.RowNumber - 1);
-            dateColumnNumber--;
-            timeColumnNumber--;
-
 
             var result = new List<ExcelLogicDeviceValues>();
             foreach (DataColumn column in dataTable.Columns)
                 try
                 {
-                    rowIndex = 0;
+                    var rowIndex = 0;
 
-                    if (colIndex >= cellStart.ColNumber)
+                    if (colIndex >= cellStart.ColIndex)
                     {
                         var logicDevicePropertyValue = dataTable.Rows[logicDevicePropertyValueRowNumber].ItemArray[colIndex].ToString();
 
@@ -82,7 +74,7 @@ namespace RMon.ValuesExportImportService.Excel.Table
                             foreach (DataRow row in dataTable.Rows)
                                 try
                                 {
-                                    if (rowIndex >= cellStart.RowNumber)
+                                    if (rowIndex >= cellStart.RowIndex)
                                     {
                                         var dateStr = row.ItemArray[dateColumnNumber].ToString();
                                         if (!string.IsNullOrEmpty(dateStr))

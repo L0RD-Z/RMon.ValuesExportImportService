@@ -13,11 +13,6 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
         protected override ExcelLogicDeviceValues ParseTable(DataTable dataTable, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateRowNumber, int timeColumnNumber)
         {
             var rowIndex = 0;
-
-            /*т.к. нумерация ячеек в библиотеке ведется от нуля*/
-            dateRowNumber--;
-            timeColumnNumber--;
-
             var colEnd = cellStart.ColIndex + ColCount - 1;
             var rowEnd = cellStart.RowIndex + RowCount - 1;
 

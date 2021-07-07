@@ -27,17 +27,17 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         public async Task<List<ValueInfo>> AnalyzeAsync(IList<LocalFile> files, Matrix24X31ParsingParameters taskParams, ParseProcessingContext context, CancellationToken ct)
         {
             ValidateParameters(taskParams);
-            var logicDevicePropertyValueCell = ExcelCellAddressConverter.CellAddressConvert(taskParams.LogicDevicePropertyCell);
+            var logicDevicePropertyValueCellAddress = ExcelCellAddressConverter.CellAddressConvert(taskParams.LogicDevicePropertyCell);
             var cellStart = ExcelCellAddressConverter.CellAddressConvert(taskParams.FirstValueCell);
-            var dateColumnNumber = ExcelCellAddressConverter.ColNumberConvert(taskParams.DateColumn);
-            var timeRowNumber = int.Parse(taskParams.TimeRow);
+            var dateColumnIndex = ExcelCellAddressConverter.ColNumberConvert(taskParams.DateColumn) - 1;
+            var timeRowIndex = int.Parse(taskParams.TimeRow) - 1;
 
             var excelResults = new List<ExcelResult>();
             foreach (var file in files)
             {
                 await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Matrix24X31.ToString())).ConfigureAwait(false);
 
-                var excelResult = _matrixReader.ReadExcelBook(file.Body, logicDevicePropertyValueCell, cellStart, dateColumnNumber, timeRowNumber, context);
+                var excelResult = _matrixReader.ReadExcelBook(file.Body, logicDevicePropertyValueCellAddress, cellStart, dateColumnIndex, timeRowIndex, context);
                 if (!excelResult.Any())
                     throw new TaskException(TextParse.ReadFileError.With(file.Path));
 

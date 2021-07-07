@@ -27,20 +27,20 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         public async Task<List<ValueInfo>> AnalyzeAsync(IList<LocalFile> files, TableParsingParameters taskParams, ParseProcessingContext context, CancellationToken ct)
         {
             ValidateParameters(taskParams);
-            var logicDevicePropertyValueRow = int.Parse(taskParams.LogicDevicePropertyRow);
+            var logicDevicePropertyValueRowIndex = int.Parse(taskParams.LogicDevicePropertyRow) - 1;
             var cellStart = ExcelCellAddressConverter.CellAddressConvert(taskParams.FirstValueCell);
-            var dateColumnNumber = ExcelCellAddressConverter.ColNumberConvert(taskParams.DateColumn);
-            var timeColumnNumber = ExcelCellAddressConverter.ColNumberConvert(taskParams.TimeColumn);
+            var dateColumnIndex = ExcelCellAddressConverter.ColNumberConvert(taskParams.DateColumn) - 1;
+            var timeColumnIndex = ExcelCellAddressConverter.ColNumberConvert(taskParams.TimeColumn) - 1;
 
             var excelResults = new List<ExcelResult>();
             foreach (var file in files)
             {
                 await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Table.ToString())).ConfigureAwait(false);
 
-                var message = _tableReader.ReadExcelBook(file.Body, logicDevicePropertyValueRow, cellStart, dateColumnNumber, timeColumnNumber, context);
-                if (!message.Any())
+                var excelResult = _tableReader.ReadExcelBook(file.Body, logicDevicePropertyValueRowIndex, cellStart, dateColumnIndex, timeColumnIndex, context);
+                if (!excelResult.Any())
                     throw new TaskException(TextParse.ReadFileError.With(file.Path));
-                excelResults.Add(new(file.Path, message));
+                excelResults.Add(new(file.Path, excelResult));
             }
 
             return await _dbValuesAnalyzer.Analyze(excelResults, taskParams.LogicDevicePropertyCode, taskParams.TagCode, context, ct).ConfigureAwait(false);
