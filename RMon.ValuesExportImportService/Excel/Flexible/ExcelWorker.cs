@@ -160,18 +160,18 @@ namespace RMon.ValuesExportImportService.Excel.Flexible
         /// <param name="fileBody">Файл excel</param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<List<ReadedSheet>> ReadFile(byte[] fileBody, ParseProcessingContext context)
+        public async Task<List<ReadSheet>> ReadFile(byte[] fileBody, ParseProcessingContext context)
         {
             _logger.LogInformation("Разбор книги Excel начат.");
             await using var stream = new MemoryStream(fileBody);
             using var excelPackage = new ExcelPackage(stream);
 
-            var result = new List<ReadedSheet>();
+            var result = new List<ReadSheet>();
             foreach (var excelSheet in excelPackage.Workbook.Worksheets)
                 try
                 {
                     var table = ReadWorksheet(excelSheet);
-                    result.Add(new ReadedSheet(excelSheet.Name, table));
+                    result.Add(new ReadSheet(excelSheet.Name, table));
                 }
                 catch (Exception e)
                 {

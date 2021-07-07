@@ -2,7 +2,7 @@
 
 namespace RMon.ValuesExportImportService.Excel.Common
 {
-    public class ReadedSheet
+    public class ReadSheet
     {
         /// <summary>
         /// Имя листа Excel
@@ -14,12 +14,12 @@ namespace RMon.ValuesExportImportService.Excel.Common
         public ImportTable Table { get; set; }
 
 
-        public ReadedSheet()
+        public ReadSheet()
         {
             
         }
 
-        public ReadedSheet(string name, ImportTable table)
+        public ReadSheet(string name, ImportTable table)
         {
             Name = name;
             Table = table;

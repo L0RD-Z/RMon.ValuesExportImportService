@@ -22,6 +22,6 @@ namespace RMon.ValuesExportImportService.Excel.Flexible
         /// <param name="fileBody">Файл excel</param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<List<ReadedSheet>> ReadFile(byte[] fileBody, ParseProcessingContext context);
+        public Task<List<ReadSheet>> ReadFile(byte[] fileBody, ParseProcessingContext context);
     }
 }

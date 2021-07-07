@@ -7,23 +7,24 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
 {
     class Matrix24X31Reader : MatrixReaderBase
     {
+        private const int ColCount = 24;
+        private const int RowCount = 31;
+
         protected override ExcelLogicDeviceValues ParseTable(DataTable dataTable, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateColumnNumber, int timeRowNumber)
         {
             var rowIndex = 0;
 
             /*т.к. нумерация ячеек в библиотеке ведется от нуля*/
-            logicDevicePropertyValueCell = new ExcelCellAddress(logicDevicePropertyValueCell.ColNumber - 1, logicDevicePropertyValueCell.RowNumber - 1);
-            cellStart = new ExcelCellAddress(cellStart.ColNumber - 1, cellStart.RowNumber - 1);
             dateColumnNumber--;
             timeRowNumber--;
 
-            var colEnd = cellStart.ColNumber + 24 - 1;
-            var rowEnd = cellStart.RowNumber + 31 - 1;
+            var colEnd = cellStart.ColIndex + ColCount - 1;
+            var rowEnd = cellStart.RowIndex + RowCount - 1;
 
             string logicDevicePropertyValue;
             try
             {
-                logicDevicePropertyValue = dataTable.Rows[logicDevicePropertyValueCell.RowNumber].ItemArray[logicDevicePropertyValueCell.ColNumber].ToString();
+                logicDevicePropertyValue = dataTable.Rows[logicDevicePropertyValueCell.RowIndex].ItemArray[logicDevicePropertyValueCell.ColIndex].ToString();
             }
             catch (Exception)
             {
@@ -39,7 +40,7 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
             foreach (DataRow row in dataTable.Rows)
                 try
                 {
-                    if (rowIndex >= cellStart.RowNumber && rowIndex <= rowEnd)
+                    if (rowIndex >= cellStart.RowIndex && rowIndex <= rowEnd)
                     {
                         var colIndex = 0;
 
@@ -52,7 +53,7 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
                             foreach (var cell in row.ItemArray)
                                 try
                                 {
-                                    if (colIndex >= cellStart.ColNumber && colIndex <= colEnd)
+                                    if (colIndex >= cellStart.ColIndex && colIndex <= colEnd)
                                     {
                                         var hoursStr = dataTable.Rows[timeRowNumber].ItemArray[colIndex].ToString();
                                         var hour = ParseHours(hoursStr);

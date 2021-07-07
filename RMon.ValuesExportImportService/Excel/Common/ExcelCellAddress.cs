@@ -1,17 +1,46 @@
-﻿using System;
-
-namespace RMon.ValuesExportImportService.Excel.Common
+﻿namespace RMon.ValuesExportImportService.Excel.Common
 {
-    class ExcelCellAddress : IEquatable<ExcelCellAddress>
+    record ExcelCellAddress
     {
+        private int _colNumber;
+        private int _rowNumber;
+
         /// <summary>
-        /// Номер столбца
+        /// Номер столбца (с отсчетом от 1)
         /// </summary>
-        public int ColNumber { get; set; }
+        public int ColNumber
+        {
+            get => _colNumber;
+            set
+            {
+                _colNumber = value;
+                ColIndex = value - 1;
+            }
+        }
+
         /// <summary>
-        /// Номер строки
+        /// Номер строки (с отсчетом от 1)
         /// </summary>
-        public int RowNumber { get; set; }
+        public int RowNumber
+        {
+            get => _rowNumber;
+            set
+            {
+                _rowNumber = value;
+                RowIndex = value - 1;
+            }
+        }
+
+        /// <summary>
+        /// Номер столбца (с отсчетом от 0)
+        /// </summary>
+        public int ColIndex { get; private set; }
+
+        /// <summary>
+        /// Номер строки (с отсчетом от 0)
+        /// </summary>
+        public int RowIndex { get; private set; }
+
 
         public ExcelCellAddress()
         {
@@ -24,28 +53,5 @@ namespace RMon.ValuesExportImportService.Excel.Common
             RowNumber = rowNumber;
         }
 
-        #region IEquatable
-
-        public bool Equals(ExcelCellAddress other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return ColNumber == other.ColNumber && RowNumber == other.RowNumber;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((ExcelCellAddress) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(ColNumber, RowNumber);
-        }
-
-        #endregion
     }
 }

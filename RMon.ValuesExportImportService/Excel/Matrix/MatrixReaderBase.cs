@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using ExcelDataReader;
@@ -61,8 +62,24 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
         {
             try
             {
+                if (DateTime.TryParseExact(hours, "G", CultureInfo.CurrentCulture, DateTimeStyles.None, out var dateTime))
+                    return dateTime.Hour;
+                if (DateTime.TryParseExact(hours, "G", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                    return dateTime.Hour;
+
                 var arr = hours.Split('-');
-                return int.Parse(arr[1]);
+                switch (arr.Length)
+                {
+                    case 1:
+                    {
+                        var arr2 = arr[0].Split(':');
+                        if (arr2.Length == 1 || arr2.Length == 2)
+                            return int.Parse(arr2[0].Trim());
+                        throw new Exception();
+                    }
+                    case 2: return int.Parse(arr[1].Trim());
+                    default: throw new Exception();
+                }
             }
             catch (Exception e)
             {

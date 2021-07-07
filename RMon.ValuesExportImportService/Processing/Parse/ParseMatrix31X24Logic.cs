@@ -32,18 +32,18 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             var dateRowNumber = int.Parse(taskParams.DateRow);
             var timeColumnNumber = ExcelCellAddressConverter.ColNumberConvert(taskParams.TimeColumn);
 
-            var messages = new List<ExcelResult>();
+            var excelResults = new List<ExcelResult>();
             foreach (var file in files)
             {
                 await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Matrix31X24.ToString())).ConfigureAwait(false);
 
-                var message = _matrixReader.ReadExcelBook(file.Body, logicDevicePropertyValueCell, cellStart, dateRowNumber, timeColumnNumber, context);
-                if (!message.Any())
+                var excelResult = _matrixReader.ReadExcelBook(file.Body, logicDevicePropertyValueCell, cellStart, dateRowNumber, timeColumnNumber, context);
+                if (!excelResult.Any())
                     throw new TaskException(TextParse.ReadFileError.With(file.Path));
-                messages.Add(new(file.Path, message));
+                excelResults.Add(new(file.Path, excelResult));
             }
 
-            return await _dbValuesAnalyzer.Analyze(messages, taskParams.LogicDevicePropertyCode, taskParams.TagCode, context, ct).ConfigureAwait(false);
+            return await _dbValuesAnalyzer.Analyze(excelResults, taskParams.LogicDevicePropertyCode, taskParams.TagCode, context, ct).ConfigureAwait(false);
         }
 
         /// <summary>

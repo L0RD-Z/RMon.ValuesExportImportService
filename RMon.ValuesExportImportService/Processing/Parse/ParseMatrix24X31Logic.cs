@@ -37,11 +37,11 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             {
                 await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Matrix24X31.ToString())).ConfigureAwait(false);
 
-                var message = _matrixReader.ReadExcelBook(file.Body, logicDevicePropertyValueCell, cellStart, dateColumnNumber, timeRowNumber, context);
-                if (!message.Any())
+                var excelResult = _matrixReader.ReadExcelBook(file.Body, logicDevicePropertyValueCell, cellStart, dateColumnNumber, timeRowNumber, context);
+                if (!excelResult.Any())
                     throw new TaskException(TextParse.ReadFileError.With(file.Path));
 
-                excelResults.Add(new(file.Path, message));
+                excelResults.Add(new(file.Path, excelResult));
             }
 
             return await _dbValuesAnalyzer.Analyze(excelResults, taskParams.LogicDevicePropertyCode, taskParams.TagCode, context, ct).ConfigureAwait(false);

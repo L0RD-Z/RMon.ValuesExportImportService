@@ -7,7 +7,7 @@ namespace RMon.ValuesExportImportService.Excel.Common
 {
     static class ExcelCellAddressConverter
     {
-        private static readonly Dictionary<char, uint> Map = new()
+        private static readonly Dictionary<char, int> Map = new()
         {
             { 'A', 1 },
             { 'B', 2 },
@@ -44,15 +44,15 @@ namespace RMon.ValuesExportImportService.Excel.Common
         /// <returns></returns>
         public static int ColNumberConvert(string colNumber)
         {
-            int result = 0;
-            var digit = 0;
-            foreach (var ch in colNumber.Trim().ToUpperInvariant().Reverse())
+            var result = 0;
+            foreach (var ch in colNumber.Trim().ToUpperInvariant())
                 if (Map.TryGetValue(ch, out var number))
-                    result += Convert.ToInt32(number * Math.Pow(Map.Count, digit++));
+                    result = result * Map.Count + number;
                 else
                     throw new ExcelException(TextParse.InvalidCharactersError.With(colNumber, ch));
             return result;
         }
+        
 
         /// <summary>
         /// Преобразует буквенное представление адреса ячейки таблицы Excel в числовое
