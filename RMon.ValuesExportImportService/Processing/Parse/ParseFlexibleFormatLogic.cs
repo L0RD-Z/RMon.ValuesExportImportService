@@ -163,7 +163,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <returns></returns>
         private async Task<long> FindTagId(IList<long> idUserGroups, long logicDeviceId, Entity entityFilter, CancellationToken cancellationToken = default)
         {
-            var tags = await _dataRepository.FindTags(idUserGroups, logicDeviceId, entityFilter, cancellationToken).ConfigureAwait(false);
+            var tags = await _dataRepository.FindTagsAsync(idUserGroups, logicDeviceId, entityFilter, cancellationToken).ConfigureAwait(false);
             if (tags.Any())
                 return tags.SingleOrDefault();
             else

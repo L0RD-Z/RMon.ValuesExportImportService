@@ -13,7 +13,7 @@ namespace EsbPublisher.ServiceBus.Entity
         public string Name { get; set; }
         public long? IdUser { get; set; }
 
-        public ValuesParseTask(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, long? idUser)
+        public ValuesParseTask(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, bool useTransformationRatio, long? idUser)
         {
             Parameters = new ValuesParseTaskParameters()
             {
@@ -21,33 +21,34 @@ namespace EsbPublisher.ServiceBus.Entity
                 {
                     new(filePath)
                 },
-                FileFormatType = fileType
+                FileFormatType = fileType,
+                UseTransformationRatio = useTransformationRatio
             };
             CorrelationId = correlationId;
             IdUser = idUser;
         }
 
 
-        public ValuesParseTask(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, Xml80020ParsingParameters taskParams, long? idUser)
-            :this(correlationId, filePath, fileType, idUser)
+        public ValuesParseTask(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, bool useTransformationRatio, Xml80020ParsingParameters taskParams, long? idUser)
+            :this(correlationId, filePath, fileType, useTransformationRatio, idUser)
         {
             Parameters.Xml80020Parameters = taskParams;
         }
 
-        public ValuesParseTask(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, Matrix24X31ParsingParameters taskParams, long? idUser)
-            : this(correlationId, filePath, fileType, idUser)
+        public ValuesParseTask(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, bool useTransformationRatio, Matrix24X31ParsingParameters taskParams, long? idUser)
+            : this(correlationId, filePath, fileType, useTransformationRatio, idUser)
         {
             Parameters.Matrix24X31Parameters = taskParams;
         }
 
-        public ValuesParseTask(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, Matrix31X24ParsingParameters taskParams, long? idUser)
-            : this(correlationId, filePath, fileType, idUser)
+        public ValuesParseTask(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, bool useTransformationRatio, Matrix31X24ParsingParameters taskParams, long? idUser)
+            : this(correlationId, filePath, fileType, useTransformationRatio, idUser)
         {
             Parameters.Matrix31X24Parameters = taskParams;
         }
 
-        public ValuesParseTask(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, TableParsingParameters taskParams, long? idUser)
-            : this(correlationId, filePath, fileType, idUser)
+        public ValuesParseTask(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, bool useTransformationRatio, TableParsingParameters taskParams, long? idUser)
+            : this(correlationId, filePath, fileType, useTransformationRatio, idUser)
         {
             Parameters.TableParameters = taskParams;
         }

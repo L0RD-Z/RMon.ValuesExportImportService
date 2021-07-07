@@ -123,6 +123,7 @@
                 </ComboBox>
                 <TextBlock Text="Путь к файлу (внутри RMon.FileStorageService)"/>
                 <TextBox   Text="{Binding FilePath}"/>
+                <CheckBox  Content="Использовать коэффициенты трансформации" IsChecked="{Binding UseTransformationRatio}"/>
 
                 <ContentControl  Content="{Binding SelectedParseControl, RelativeSource={RelativeSource AncestorType=Window}}"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

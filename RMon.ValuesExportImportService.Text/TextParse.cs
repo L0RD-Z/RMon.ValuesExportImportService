@@ -7,7 +7,7 @@ namespace RMon.ValuesExportImportService.Text
     {
         public static I18nString LoadingFiles = new(nameof(LoadingFiles), "Загрузка файлов");
         public static I18nString<string, string> ReadingFile = new(nameof(ReadingFile), "Чтение файла формата \"{fileType}\": {fileName}", "fileName", "fileType");
-        public static I18nString<string> ReadFileError = new I18nString<string>(nameof(ReadFileError), "Не удалось выполнить чтение файла \"{fileName}\"", "fileName");
+        public static I18nString<string> ReadFileError = new(nameof(ReadFileError), "Не удалось выполнить чтение файла \"{fileName}\"", "fileName");
         
         public static I18nString<I18nString> FinishFailed = new(nameof(FinishFailed), "Ошибка при выполнении задания: {error}", "error");
         public static I18nString<string> AnalyzeInfoFromFile = new(nameof(AnalyzeInfoFromFile), "Анализ информации из файла \"{fileName}\"", "fileName");
@@ -19,6 +19,7 @@ namespace RMon.ValuesExportImportService.Text
         public static I18nString<string, string> AnalyzePoint = new(nameof(AnalyzeDeliveryPoints), 
             "Анализ точеки \"{name}\" (код: {code})", "name", "code");
         public static I18nString LoadingCurrentValues = new(nameof(LoadingCurrentValues), "Загрузка текущих значений из БД");
+        public static I18nString UseTransformationRatio = new(nameof(UseTransformationRatio), "Применение коэффициентов трансформации");
         public static I18nString<long, DateTime, DateTime> LoadingCurrentValuesForTag = new(nameof(LoadingCurrentValuesForTag),
             "Загрузка текущих значений из БД для тега (id = {idTag}) за период [{dateStart}; {dateEnd}]", "idTag", "dateStart", "dateEnd");
 

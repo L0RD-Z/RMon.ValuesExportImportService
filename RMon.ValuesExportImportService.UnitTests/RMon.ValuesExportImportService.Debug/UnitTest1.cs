@@ -20,7 +20,7 @@ namespace RMon.ValuesExportImportService.Debug
         }
 
 
-        private List<TimeRange> SplitTimeRange(TimeRange timeRange, TimeSpan timeInterval)
+        private static List<TimeRange> SplitTimeRange(TimeRange timeRange, TimeSpan timeInterval)
         {
             var result = new List<TimeRange>();
             if ((timeRange.DateEnd.Value - timeRange.DateStart.Value) > timeInterval)

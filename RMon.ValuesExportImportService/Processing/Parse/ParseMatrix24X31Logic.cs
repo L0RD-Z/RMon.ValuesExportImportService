@@ -51,7 +51,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// Выполняет валидацию полученных параметров задания
         /// </summary>
         /// <param name="taskParams"></param>
-        private void ValidateParameters(Matrix24X31ParsingParameters taskParams)
+        private static void ValidateParameters(Matrix24X31ParsingParameters taskParams)
         {
             if (string.IsNullOrEmpty(taskParams.LogicDevicePropertyCode))
                 throw new TaskException(TextParse.MissingLogicDevicePropertyCode);

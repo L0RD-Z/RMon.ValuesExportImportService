@@ -20,6 +20,7 @@ using RMon.ValuesExportImportService.Excel.Matrix;
 using RMon.ValuesExportImportService.Excel.Table;
 using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Globalization;
+using RMon.ValuesExportImportService.Processing.Common;
 using RMon.ValuesExportImportService.Processing.Export;
 using RMon.ValuesExportImportService.Processing.Import;
 using RMon.ValuesExportImportService.Processing.Parse;
@@ -90,7 +91,8 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<ParseMatrix31X24Logic>();
                     services.AddSingleton<ParseTableLogic>();
                     services.AddSingleton<ParseFlexibleFormatLogic>();
-                    
+
+                    services.AddSingleton<ITransformationRatioCalculator, TransformationRatioCalculator>();
 
                     services.AddSingleton<IImportTaskLogger, ImportTaskLogger>();
                     services.AddSingleton<IParseTaskLogger, ParseTaskLogger>();

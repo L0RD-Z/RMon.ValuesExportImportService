@@ -6,6 +6,7 @@ using RMon.Context.EntityStore;
 using RMon.Data.Provider.Units.Backend.Common;
 using RMon.DriverCore;
 using RMon.ValuesExportImportService.Data;
+using DeviceProperty = RMon.Context.EntityStore.DeviceProperty;
 using Task = System.Threading.Tasks.Task;
 
 namespace RMon.ValuesExportImportService.Tests
@@ -43,13 +44,23 @@ namespace RMon.ValuesExportImportService.Tests
             return Task.FromResult(logicDevice);
         }
 
-        public Task<IList<long>> FindTags(IList<long> idUserGroups, long idLogicDevice, Entity entityFilter, CancellationToken ct = default)
+        public Task<IList<long>> FindTagsAsync(IList<long> idUserGroups, long idLogicDevice, Entity entityFilter, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Tag>> GetTagsAsync(IList<long> idTags, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<DeviceProperty>> GetDevicePropertiesAsync(IList<long> idDevices, IList<string> devicePropertyCodes, CancellationToken ct = default)
         {
             throw new NotImplementedException();
         }
 
 
-        private Tag TagCreate(long id, string tagCode, TimeStampTypeEnum idTimeStampType) =>
+        private static Tag TagCreate(long id, string tagCode, TimeStampTypeEnum idTimeStampType) =>
             new()
             {
                 Id = id,

@@ -34,33 +34,33 @@ namespace EsbPublisher.ServiceBus
             return _bus.Publish((IValuesExportTaskAbort)sendTask);
         }
 
-        public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, Xml80020ParsingParameters taskParams, long idUser)
+        public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, bool useTransformationRatio,  Xml80020ParsingParameters taskParams, long idUser)
         {
-            var sendTask = new ValuesParseTask(correlationId, filePath, fileType, taskParams, idUser);
+            var sendTask = new ValuesParseTask(correlationId, filePath, fileType, useTransformationRatio, taskParams, idUser);
             return _bus.Publish((IValuesParseTask)sendTask);
         }
 
-        public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, Matrix24X31ParsingParameters taskParams, long idUser)
+        public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, bool useTransformationRatio, Matrix24X31ParsingParameters taskParams, long idUser)
         {
-            var sendTask = new ValuesParseTask(correlationId, filePath, fileType, taskParams, idUser);
+            var sendTask = new ValuesParseTask(correlationId, filePath, fileType, useTransformationRatio, taskParams, idUser);
             return _bus.Publish((IValuesParseTask)sendTask);
         }
 
-        public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, Matrix31X24ParsingParameters taskParams, long idUser)
+        public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, bool useTransformationRatio, Matrix31X24ParsingParameters taskParams, long idUser)
         {
-            var sendTask = new ValuesParseTask(correlationId, filePath, fileType, taskParams, idUser);
+            var sendTask = new ValuesParseTask(correlationId, filePath, fileType, useTransformationRatio, taskParams, idUser);
             return _bus.Publish((IValuesParseTask)sendTask);
         }
 
-        public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, TableParsingParameters taskParams, long idUser)
+        public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, bool useTransformationRatio, TableParsingParameters taskParams, long idUser)
         {
-            var sendTask = new ValuesParseTask(correlationId, filePath, fileType, taskParams, idUser);
+            var sendTask = new ValuesParseTask(correlationId, filePath, fileType, useTransformationRatio, taskParams, idUser);
             return _bus.Publish((IValuesParseTask)sendTask);
         }
 
-        public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, long idUser)
+        public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, bool useTransformationRatio, long idUser)
         {
-            var sendTask = new ValuesParseTask(correlationId, filePath, fileType, idUser);
+            var sendTask = new ValuesParseTask(correlationId, filePath, fileType, useTransformationRatio, idUser);
             return _bus.Publish((IValuesParseTask)sendTask);
         }
 

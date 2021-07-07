@@ -212,7 +212,7 @@ namespace RMon.ValuesExportImportService.Excel.Flexible
                 {
                     if (code.StartsWith(Selector))
                     {
-                        code = code.Substring(1);
+                        code = code[1..];
                         isIdentity = true;
                     }
 

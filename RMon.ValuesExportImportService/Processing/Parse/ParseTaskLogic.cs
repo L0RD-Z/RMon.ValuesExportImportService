@@ -27,7 +27,6 @@ namespace RMon.ValuesExportImportService.Processing.Parse
     {
         private readonly IOptionsMonitor<Service> _serviceOptions;
         private readonly IFileStorage _fileStorage;
-
         private readonly ISimpleFactory<IValueRepository> _valueRepositorySimpleFactory;
         private readonly IParseTaskLogger _taskLogger;
         private readonly ParseXml80020Logic _parseXml80020Logic;
@@ -35,6 +34,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         private readonly ParseMatrix31X24Logic _parseMatrix31X24Logic;
         private readonly ParseTableLogic _parseTableLogic;
         private readonly ParseFlexibleFormatLogic _parseFlexibleFormatLogic;
+        private readonly ITransformationRatioCalculator _transformationRatioCalculator;
 
         /// <summary>
         /// Конструктор 1
@@ -48,6 +48,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <param name="parseMatrix31X24Logic">Логика для парсинга матрицы 31x24</param>
         /// <param name="parseTableLogic">Логика для парсинга "Таблицы"</param>
         /// <param name="parseFlexibleFormatLogic">Логика для парсинга гибкого формата</param>
+        /// <param name="transformationRatioCalculator">Калькулятор коэффициентов трансформации</param>
         public ParseTaskLogic(IOptionsMonitor<Service> serviceOptions,
             ISimpleFactory<IValueRepository> valueRepositorySimpleFactory,
             IParseTaskLogger taskLogger,
@@ -56,7 +57,8 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             ParseMatrix24X31Logic parseMatrix24X31Logic,
             ParseMatrix31X24Logic parseMatrix31X24Logic,
             ParseTableLogic parseTableLogic,
-            ParseFlexibleFormatLogic parseFlexibleFormatLogic)
+            ParseFlexibleFormatLogic parseFlexibleFormatLogic,
+            ITransformationRatioCalculator transformationRatioCalculator)
         {
             _serviceOptions = serviceOptions;
             _valueRepositorySimpleFactory = valueRepositorySimpleFactory;
@@ -67,6 +69,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             _parseMatrix31X24Logic = parseMatrix31X24Logic;
             _parseTableLogic = parseTableLogic;
             _parseFlexibleFormatLogic = parseFlexibleFormatLogic;
+            _transformationRatioCalculator = transformationRatioCalculator;
         }
 
         
@@ -97,7 +100,21 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                         ValuesParseFileFormatType.Flexible => await _parseFlexibleFormatLogic.AnalyzeAsync(files, context, ct).ConfigureAwait(false),
                         _ => throw new ArgumentOutOfRangeException(),
                     };
-                    await context.LogInfo(TextParse.LoadingCurrentValues, 70).ConfigureAwait(false);
+                    
+                    if (task.Parameters.UseTransformationRatio)
+                    {
+                        await context.LogInfo(TextParse.UseTransformationRatio, 60).ConfigureAwait(false);
+                        await _transformationRatioCalculator.LoadTagsRatioFromDbAsync(values.Select(t => t.IdTag).ToList(), ct).ConfigureAwait(false);
+
+                        foreach (var value in values)
+                        {
+                            var tag = _transformationRatioCalculator.TagsRatio.SingleOrDefault(t => t.IdTag == value.IdTag);
+                            if (tag != null)
+                                value.Value.ValueFloat = value.Value.ValueFloat * tag.TransformationRatio * tag.Ratio + tag.Offset;
+                        }
+                    }
+
+                    await context.LogInfo(TextParse.LoadingCurrentValues, 80).ConfigureAwait(false);
                     await LoadCurrentValuesFromDb(context, values).ConfigureAwait(false);
 
                     await context.LogFinished(TextTask.FinishSuccess, values).ConfigureAwait(false);
@@ -132,7 +149,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// Проверяет корректность полученных параметров
         /// </summary>
         /// <param name="task"></param>
-        private void ValidateParameters(IValuesParseTask task)
+        private static void ValidateParameters(IValuesParseTask task)
         {
             if (task?.Parameters.Files == null || !task.Parameters.Files.Any())
                 throw new TaskException(TextParse.NoFilesError);
@@ -183,6 +200,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 }
             }
         }
+        
 
     }
 }
