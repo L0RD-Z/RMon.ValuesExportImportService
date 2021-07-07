@@ -40,6 +40,24 @@ namespace EsbPublisher.ServiceBus
             return _bus.Publish((IValuesParseTask)sendTask);
         }
 
+        public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, Matrix24X31ParsingParameters taskParams, long idUser)
+        {
+            var sendTask = new ValuesParseTask(correlationId, filePath, fileType, taskParams, idUser);
+            return _bus.Publish((IValuesParseTask)sendTask);
+        }
+
+        public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, Matrix31X24ParsingParameters taskParams, long idUser)
+        {
+            var sendTask = new ValuesParseTask(correlationId, filePath, fileType, taskParams, idUser);
+            return _bus.Publish((IValuesParseTask)sendTask);
+        }
+
+        public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, TableParsingParameters taskParams, long idUser)
+        {
+            var sendTask = new ValuesParseTask(correlationId, filePath, fileType, taskParams, idUser);
+            return _bus.Publish((IValuesParseTask)sendTask);
+        }
+
         public Task SendParseTaskAsync(Guid correlationId, string filePath, ValuesParseFileFormatType fileType, long idUser)
         {
             var sendTask = new ValuesParseTask(correlationId, filePath, fileType, idUser);

@@ -20,7 +20,7 @@ using Message = RMon.ValuesExportImportService.Processing.Parse.Format80020.Mode
 
 namespace RMon.ValuesExportImportService.Processing.Parse
 {
-    class Parse80020Logic
+    class ParseXml80020Logic
     {
         private readonly IDataRepository _dataRepository;
 
@@ -29,7 +29,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             TimeStampTypeEnum.HalfHour, TimeStampTypeEnum.Hour
         };
 
-        public Parse80020Logic(IDataRepository dataRepository)
+        public ParseXml80020Logic(IDataRepository dataRepository)
         {
             _dataRepository = dataRepository;
         }

@@ -16,6 +16,7 @@ using RMon.Data.Provider.Units.Backend.Sql;
 using RMon.Data.Provider.Values;
 using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Excel;
+using RMon.ValuesExportImportService.Excel.Matrix;
 using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Globalization;
 using RMon.ValuesExportImportService.Processing.Export;
@@ -27,6 +28,7 @@ using RMon.ValuesExportImportService.ServiceBus.Export;
 using RMon.ValuesExportImportService.ServiceBus.Import;
 using RMon.ValuesExportImportService.ServiceBus.Parse;
 
+[assembly: InternalsVisibleTo("RMon.ValuesExportImportService.Debug")]
 [assembly: InternalsVisibleTo("RMon.ValuesExportImportService.Tests")]
 namespace RMon.ValuesExportImportService
 {
@@ -75,9 +77,14 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<IEntityReader, EntityReader>();
                     services.AddSingleton<IFileStorage, Files.FileStorage>();
                     services.AddSingleton<IExcelWorker, ExcelWorker>();
+                    services.AddSingleton<Matrix24X31Reader>();
+                    services.AddSingleton<Matrix31X24Reader>();
 
-                    services.AddSingleton<Parse80020Logic>();
-                    services.AddSingleton<ParseFlexibleLogic>();
+                    services.AddSingleton<ParseXml80020Logic>();
+                    services.AddSingleton<ParseMatrix24X31Logic>();
+                    services.AddSingleton<ParseMatrix31X24Logic>();
+                    services.AddSingleton<ParseFlexibleFormatLogic>();
+                    
 
                     services.AddSingleton<IImportTaskLogger, ImportTaskLogger>();
                     services.AddSingleton<IParseTaskLogger, ParseTaskLogger>();

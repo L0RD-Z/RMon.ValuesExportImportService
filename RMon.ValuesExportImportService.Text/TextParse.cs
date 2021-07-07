@@ -9,11 +9,12 @@ namespace RMon.ValuesExportImportService.Text
         public static I18nString ValidateParameters = new(nameof(ValidateParameters), "Проверка корректности параметров");
         public static I18nString LoadingFiles = new(nameof(LoadingFiles), "Загрузка файлов");
         public static I18nString<string, string> ReadingFile = new(nameof(ReadingFile), "Чтение файла формата \"{fileType}\": {fileName}", "fileName", "fileType");
+        public static I18nString<string> ReadFileError = new I18nString<string>(nameof(ReadFileError), "Не удалось выполнить чтение файла \"{fileName}\"", "fileName");
         public static I18nString FinishSuccess = new(nameof(FinishSuccess), "Задание завершено успешно");
         public static I18nString FinishAborted = new(nameof(FinishAborted), "Задание отменено");
         public static I18nString<I18nString> FinishFailed = new(nameof(FinishFailed), "Ошибка при выполнении задания: {error}", "error");
         public static I18nString<string> AnalyzeInfoFromFile = new(nameof(AnalyzeInfoFromFile), "Анализ информации из файла \"{fileName}\"", "fileName");
-        public static I18nString<string, string> AnalyzeInfoFromFlexibleFile = new(nameof(AnalyzeInfoFromFlexibleFile), "Анализ информации из файла \"{fileName}\", страница \"{sheetName}\"", "fileName", "sheetName");
+        public static I18nString<string, string> AnalyzeInfoFromExcelFile = new(nameof(AnalyzeInfoFromExcelFile), "Анализ информации из файла \"{fileName}\", страница \"{sheetName}\"", "fileName", "sheetName");
         public static I18nString<string, string> AnalyzeArea = new(nameof(AnalyzeArea), 
             "Анализ организации \"{name}\" (ИНН {inn})", "name", "inn");
         public static I18nString AnalyzeMeasuringPoints = new(nameof(AnalyzeMeasuringPoints), "Анализ точек измерения");
@@ -52,7 +53,8 @@ namespace RMon.ValuesExportImportService.Text
         public static I18nString<string, string> MissingTimestampTypeError = new(nameof(MissingTimestampTypeError),
             "Тег \"{tagCode}\" имеет неподдерживаемый тип таймстампа. Импорт значений в формате 80020 возможен только для тегов с таймстампами {supportedTimestampTypes}", "tagCode", "supportedTimestampTypes");
 
-
+        public static I18nString<string, string> SheetParseError = new(nameof(SheetParseError),
+            "Файл \"{fileName}\" лист \"{sheetName}\": произошло исключение.", "fileName", "sheetName");
         public static I18nString<string, string, int> RowParseError = new(nameof(RowParseError),
             "Файл \"{fileName}\" лист \"{sheetName}\" строка \"{rowNumber}\": произошло исключение.", "fileName", "sheetName", "rowNumber");
         public static I18nString<string> MissingSectionError = new(nameof(MissingSectionError),
@@ -67,5 +69,22 @@ namespace RMon.ValuesExportImportService.Text
             "Не удалось преобразовать значение {value} в число с плавающей точкой.", "value");
         public static I18nString<string> FailedConvertToLong= new(nameof(FailedConvertToLong),
             "Не удалось преобразовать значение {value} в целое число.", "value");
+
+
+        public static I18nString MissingLogicDevicePropertyCode = new(nameof(MissingLogicDevicePropertyCode), "В параметрах задания отсутствует код свойства оборудования.");
+        public static I18nString MissingLogicDevicePropertyCellAddress = new(nameof(MissingLogicDevicePropertyCellAddress), "В параметрах задания отсутствует адрес ячейки со значением свойства оборудования.");
+        public static I18nString MissingTagCode = new(nameof(MissingTagCode), "В параметрах задания отсутствует код тега.");
+        public static I18nString MissingFirstValueCellAddress = new(nameof(MissingFirstValueCellAddress), "В параметрах задания отсутствует адрес начальной ячейки матрицы.");
+        public static I18nString MissingDateColumnNumber = new(nameof(MissingDateColumnNumber), "В параметрах задания отсутствует номер столбца с датами.");
+        public static I18nString MissingDateRowNumber = new(nameof(MissingDateRowNumber), "В параметрах задания отсутствует номер строки с датами.");
+        public static I18nString MissingTimeColumnNumber = new(nameof(MissingTimeColumnNumber), "В параметрах задания отсутствует номер столбца с часами.");
+        public static I18nString MissingTimeRowNumber = new(nameof(MissingTimeRowNumber), "В параметрах задания отсутствует номер строки с часами.");
+        public static I18nString IncorrectDateRowNumber = new(nameof(IncorrectDateRowNumber), "В параметрах задания номер строки с датами задан некорректно.");
+        public static I18nString IncorrectTimeRowNumber = new(nameof(IncorrectTimeRowNumber), "В параметрах задания номер строки с часами задан некорректно.");
+
+        public static I18nString<string, char> InvalidCharactersError = new(nameof(InvalidCharactersError), 
+            "Номер столбца \"{number}\" содержит недопустимый символ \"{ch}\".", "number", "ch");
+        public static I18nString<string> InvalidCellAddressError = new(nameof(InvalidCellAddressError),
+            "Адрес фчейки \"{cellAddress}\" задан некорректно.", "cellAddress");
     }
 }

@@ -20,7 +20,7 @@ using RMon.ValuesExportImportService.Text;
 
 namespace RMon.ValuesExportImportService.Processing.Parse
 {
-    class ParseFlexibleLogic
+    class ParseFlexibleFormatLogic
     {
         private readonly ILogicDevicesRepository _logicDevicesRepository;
         private readonly IPermissionLogic _permissionLogic;
@@ -28,7 +28,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         private readonly IExcelWorker _excelWorker;
         private const int StartRowNumber = 5;
 
-        public ParseFlexibleLogic(ILogicDevicesRepository logicDevicesRepository, IDataRepository dataRepository, IPermissionLogic permissionLogic, IExcelWorker excelWorker)
+        public ParseFlexibleFormatLogic(ILogicDevicesRepository logicDevicesRepository, IDataRepository dataRepository, IPermissionLogic permissionLogic, IExcelWorker excelWorker)
         {
             _logicDevicesRepository = logicDevicesRepository;
             _dataRepository = dataRepository;
@@ -51,6 +51,8 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Flexible.ToString())).ConfigureAwait(false);
 
                 var table = await _excelWorker.ReadFile(file.Body, context).ConfigureAwait(false);
+                if (!table.Any())
+                    throw new TaskException(TextParse.ReadFileError.With(file.Path));
                 tables.Add((file.Path, table));
             }
 
@@ -62,7 +64,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             foreach (var table in tables)
                 foreach (var sheet in table.Sheets)
                 {
-                    await context.LogInfo(TextParse.AnalyzeInfoFromFlexibleFile.With(table.FileName, sheet.Name)).ConfigureAwait(false);
+                    await context.LogInfo(TextParse.AnalyzeInfoFromExcelFile.With(table.FileName, sheet.Name)).ConfigureAwait(false);
                     var rowNumber = StartRowNumber;
                     foreach (var row in sheet.Table.Entities)
                     {

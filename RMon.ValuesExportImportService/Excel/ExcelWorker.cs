@@ -158,6 +158,7 @@ namespace RMon.ValuesExportImportService.Excel
         /// Выполняет парсинг файла Excel-файла <see cref="fileBody"/>
         /// </summary>
         /// <param name="fileBody">Файл excel</param>
+        /// <param name="context"></param>
         /// <returns></returns>
         public async Task<List<ReadedSheet>> ReadFile(byte[] fileBody, ParseProcessingContext context)
         {
@@ -177,6 +178,7 @@ namespace RMon.ValuesExportImportService.Excel
                     await context.LogWarning(e.ConcatExceptionMessage(TextExcel.SheetParseUnexpectedError.With(excelSheet.Name))).ConfigureAwait(false);
                 }
 
+            _logger.LogInformation("Разбор книги Excel завершен.");
             return result;
         }
 
@@ -263,7 +265,7 @@ namespace RMon.ValuesExportImportService.Excel
                 }
                 catch (Exception e)
                 {
-                    throw new ExcelException(TextExcel.ParseUnexpectedError.With(EntityName, rowIndex), e);
+                    throw new ExcelException(TextExcel.RowParseUnexpectedError.With(rowIndex), e);
                 }
 
             _logger.LogInformation($"Сущность \"{EntityName}\": процесс парсинга завершен.");

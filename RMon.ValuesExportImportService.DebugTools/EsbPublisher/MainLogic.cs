@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using EsbPublisher.Data;
+using EsbPublisher.Processing;
 using EsbPublisher.ServiceBus;
 
 namespace EsbPublisher

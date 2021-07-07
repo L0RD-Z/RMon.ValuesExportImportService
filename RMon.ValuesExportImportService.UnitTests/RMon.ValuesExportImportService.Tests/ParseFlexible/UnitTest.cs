@@ -41,7 +41,7 @@ namespace RMon.ValuesExportImportService.Tests.ParseFlexible
             var taskLogger = new ParseTaskLoggerStub();
             var context = new ParseProcessingContext(null, null, taskLogger, idUser);
 
-            var logic = new ParseFlexibleLogic(logicDeviceRepository, dataRepository, _permissionLogic, _excelWorker);
+            var logic = new ParseFlexibleFormatLogic(logicDeviceRepository, dataRepository, _permissionLogic, _excelWorker);
             try
             {
                 var values = await logic.AnalyzeAsync(new List<LocalFile> {new(fileName, fileBody)}, context, CancellationToken.None).ConfigureAwait(false);

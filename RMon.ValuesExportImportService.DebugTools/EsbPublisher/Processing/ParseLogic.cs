@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using EsbPublisher.Annotations;
+using EsbPublisher.Processing.Parse;
 using EsbPublisher.ServiceBus;
 using RMon.Values.ExportImport.Core;
-using EsbPublisher.Model;
 using RMon.Values.ExportImport.Core.FileFormatParameters;
 
-namespace EsbPublisher
+namespace EsbPublisher.Processing
 {
     public class ParseLogic : INotifyPropertyChanged
     {
@@ -24,10 +22,51 @@ namespace EsbPublisher
         private long _idUser;
 
         private Guid _correlationId;
-
-        private Point _measuringPoint;
-        private Point _deliveryPoint;
         
+        private ParseXml80020Logic _xml80020Logic;
+        private ParseMatrix24X31Logic _matrix24X31Logic;
+        private ParseMatrix31X24Logic _matrix31X24Logic;
+        
+        
+
+        public ParseXml80020Logic Xml80020Logic
+        {
+            get => _xml80020Logic;
+            set
+            {
+                if (_xml80020Logic != value)
+                {
+                    _xml80020Logic = value;
+                    OnPropertyChanged(nameof(Xml80020Logic));
+                }
+            }
+        }
+
+        public ParseMatrix24X31Logic Matrix24X31Logic
+        {
+            get => _matrix24X31Logic;
+            set
+            {
+                if (_matrix24X31Logic != value)
+                {
+                    _matrix24X31Logic = value;
+                    OnPropertyChanged(nameof(Matrix24X31Logic));
+                }
+            }
+        }
+
+        public ParseMatrix31X24Logic Matrix31X24Logic
+        {
+            get => _matrix31X24Logic;
+            set
+            {
+                if (_matrix31X24Logic != value)
+                {
+                    _matrix31X24Logic = value;
+                    OnPropertyChanged(nameof(Matrix31X24Logic));
+                }
+            }
+        }
 
         /// <summary>
         /// Поддерживаемые типы файлов
@@ -57,6 +96,7 @@ namespace EsbPublisher
                 {
                     _selectedFileType = value;
                     OnPropertyChanged(nameof(SelectedFileType));
+                    OnChangeParseType(value);
                 }
             }
         }
@@ -73,39 +113,6 @@ namespace EsbPublisher
                 }
             }
         }
-
-        /// <summary>
-        /// Точка измерения
-        /// </summary>
-        public Point MeasuringPoint
-        {
-            get => _measuringPoint;
-            set
-            {
-                if (_measuringPoint != value)
-                {
-                    _measuringPoint = value;
-                    OnPropertyChanged(nameof(MeasuringPoint));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Точка поставки
-        /// </summary>
-        public Point DeliveryPoint
-        {
-            get => _deliveryPoint;
-            set
-            {
-                if (_deliveryPoint != value)
-                {
-                    _deliveryPoint = value;
-                    OnPropertyChanged(nameof(DeliveryPoint));
-                }
-            }
-        }
-
 
         public long IdUser
         {
@@ -124,8 +131,9 @@ namespace EsbPublisher
         public ParseLogic(BusService busService)
         {
             _busService = busService;
-            MeasuringPoint = new Point();
-            DeliveryPoint = new Point();
+            Xml80020Logic = new ParseXml80020Logic();
+            Matrix24X31Logic = new ParseMatrix24X31Logic();
+            Matrix31X24Logic = new ParseMatrix31X24Logic();
         }
 
 
@@ -142,13 +150,9 @@ namespace EsbPublisher
                 ValuesParseFileFormatType.Flexible,
             };
 
-            MeasuringPoint = new Point("AgrNo")
-            {
-                Channels = new ObservableCollection<ChannelMap>
-                {
-                    new("01", "dHHA+")
-                }
-            };
+            Xml80020Logic.InitializeProperties();
+            Matrix24X31Logic.InitializeProperties();
+            Matrix31X24Logic.InitializeProperties();
         }
 
         /// <summary>
@@ -160,8 +164,8 @@ namespace EsbPublisher
             return SelectedFileType switch
             {
                 ValuesParseFileFormatType.Xml80020 => SendParseXml80020Async(),
-                ValuesParseFileFormatType.Matrix24X31 => throw new NotImplementedException(),
-                ValuesParseFileFormatType.Matrix31X24 => throw new NotImplementedException(),
+                ValuesParseFileFormatType.Matrix24X31 => SendParseMatrix24X31Async(),
+                ValuesParseFileFormatType.Matrix31X24 => SendParseMatrix31X24Async(),
                 ValuesParseFileFormatType.Table => throw new NotImplementedException(),
                 ValuesParseFileFormatType.Flexible => SendParseFlexibleAsync(),
                 _ => throw new NotImplementedException()
@@ -169,6 +173,7 @@ namespace EsbPublisher
         }
 
         
+
 
         /// <summary>
         /// Отправляет задание на Отмену парсинга
@@ -192,16 +197,58 @@ namespace EsbPublisher
             _correlationId = Guid.NewGuid();
 
             var parsingParams = new Xml80020ParsingParameters();
-            if (MeasuringPoint.Channels.Any())
-                parsingParams.MeasuringPoint = new Xml80020PointParameters(MeasuringPoint.PropertyCode)
+            if (Xml80020Logic.MeasuringPoint.Channels.Any())
+                parsingParams.MeasuringPoint = new Xml80020PointParameters(Xml80020Logic.MeasuringPoint.PropertyCode)
                 {
-                    Channels = MeasuringPoint.Channels.Select(t => new Xml80020ChannelParameters(t.ChannelCode, t.TagCode)).ToList()
+                    Channels = Xml80020Logic.MeasuringPoint.Channels.Select(t => new Xml80020ChannelParameters(t.ChannelCode, t.TagCode)).ToList()
                 };
-            if (DeliveryPoint.Channels.Any())
-                parsingParams.DeliveryPoint = new Xml80020PointParameters(MeasuringPoint.PropertyCode)
+            if (Xml80020Logic.DeliveryPoint.Channels.Any())
+                parsingParams.DeliveryPoint = new Xml80020PointParameters(Xml80020Logic.MeasuringPoint.PropertyCode)
                 {
-                    Channels = MeasuringPoint.Channels.Select(t => new Xml80020ChannelParameters(t.ChannelCode, t.TagCode)).ToList()
+                    Channels = Xml80020Logic.MeasuringPoint.Channels.Select(t => new Xml80020ChannelParameters(t.ChannelCode, t.TagCode)).ToList()
                 };
+
+            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, parsingParams, IdUser);
+        }
+
+        /// <summary>
+        /// Отправляет задание на парсинг матрицы 24x31
+        /// </summary>
+        /// <returns></returns>
+        private Task SendParseMatrix24X31Async()
+        {
+            _correlationId = Guid.NewGuid();
+
+            var parsingParams = new Matrix24X31ParsingParameters()
+            {
+                LogicDevicePropertyCode = Matrix24X31Logic.LogicDevicePropertyCode,
+                LogicDevicePropertyCell = Matrix24X31Logic.LogicDevicePropertyCell,
+                TagCode = Matrix24X31Logic.TagCode,
+                FirstValueCell = Matrix24X31Logic.FirstValueCell,
+                DateColumn = Matrix24X31Logic.DateColumn,
+                TimeRow = Matrix24X31Logic.TimeRow.ToString()
+            };
+
+            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, parsingParams, IdUser);
+        }
+
+        /// <summary>
+        /// Отправляет задание на парсинг матрицы 31x24
+        /// </summary>
+        /// <returns></returns>
+        private Task SendParseMatrix31X24Async()
+        {
+            _correlationId = Guid.NewGuid();
+
+            var parsingParams = new Matrix31X24ParsingParameters()
+            {
+                LogicDevicePropertyCode = Matrix31X24Logic.LogicDevicePropertyCode,
+                LogicDevicePropertyCell = Matrix31X24Logic.LogicDevicePropertyCell,
+                TagCode = Matrix31X24Logic.TagCode,
+                FirstValueCell = Matrix31X24Logic.FirstValueCell,
+                DateRow = Matrix31X24Logic.DateRow.ToString(),
+                TimeColumn = Matrix31X24Logic.TimeColumn
+            };
 
             return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, parsingParams, IdUser);
         }
@@ -216,6 +263,13 @@ namespace EsbPublisher
 
             return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, IdUser);
         }
+
+        public event EventHandler<ValuesParseFileFormatType> ChangeParseType;
+        protected virtual void OnChangeParseType(ValuesParseFileFormatType e)
+        {
+            ChangeParseType?.Invoke(this, e);
+        }
+
 
         #region INotifyPropertyChanged
 
