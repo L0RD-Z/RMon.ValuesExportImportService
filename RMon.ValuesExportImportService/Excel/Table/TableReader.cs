@@ -51,10 +51,9 @@ namespace RMon.ValuesExportImportService.Excel.Table
 
         private List<ExcelLogicDeviceValues> ParseTable(DataTable dataTable, int logicDevicePropertyValueRowIndex, ExcelCellAddress cellStart, int dateColumnIndex, int timeColumnIndex)
         {
-            var colIndex = 0;
 
             var result = new List<ExcelLogicDeviceValues>();
-            foreach (DataColumn column in dataTable.Columns)
+            for (var colIndex = 0; colIndex < dataTable.Columns.Count; colIndex++)
                 try
                 {
                     var rowIndex = 0;
@@ -110,7 +109,7 @@ namespace RMon.ValuesExportImportService.Excel.Table
                         }
                     }
 
-                    colIndex++;
+                    //colIndex++;
                 }
                 catch (Exception e)
                 {
