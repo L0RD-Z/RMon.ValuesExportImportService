@@ -38,19 +38,29 @@ namespace RMon.ValuesExportImportService.Excel.Common
         };
 
         /// <summary>
-        /// Преобразует буквенное представление номера столбца таблицы Excel в числовой
+        /// Преобразует буквенное представление номера столбца таблицы Excel в индекс
         /// </summary>
-        /// <param name="colNumber"></param>
+        /// <param name="excelColumn"></param>
         /// <returns></returns>
-        public static int ColNumberConvert(string colNumber)
+        public static int ExcelColumnToIndex(string excelColumn)
         {
             var result = 0;
-            foreach (var ch in colNumber.Trim().ToUpperInvariant())
+            foreach (var ch in excelColumn.Trim().ToUpperInvariant())
                 if (Map.TryGetValue(ch, out var number))
                     result = result * Map.Count + number;
                 else
-                    throw new ExcelException(TextParse.InvalidCharactersError.With(colNumber, ch));
-            return result;
+                    throw new ExcelException(TextParse.InvalidCharactersError.With(excelColumn, ch));
+            return result - 1;
+        }
+
+        /// <summary>
+        /// Преобразует числовое представление номера столбца таблицы Excel в индекс
+        /// </summary>
+        /// <param name="excelRow"></param>
+        /// <returns></returns>
+        public static int ExcelRowToIndex(string excelRow)
+        {
+            return int.Parse(excelRow) - 1;
         }
         
 
@@ -63,8 +73,8 @@ namespace RMon.ValuesExportImportService.Excel.Common
         {
             try
             {
-                var colNumber = string.Empty;
-                var rowNumber = string.Empty;
+                var excelColumn = string.Empty;
+                var excelRow = string.Empty;
             
                 var upperStr = cellAddress.Trim().ToUpperInvariant();
                 for (var i = 0; i < upperStr.Length; i++)
@@ -72,13 +82,13 @@ namespace RMon.ValuesExportImportService.Excel.Common
                     var ch = upperStr.Substring(i, 1);
                     if (uint.TryParse(ch, out _))
                     {
-                        colNumber = upperStr.Substring(0, i);
-                        rowNumber = upperStr.Substring(i, upperStr.Length - i);
+                        excelColumn = upperStr.Substring(0, i);
+                        excelRow = upperStr.Substring(i, upperStr.Length - i);
                         break;
                     }
                 }
 
-                return new ExcelCellAddress(ColNumberConvert(colNumber) ,int.Parse(rowNumber));
+                return new ExcelCellAddress(ExcelColumnToIndex(excelColumn) , ExcelRowToIndex(excelRow));
             }
             catch (Exception e)
             {

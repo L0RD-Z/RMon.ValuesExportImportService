@@ -27,10 +27,10 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         public async Task<List<ValueInfo>> AnalyzeAsync(IList<LocalFile> files, TableParsingParameters taskParams, ParseProcessingContext context, CancellationToken ct)
         {
             ValidateParameters(taskParams);
-            var logicDevicePropertyValueRowIndex = int.Parse(taskParams.LogicDevicePropertyRow) - 1;
+            var logicDevicePropertyValueRowIndex = ExcelCellAddressConverter.ExcelRowToIndex(taskParams.LogicDevicePropertyRow);
             var cellStart = ExcelCellAddressConverter.CellAddressConvert(taskParams.FirstValueCell);
-            var dateColumnIndex = ExcelCellAddressConverter.ColNumberConvert(taskParams.DateColumn) - 1;
-            var timeColumnIndex = ExcelCellAddressConverter.ColNumberConvert(taskParams.TimeColumn) - 1;
+            var dateColumnIndex = ExcelCellAddressConverter.ExcelColumnToIndex(taskParams.DateColumn);
+            var timeColumnIndex = ExcelCellAddressConverter.ExcelColumnToIndex(taskParams.TimeColumn);
 
             var excelResults = new List<ExcelResult>();
             foreach (var file in files)

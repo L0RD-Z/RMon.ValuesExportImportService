@@ -29,8 +29,8 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             ValidateParameters(taskParams);
             var logicDevicePropertyValueCellAddress = ExcelCellAddressConverter.CellAddressConvert(taskParams.LogicDevicePropertyCell);
             var cellStart = ExcelCellAddressConverter.CellAddressConvert(taskParams.FirstValueCell);
-            var dateColumnIndex = ExcelCellAddressConverter.ColNumberConvert(taskParams.DateColumn) - 1;
-            var timeRowIndex = int.Parse(taskParams.TimeRow) - 1;
+            var dateColumnIndex = ExcelCellAddressConverter.ExcelColumnToIndex(taskParams.DateColumn);
+            var timeRowIndex = ExcelCellAddressConverter.ExcelRowToIndex(taskParams.TimeRow);
 
             var excelResults = new List<ExcelResult>();
             foreach (var file in files)

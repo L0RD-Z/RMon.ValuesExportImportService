@@ -21,7 +21,7 @@ namespace RMon.ValuesExportImportService.Excel.Table
 
 
         /// <inheritdoc />
-        public List<ExcelLogicDeviceValues> ReadExcelBook(byte[] fileBody, int logicDevicePropertyValueRowNumber, ExcelCellAddress cellStart, int dateColumnNumber, int timeColumnNumber, ParseProcessingContext context)
+        public List<ExcelLogicDeviceValues> ReadExcelBook(byte[] fileBody, int logicDevicePropertyValueRowIndex, ExcelCellAddress cellStart, int dateColumnIndex, int timeColumnIndex, ParseProcessingContext context)
         {
             using var stream = new MemoryStream(fileBody);
             // Авто-определение форматов, поддерживаются:
@@ -38,7 +38,7 @@ namespace RMon.ValuesExportImportService.Excel.Table
             foreach (DataTable table in data.Tables)
                 try
                 {
-                    var tableResult = ParseTable(table, logicDevicePropertyValueRowNumber, cellStart, dateColumnNumber, timeColumnNumber);
+                    var tableResult = ParseTable(table, logicDevicePropertyValueRowIndex, cellStart, dateColumnIndex, timeColumnIndex);
                     result.AddRange(tableResult);
                 }
                 catch (Exception e)
@@ -49,7 +49,7 @@ namespace RMon.ValuesExportImportService.Excel.Table
             return result;
         }
 
-        private List<ExcelLogicDeviceValues> ParseTable(DataTable dataTable, int logicDevicePropertyValueRowNumber, ExcelCellAddress cellStart, int dateColumnNumber, int timeColumnNumber)
+        private List<ExcelLogicDeviceValues> ParseTable(DataTable dataTable, int logicDevicePropertyValueRowIndex, ExcelCellAddress cellStart, int dateColumnIndex, int timeColumnIndex)
         {
             var colIndex = 0;
 
@@ -61,7 +61,7 @@ namespace RMon.ValuesExportImportService.Excel.Table
 
                     if (colIndex >= cellStart.ColIndex)
                     {
-                        var logicDevicePropertyValue = dataTable.Rows[logicDevicePropertyValueRowNumber].ItemArray[colIndex].ToString();
+                        var logicDevicePropertyValue = dataTable.Rows[logicDevicePropertyValueRowIndex].ItemArray[colIndex].ToString();
 
                         if (!string.IsNullOrEmpty(logicDevicePropertyValue))
                         {
@@ -76,13 +76,13 @@ namespace RMon.ValuesExportImportService.Excel.Table
                                 {
                                     if (rowIndex >= cellStart.RowIndex)
                                     {
-                                        var dateStr = row.ItemArray[dateColumnNumber].ToString();
+                                        var dateStr = row.ItemArray[dateColumnIndex].ToString();
                                         if (!string.IsNullOrEmpty(dateStr))
                                         {
                                             if (!DateTime.TryParse(dateStr, out var date))
                                                 throw new ExcelException(TextExcel.IncorrectDateFormatError.With(dateStr));
 
-                                            var timeStr = row.ItemArray[timeColumnNumber].ToString();
+                                            var timeStr = row.ItemArray[timeColumnIndex].ToString();
                                             if (!string.IsNullOrEmpty(timeStr))
                                             {
                                                 if (!DateTime.TryParse(timeStr, out var time))

@@ -22,7 +22,7 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
 
         
         /// <inheritdoc />
-        public List<ExcelLogicDeviceValues> ReadExcelBook(byte[] fileBody, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateNumber, int timeNumber, ParseProcessingContext context)
+        public List<ExcelLogicDeviceValues> ReadExcelBook(byte[] fileBody, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateColumnIndex, int timeColumnIndex, ParseProcessingContext context)
         {
             using var stream = new MemoryStream(fileBody);
             // Авто-определение форматов, поддерживаются:
@@ -39,7 +39,7 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
             foreach (DataTable table in data.Tables)
                 try
                 {
-                    var tableResult =  ParseTable(table, logicDevicePropertyValueCell, cellStart, dateNumber, timeNumber);
+                    var tableResult =  ParseTable(table, logicDevicePropertyValueCell, cellStart, dateColumnIndex, timeColumnIndex);
                     result.Add(tableResult);
                 }
                 catch (Exception e)
@@ -51,7 +51,7 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
         }
 
 
-        protected abstract ExcelLogicDeviceValues ParseTable(DataTable dataTable, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateColumnNumber, int timeRowNumber);
+        protected abstract ExcelLogicDeviceValues ParseTable(DataTable dataTable, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateColumnIndex, int timeRowIndex);
 
         /// <summary>
         /// Парсит строку с часами

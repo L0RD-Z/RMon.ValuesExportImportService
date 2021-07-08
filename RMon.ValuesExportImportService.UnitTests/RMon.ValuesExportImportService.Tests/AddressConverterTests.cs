@@ -10,13 +10,13 @@ namespace RMon.ValuesExportImportService.Tests
         [TestMethod]
         public void ConvertColNumberTest()
         {
-            var colNumber = ExcelCellAddressConverter.ColNumberConvert("XFC");
+            var colNumber = ExcelCellAddressConverter.ExcelColumnToIndex("XFC");
             Assert.AreEqual(16383, colNumber, "Некорректное преобразование формата представления номера столбца Excel 1");
-            colNumber = ExcelCellAddressConverter.ColNumberConvert("A");
+            colNumber = ExcelCellAddressConverter.ExcelColumnToIndex("A");
             Assert.AreEqual(1, colNumber, "Некорректное преобразование формата представления номера столбца Excel 2");
-            colNumber = ExcelCellAddressConverter.ColNumberConvert("Z");
+            colNumber = ExcelCellAddressConverter.ExcelColumnToIndex("Z");
             Assert.AreEqual(26, colNumber, "Некорректное преобразование формата представления номера столбца Excel 3");
-            colNumber = ExcelCellAddressConverter.ColNumberConvert("AA");
+            colNumber = ExcelCellAddressConverter.ExcelColumnToIndex("AA");
             Assert.AreEqual(27, colNumber, "Некорректное преобразование формата представления номера столбца Excel 4");
         }
 

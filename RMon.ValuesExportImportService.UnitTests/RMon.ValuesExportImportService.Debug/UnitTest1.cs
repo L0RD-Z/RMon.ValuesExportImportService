@@ -45,7 +45,7 @@ namespace RMon.ValuesExportImportService.Debug
         [TestMethod]
         public void TestMethod2()
         {
-            var num = ExcelCellAddressConverter.ColNumberConvert("XFC"); //16383
+            var num = ExcelCellAddressConverter.ExcelColumnToIndex("XFC"); //16383
 
             var a = ExcelCellAddressConverter.CellAddressConvert("G14");
         }

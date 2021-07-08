@@ -10,7 +10,7 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
         private const int ColCount = 31;
         private const int RowCount = 24;
 
-        protected override ExcelLogicDeviceValues ParseTable(DataTable dataTable, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateRowNumber, int timeColumnNumber)
+        protected override ExcelLogicDeviceValues ParseTable(DataTable dataTable, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateColumnIndex, int timeRowIndex)
         {
             var rowIndex = 0;
             var colEnd = cellStart.ColIndex + ColCount - 1;
@@ -39,7 +39,7 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
                     {
                         var colIndex = 0;
 
-                        var hoursStr = row.ItemArray[timeColumnNumber].ToString();
+                        var hoursStr = row.ItemArray[timeRowIndex].ToString();
                         var hour = ParseHours(hoursStr);
                         
                         foreach (var cell in row.ItemArray)
@@ -47,7 +47,7 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
                             {
                                 if (colIndex >= cellStart.ColIndex && colIndex <= colEnd)
                                 {
-                                    var dateStr = dataTable.Rows[dateRowNumber].ItemArray[colIndex].ToString();
+                                    var dateStr = dataTable.Rows[dateColumnIndex].ItemArray[colIndex].ToString();
                                     if (!string.IsNullOrEmpty(dateStr))
                                     {
                                         if (!DateTime.TryParse(dateStr, out var date))
