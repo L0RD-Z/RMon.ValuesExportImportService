@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using RMon.ValuesExportImportService.Excel.Common;
 using RMon.ValuesExportImportService.Text;
 
-namespace RMon.ValuesExportImportService.Excel.Matrix
+namespace RMon.ValuesExportImportService.Excel.Common
 {
     static class ExcelCellAddressConverter
     {
-        private static readonly Dictionary<char, uint> Map = new()
+        private static readonly Dictionary<char, int> Map = new()
         {
             { 'A', 1 },
             { 'B', 2 },
@@ -39,21 +38,31 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
         };
 
         /// <summary>
-        /// Преобразует буквенное представление номера столбца таблицы Excel в числовой
+        /// Преобразует буквенное представление номера столбца таблицы Excel в индекс
         /// </summary>
-        /// <param name="colNumber"></param>
+        /// <param name="excelColumn"></param>
         /// <returns></returns>
-        public static int ColNumberConvert(string colNumber)
+        public static int ExcelColumnToIndex(string excelColumn)
         {
-            int result = 0;
-            var digit = 0;
-            foreach (var ch in colNumber.Trim().ToUpperInvariant().Reverse())
+            var result = 0;
+            foreach (var ch in excelColumn.Trim().ToUpperInvariant())
                 if (Map.TryGetValue(ch, out var number))
-                    result += Convert.ToInt32(number * Math.Pow(Map.Count, digit++));
+                    result = result * Map.Count + number;
                 else
-                    throw new ExcelException(TextParse.InvalidCharactersError.With(colNumber, ch));
-            return result;
+                    throw new ExcelException(TextParse.InvalidCharactersError.With(excelColumn, ch));
+            return result - 1;
         }
+
+        /// <summary>
+        /// Преобразует числовое представление номера столбца таблицы Excel в индекс
+        /// </summary>
+        /// <param name="excelRow"></param>
+        /// <returns></returns>
+        public static int ExcelRowToIndex(string excelRow)
+        {
+            return int.Parse(excelRow) - 1;
+        }
+        
 
         /// <summary>
         /// Преобразует буквенное представление адреса ячейки таблицы Excel в числовое
@@ -64,8 +73,8 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
         {
             try
             {
-                var colNumber = string.Empty;
-                var rowNumber = string.Empty;
+                var excelColumn = string.Empty;
+                var excelRow = string.Empty;
             
                 var upperStr = cellAddress.Trim().ToUpperInvariant();
                 for (var i = 0; i < upperStr.Length; i++)
@@ -73,13 +82,13 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
                     var ch = upperStr.Substring(i, 1);
                     if (uint.TryParse(ch, out _))
                     {
-                        colNumber = upperStr.Substring(0, i);
-                        rowNumber = upperStr.Substring(i, upperStr.Length - i);
+                        excelColumn = upperStr.Substring(0, i);
+                        excelRow = upperStr.Substring(i, upperStr.Length - i);
                         break;
                     }
                 }
 
-                return new ExcelCellAddress(ColNumberConvert(colNumber) ,int.Parse(rowNumber));
+                return new ExcelCellAddress(ExcelColumnToIndex(excelColumn) , ExcelRowToIndex(excelRow));
             }
             catch (Exception e)
             {

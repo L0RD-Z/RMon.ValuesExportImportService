@@ -10,11 +10,8 @@ namespace RMon.ValuesExportImportService.Tests.ParseFlexible
 {
     class DataRepositoryStub : IDataRepository
     {
-        private readonly List<long> _idLogicDevices;
-
-        public DataRepositoryStub(List<long> idLogicDevices)
+        public DataRepositoryStub()
         {
-            _idLogicDevices = idLogicDevices;
         }
 
         public Task<DateTime> GetDateAsync()

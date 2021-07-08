@@ -6,6 +6,7 @@ using System.Threading;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RMon.ValuesExportImportService.Excel;
+using RMon.ValuesExportImportService.Excel.Flexible;
 using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Processing.Parse;
 using RMon.ValuesExportImportService.Processing.Permission;
@@ -32,7 +33,7 @@ namespace RMon.ValuesExportImportService.Tests.ParseFlexible
         {
             var idLogicDevices = new List<long> {57122, 57123, 57172, 57174, 25, 29, 37};
             var logicDeviceRepository = new LogicDeviceRepositoryStub(idLogicDevices);
-            var dataRepository = new DataRepositoryStub(idLogicDevices);
+            var dataRepository = new DataRepositoryStub();
 
             var fileName = @"ParseFlexible\Files\Выгрузка значений 20210622 001252.xlsx";
             var fileBody = await File.ReadAllBytesAsync(fileName).ConfigureAwait(false);

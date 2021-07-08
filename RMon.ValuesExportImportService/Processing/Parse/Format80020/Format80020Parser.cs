@@ -7,13 +7,13 @@ using RMon.ValuesExportImportService.Text;
 
 namespace RMon.ValuesExportImportService.Processing.Parse.Format80020
 {
-    public static class Parser //Todo сделать не статическим
+    public class Format80020Parser
     {
         private const string Class80020 = "80020";
         private const string SupportedVersion = "2";
         
 
-        public static Message Parse(byte[] data)
+        public Message Parse(byte[] data)
         {
             using var stream = new MemoryStream(data);
             object message = null;
@@ -34,7 +34,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse.Format80020
             return (Message)message;
         }
 
-        private static I18nString Validate(object messageHeader)
+        private I18nString Validate(object messageHeader)
         {
             if (messageHeader is not MessageHeader mh)
                 return Text80020.IncorrectFileFormat;

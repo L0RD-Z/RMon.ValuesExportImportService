@@ -16,17 +16,16 @@ namespace EsbPublisher.Processing
     {
         private readonly BusService _busService;
 
+        private ParseXml80020Logic _xml80020Logic;
+        private ParseMatrix24X31Logic _matrix24X31Logic;
+        private ParseMatrix31X24Logic _matrix31X24Logic;
+        private ParseTableLogic _tableLogic;
         private List<ValuesParseFileFormatType> _supportedFileTypes;
         private ValuesParseFileFormatType _selectedFileType;
         private string _filePath;
         private long _idUser;
 
         private Guid _correlationId;
-        
-        private ParseXml80020Logic _xml80020Logic;
-        private ParseMatrix24X31Logic _matrix24X31Logic;
-        private ParseMatrix31X24Logic _matrix31X24Logic;
-        
         
 
         public ParseXml80020Logic Xml80020Logic
@@ -41,7 +40,6 @@ namespace EsbPublisher.Processing
                 }
             }
         }
-
         public ParseMatrix24X31Logic Matrix24X31Logic
         {
             get => _matrix24X31Logic;
@@ -54,7 +52,6 @@ namespace EsbPublisher.Processing
                 }
             }
         }
-
         public ParseMatrix31X24Logic Matrix31X24Logic
         {
             get => _matrix31X24Logic;
@@ -64,6 +61,18 @@ namespace EsbPublisher.Processing
                 {
                     _matrix31X24Logic = value;
                     OnPropertyChanged(nameof(Matrix31X24Logic));
+                }
+            }
+        }
+        public ParseTableLogic TableLogic
+        {
+            get => _tableLogic;
+            set
+            {
+                if (_tableLogic != value)
+                {
+                    _tableLogic = value;
+                    OnPropertyChanged(nameof(TableLogic));
                 }
             }
         }
@@ -81,7 +90,6 @@ namespace EsbPublisher.Processing
                     _supportedFileTypes = value;
                     OnPropertyChanged(nameof(SupportedFileTypes));
                 }
-
             }
         }
         /// <summary>
@@ -134,6 +142,7 @@ namespace EsbPublisher.Processing
             Xml80020Logic = new ParseXml80020Logic();
             Matrix24X31Logic = new ParseMatrix24X31Logic();
             Matrix31X24Logic = new ParseMatrix31X24Logic();
+            TableLogic = new ParseTableLogic();
         }
 
 
@@ -153,6 +162,7 @@ namespace EsbPublisher.Processing
             Xml80020Logic.InitializeProperties();
             Matrix24X31Logic.InitializeProperties();
             Matrix31X24Logic.InitializeProperties();
+            TableLogic.InitializeProperties();
         }
 
         /// <summary>
@@ -166,7 +176,7 @@ namespace EsbPublisher.Processing
                 ValuesParseFileFormatType.Xml80020 => SendParseXml80020Async(),
                 ValuesParseFileFormatType.Matrix24X31 => SendParseMatrix24X31Async(),
                 ValuesParseFileFormatType.Matrix31X24 => SendParseMatrix31X24Async(),
-                ValuesParseFileFormatType.Table => throw new NotImplementedException(),
+                ValuesParseFileFormatType.Table => SendParseTableAsync(),
                 ValuesParseFileFormatType.Flexible => SendParseFlexibleAsync(),
                 _ => throw new NotImplementedException()
             };
@@ -248,6 +258,26 @@ namespace EsbPublisher.Processing
                 FirstValueCell = Matrix31X24Logic.FirstValueCell,
                 DateRow = Matrix31X24Logic.DateRow.ToString(),
                 TimeColumn = Matrix31X24Logic.TimeColumn
+            };
+
+            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, parsingParams, IdUser);
+        }
+
+        /// <summary>
+        /// Отправляет задание на парсинг Таблицы
+        /// </summary>
+        /// <returns></returns>
+        private Task SendParseTableAsync()
+        {
+            _correlationId = Guid.NewGuid();
+            var parsingParams = new TableParsingParameters
+            {
+                LogicDevicePropertyCode = TableLogic.LogicDevicePropertyCode,
+                LogicDevicePropertyRow = TableLogic.LogicDevicePropertyRow.ToString(),
+                TagCode = TableLogic.TagCode,
+                FirstValueCell = TableLogic.FirstValueCell,
+                DateColumn = TableLogic.DateColumn,
+                TimeColumn = TableLogic.TimeColumn
             };
 
             return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, parsingParams, IdUser);

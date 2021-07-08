@@ -23,15 +23,17 @@ namespace RMon.ValuesExportImportService.Processing.Parse
     class ParseXml80020Logic
     {
         private readonly IDataRepository _dataRepository;
+        private readonly Format80020Parser _format80020Parser;
 
         private readonly List<TimeStampTypeEnum> _supportedTimestampTypes = new()
         {
             TimeStampTypeEnum.HalfHour, TimeStampTypeEnum.Hour
         };
 
-        public ParseXml80020Logic(IDataRepository dataRepository)
+        public ParseXml80020Logic(IDataRepository dataRepository, Format80020Parser format80020Parser)
         {
             _dataRepository = dataRepository;
+            _format80020Parser = format80020Parser;
         }
 
         /// <summary>
@@ -49,7 +51,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             {
                 await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Xml80020.ToString())).ConfigureAwait(false);
 
-                var message = Parser.Parse(file.Body);
+                var message = _format80020Parser.Parse(file.Body);
                 messages.Add((file.Path, message));
             }
 

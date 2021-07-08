@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using ExcelDataReader;
@@ -22,7 +22,7 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
 
         
         /// <inheritdoc />
-        public List<MatrixResult> ReadExcelBook(byte[] fileBody, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateNumber, int timeNumber, ParseProcessingContext context)
+        public List<ExcelLogicDeviceValues> ReadExcelBook(byte[] fileBody, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateColumnIndex, int timeColumnIndex, ParseProcessingContext context)
         {
             using var stream = new MemoryStream(fileBody);
             // Авто-определение форматов, поддерживаются:
@@ -35,11 +35,11 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
             });
 
 
-            var result = new List<MatrixResult>();
+            var result = new List<ExcelLogicDeviceValues>();
             foreach (DataTable table in data.Tables)
                 try
                 {
-                    var tableResult =  ParseTable(table, logicDevicePropertyValueCell, cellStart, dateNumber, timeNumber);
+                    var tableResult =  ParseTable(table, logicDevicePropertyValueCell, cellStart, dateColumnIndex, timeColumnIndex);
                     result.Add(tableResult);
                 }
                 catch (Exception e)
@@ -51,7 +51,7 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
         }
 
 
-        protected abstract MatrixResult ParseTable(DataTable dataTable, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateColumnNumber, int timeRowNumber);
+        protected abstract ExcelLogicDeviceValues ParseTable(DataTable dataTable, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateColumnIndex, int timeRowIndex);
 
         /// <summary>
         /// Парсит строку с часами
@@ -62,8 +62,24 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
         {
             try
             {
+                if (DateTime.TryParseExact(hours, "G", CultureInfo.CurrentCulture, DateTimeStyles.None, out var dateTime))
+                    return dateTime.Hour;
+                if (DateTime.TryParseExact(hours, "G", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+                    return dateTime.Hour;
+
                 var arr = hours.Split('-');
-                return int.Parse(arr[1]);
+                switch (arr.Length)
+                {
+                    case 1:
+                    {
+                        var arr2 = arr[0].Split(':');
+                        if (arr2.Length == 1 || arr2.Length == 2)
+                            return int.Parse(arr2[0].Trim());
+                        throw new Exception();
+                    }
+                    case 2: return int.Parse(arr[1].Trim());
+                    default: throw new Exception();
+                }
             }
             catch (Exception e)
             {

@@ -102,7 +102,6 @@ namespace EsbPublisher.Processing
             _busService = busService;
             _dataRepository = dataRepository;
 
-
             InitializeProperties();
         }
 

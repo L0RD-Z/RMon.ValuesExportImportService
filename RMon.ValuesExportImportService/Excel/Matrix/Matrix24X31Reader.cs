@@ -7,30 +7,26 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
 {
     class Matrix24X31Reader : MatrixReaderBase
     {
-        protected override MatrixResult ParseTable(DataTable dataTable, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateColumnNumber, int timeRowNumber)
+        private const int ColCount = 24;
+        private const int RowCount = 31;
+
+        protected override ExcelLogicDeviceValues ParseTable(DataTable dataTable, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateColumnIndex, int timeRowIndex)
         {
             var rowIndex = 0;
-
-            /*т.к. нумерация ячеек в библиотеке ведется от нуля*/
-            logicDevicePropertyValueCell = new ExcelCellAddress(logicDevicePropertyValueCell.ColNumber - 1, logicDevicePropertyValueCell.RowNumber - 1);
-            cellStart = new ExcelCellAddress(cellStart.ColNumber - 1, cellStart.RowNumber - 1);
-            dateColumnNumber--;
-            timeRowNumber--;
-
-            var colEnd = cellStart.ColNumber + 24 - 1;
-            var rowEnd = cellStart.RowNumber + 31 - 1;
+            var colEnd = cellStart.ColIndex + ColCount - 1;
+            var rowEnd = cellStart.RowIndex + RowCount - 1;
 
             string logicDevicePropertyValue;
             try
             {
-                logicDevicePropertyValue = dataTable.Rows[logicDevicePropertyValueCell.RowNumber].ItemArray[logicDevicePropertyValueCell.ColNumber].ToString();
+                logicDevicePropertyValue = dataTable.Rows[logicDevicePropertyValueCell.RowIndex].ItemArray[logicDevicePropertyValueCell.ColIndex].ToString();
             }
             catch (Exception)
             {
                 throw new ExcelException(TextExcel.FailedParseLogicDevicePropertyValueError);
             }
 
-            var result = new MatrixResult
+            var result = new ExcelLogicDeviceValues
             {
                 SheetName = dataTable.TableName,
                 LogicDevicePropertyValue = logicDevicePropertyValue
@@ -39,11 +35,11 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
             foreach (DataRow row in dataTable.Rows)
                 try
                 {
-                    if (rowIndex >= cellStart.RowNumber && rowIndex <= rowEnd)
+                    if (rowIndex >= cellStart.RowIndex && rowIndex <= rowEnd)
                     {
                         var colIndex = 0;
 
-                        var dateStr = row.ItemArray[dateColumnNumber].ToString();
+                        var dateStr = row.ItemArray[dateColumnIndex].ToString();
                         if (!string.IsNullOrEmpty(dateStr))
                         {
                             if (!DateTime.TryParse(dateStr, out var date))
@@ -52,9 +48,9 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
                             foreach (var cell in row.ItemArray)
                                 try
                                 {
-                                    if (colIndex >= cellStart.ColNumber && colIndex <= colEnd)
+                                    if (colIndex >= cellStart.ColIndex && colIndex <= colEnd)
                                     {
-                                        var hoursStr = dataTable.Rows[timeRowNumber].ItemArray[colIndex].ToString();
+                                        var hoursStr = dataTable.Rows[timeRowIndex].ItemArray[colIndex].ToString();
                                         var hour = ParseHours(hoursStr);
 
                                         var valueStr = cell.ToString();

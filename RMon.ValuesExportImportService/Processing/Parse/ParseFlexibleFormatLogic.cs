@@ -9,8 +9,8 @@ using RMon.Data.Provider.Units.Backend.Interfaces;
 using RMon.Values.ExportImport.Core;
 using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Data;
-using RMon.ValuesExportImportService.Excel;
 using RMon.ValuesExportImportService.Excel.Common;
+using RMon.ValuesExportImportService.Excel.Flexible;
 using RMon.ValuesExportImportService.Extensions;
 using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Processing.Common;
@@ -45,7 +45,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <returns></returns>
         public async Task<List<ValueInfo>> AnalyzeAsync(IList<LocalFile> files, ParseProcessingContext context, CancellationToken ct)
         {
-            var tables = new List<(string FileName, List<ReadedSheet> Sheets)>();
+            var tables = new List<(string FileName, List<ReadSheet> Sheets)>();
             foreach (var file in files)
             {
                 await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Flexible.ToString())).ConfigureAwait(false);

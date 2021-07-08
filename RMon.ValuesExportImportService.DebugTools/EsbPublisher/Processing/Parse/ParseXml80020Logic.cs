@@ -51,8 +51,7 @@ namespace EsbPublisher.Processing.Parse
             DeliveryPoint = new Point();
         }
 
-        public void InitializeProperties()
-        {
+        public void InitializeProperties() =>
             MeasuringPoint = new Point("AgrNo")
             {
                 Channels = new ObservableCollection<ChannelMap>
@@ -60,7 +59,6 @@ namespace EsbPublisher.Processing.Parse
                     new("01", "dHHA+")
                 }
             };
-        }
 
 
         #region INotifyPropertyChanged
