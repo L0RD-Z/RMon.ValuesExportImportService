@@ -143,5 +143,18 @@ namespace RMon.ValuesExportImportService.Data
 
         #endregion
 
+        #region Импорт
+
+        /// <inheritdoc/>
+        public async Task<long> AddSsdAnalizeBufAsync(SSDAnalizeBuf buffer, CancellationToken ct = default)
+        {
+            await using var dataContext = _factory.Create();
+            await dataContext.SSDAnalizeBufs.AddAsync(buffer, ct).ConfigureAwait(false);
+            await dataContext.SaveChangesAsync(ct).ConfigureAwait(false);
+            return buffer.id;
+        }
+
+        #endregion
+
     }
 }

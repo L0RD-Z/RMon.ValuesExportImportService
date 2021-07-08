@@ -1,14 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using RMon.Configuration.Options;
+using RMon.Core.Base;
+using RMon.Core.MainServerInterface;
+using RMon.Data;
 using RMon.Data.Provider;
+using RMon.Data.Provider.Values;
 using RMon.ESB.Core.Common;
 using RMon.ESB.Core.ValuesImportTaskDto;
 using RMon.Globalization;
 using RMon.Globalization.String;
+using RMon.Values.ExportImport.Core;
+using RMon.ValuesExportImportService.Common;
+using RMon.ValuesExportImportService.Extensions;
 using RMon.ValuesExportImportService.Processing.Common;
+using RMon.ValuesExportImportService.Processing.Import.Extensions;
 using RMon.ValuesExportImportService.Processing.Parse;
 using RMon.ValuesExportImportService.ServiceBus;
 using RMon.ValuesExportImportService.Text;
@@ -20,45 +31,46 @@ namespace RMon.ValuesExportImportService.Processing.Import
         private readonly IOptionsMonitor<Service> _serviceOptions;
 
         private readonly IImportTaskLogger _taskLogger;
+        private readonly ISimpleFactory<IValueRepository> _valueRepositorySimpleFactory;
+        private readonly ITransformationRatioCalculator _transformationRatioCalculator;
+        private readonly IResultMessagesSender _resultMessagesSender;
 
 
-        public ImportTaskLogic(IOptionsMonitor<Service> serviceOptions, IImportTaskLogger taskLogger)
+        public ImportTaskLogic(IOptionsMonitor<Service> serviceOptions, 
+            IImportTaskLogger taskLogger, 
+            ISimpleFactory<IValueRepository> valueRepositorySimpleFactory, 
+            ITransformationRatioCalculator transformationRatioCalculator,
+            IResultMessagesSender resultMessagesSender)
         {
             _serviceOptions = serviceOptions;
             _taskLogger = taskLogger;
+            _valueRepositorySimpleFactory = valueRepositorySimpleFactory;
+            _transformationRatioCalculator = transformationRatioCalculator;
+            _resultMessagesSender = resultMessagesSender;
         }
 
-        public async Task StartTaskAsync(ITask receivedTask, CancellationToken cancellationToken)
+        public async Task StartTaskAsync(ITask receivedTask, CancellationToken ct)
         {
             if (receivedTask is IValuesImportTask task)
             {
                 var instanceName = _serviceOptions.CurrentValue.InstanceName;
                 var dbTask = task.ToDbTask(instanceName);
-                var context = new ParseProcessingContext(task, dbTask, _taskLogger, task.IdUser.Value);
+                var context = new ImportProcessingContext(task, dbTask, _taskLogger, task.IdUser.Value);
 
                 try
                 {
-                    
-                    //await context.LogStarted(TextParse.Start).ConfigureAwait(false);
-                    //await context.LogInfo(TextParse.ValidateParameters).ConfigureAwait(false);
-                    //ValidateParameters(task);
+                    await context.LogStarted(TextTask.Start).ConfigureAwait(false);
+                    var values = task.Parameters.Values;
 
-                    //await context.LogInfo(TextParse.LoadingFiles, 10).ConfigureAwait(false);
-                    //var files = await ReceiveFilesAsync(task.Parameters.Files, ct).ConfigureAwait(false);
+                    var valueRepository = _valueRepositorySimpleFactory.Create();
+                    await _transformationRatioCalculator.LoadTagsRatioFromDbAsync(values.Select(t => t.IdTag).ToList(), ct).ConfigureAwait(false);
 
-                    //var values = task.Parameters.FileFormatType switch
-                    //{
-                    //    ValuesParseFileFormatType.Xml80020 => await _parseXml80020Logic.AnalyzeAsync(files, task.Parameters.Xml80020Parameters, context, ct).ConfigureAwait(false),
-                    //    ValuesParseFileFormatType.Matrix24X31 => await _parseMatrix24X31Logic.AnalyzeAsync(files, task.Parameters.Matrix24X31Parameters, context, ct).ConfigureAwait(false),
-                    //    ValuesParseFileFormatType.Matrix31X24 => await _parseMatrix31X24Logic.AnalyzeAsync(files, task.Parameters.Matrix31X24Parameters, context, ct).ConfigureAwait(false),
-                    //    ValuesParseFileFormatType.Table => await _parseTableLogic.AnalyzeAsync(files, task.Parameters.TableParameters, context, ct).ConfigureAwait(false),
-                    //    ValuesParseFileFormatType.Flexible => await _parseFlexibleFormatLogic.AnalyzeAsync(files, context, ct).ConfigureAwait(false),
-                    //    _ => throw new ArgumentOutOfRangeException(),
-                    //};
-                    //await context.LogInfo(TextParse.LoadingCurrentValues, 70).ConfigureAwait(false);
-                    //await LoadCurrentValuesFromDb(context, values).ConfigureAwait(false);
+                    var groupValues = values.GroupBy(t => t.IdTag);
 
-                    //await context.LogFinished(TextParse.FinishSuccess, values).ConfigureAwait(false);
+                    var tasks = groupValues.Select(t => ProcessingTag(t, valueRepository, context, ct));
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
+
+                    await context.LogFinished(TextTask.FinishSuccess).ConfigureAwait(false);
                 }
                 catch (TaskCanceledException)
                 {
@@ -83,6 +95,77 @@ namespace RMon.ValuesExportImportService.Processing.Import
             }
         }
 
+        private async Task ProcessingTag(IGrouping<long, ValueInfo> tagValue, IValueRepository valueRepository, ImportProcessingContext context, CancellationToken ct)
+        {
+            try
+            {
+                var tag = _transformationRatioCalculator.TagsRatio.SingleOrDefault(t => t.IdTag == tagValue.Key);
+                if (tag != null)
+                {
+                    var message = CreateManualTagDataMessage(tag.IdTag);
+                    foreach (var value in tagValue)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        /*Удаление текущего значения*/
+                        if (value.Rewrite)
+                            await valueRepository.DeleteAsync(value.ToValue()).ConfigureAwait(false);
+
+                        /*Применение коэффициента трансформации*/
+                        value.Value.ValueFloat = value.Value.ValueFloat / tag.TransformationRatio / tag.Ratio - tag.Offset;
+
+                        /*Формирование пакета для DPS*/
+                        if (value.Value.ValueFloat.HasValue)
+                            message.data.usd.Add(CreateTagValue(value.TimeStamp, tag.TagCode, value.Value.ValueFloat.Value));
+                    }
+
+                    await _resultMessagesSender.SendPacketAsync(message, idAnalysisService: _serviceOptions.CurrentValue.InstanceName, ct: ct).ConfigureAwait(false);
+                    await context.LogInfo(TextImport.TagImportSuccess.With(tag.TagCode, tag.IdTag)).ConfigureAwait(false);
+                }
+                else
+                    await context.LogError(TextImport.TagNotFoundError.With(tagValue.Key)).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                await context.LogError(e.ConcatExceptionMessage(TextImport.TagNotImportError.With(tagValue.Key))).ConfigureAwait(false);
+            }
+        }
+
         public void AbortTask(ITask receivedTask, StateMachineInstance instance) => instance.CancellationTokenSource.Cancel();
+
+
+        /// <summary>
+        /// Create uspd data for logic tags
+        /// </summary>
+        /// <param name="idTag">Logic tag Id</param>
+        /// <returns></returns>
+        private DAServerDataMessage CreateManualTagDataMessage(long idTag)
+        {
+            var message = new DAServerDataMessage();
+
+            message.data.uspd.tS = DateTime.Now;
+            message.data.uspd.isTymeSynk = true;
+            message.data.uspd.props.Add("DevCode", "Manual");
+            message.data.uspd.props.Add("IdTag", idTag.ToString());
+
+            return message;
+        }
+
+        /// <summary>
+        /// Create tag value
+        /// </summary>
+        /// <param name="timeStamp">Timestamp</param>
+        /// <param name="tagCode">Tag name</param>
+        /// <param name="value">Value</param>
+        /// <returns></returns>
+        private DAServerDeviceDataItem CreateTagValue(DateTime timeStamp, string tagCode, double value)
+        {
+            var usd = new DAServerDeviceDataItem
+            {
+                tS = timeStamp,
+                isTymeSynk = true
+            };
+            usd.tags.Add(tagCode, value.ToString(CultureInfo.InvariantCulture));
+            return usd;
+        }
     }
 }

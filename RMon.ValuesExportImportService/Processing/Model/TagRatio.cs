@@ -6,6 +6,7 @@
     public class TagRatio
     {
         public long IdTag { get; init; }
+        public string TagCode { get; init; }
         public double Ratio { get; init; }
         public double Offset { get; init; }
         /// <summary>
