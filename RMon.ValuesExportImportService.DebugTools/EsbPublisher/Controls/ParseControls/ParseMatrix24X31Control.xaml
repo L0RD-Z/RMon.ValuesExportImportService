@@ -1,14 +1,15 @@
-﻿<UserControl x:Class="EsbPublisher.Controls.ParseMatrix31X24Control"
+﻿<parseControls:ParseControlBase x:Class="EsbPublisher.Controls.ParseControls.ParseMatrix24X31Control"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:EsbPublisher.Controls"
+             xmlns:parseControls="clr-namespace:EsbPublisher.Controls.ParseControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              DataContext="{Binding Logic, RelativeSource={RelativeSource Self}}"
              >
-    <UserControl.Resources>
+    <parseControls:ParseControlBase.Resources>
         <Style BasedOn="{StaticResource TextBlockStyle}" TargetType="TextBlock"/>
         <Style BasedOn="{StaticResource TextBoxStyle}" TargetType="TextBox"/>
         <Style BasedOn="{StaticResource DatePickerStyle}" TargetType="DatePicker"/>
@@ -18,7 +19,8 @@
         <Style BasedOn="{StaticResource CheckBoxStyle}" TargetType="CheckBox"/>
         <Style BasedOn="{StaticResource GroupBoxStyle}" TargetType="GroupBox"/>
         <Style BasedOn="{StaticResource ListBoxStyle}" TargetType="ListBox"/>
-    </UserControl.Resources>
+    </parseControls:ParseControlBase.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -69,11 +71,11 @@
                 <TextBlock Grid.Column="0" Grid.Row="0" Text="Адрес левой верхней ячейки таблицы"/>
                 <TextBox   Grid.Column="1" Grid.Row="0" Text="{Binding FirstValueCell}"/>
 
-                <TextBlock Grid.Column="0" Grid.Row="1" Text="Номер строки с датами"/>
-                <TextBox   Grid.Column="1" Grid.Row="1" Text="{Binding DateRow}"/>
-                <TextBlock Grid.Column="0" Grid.Row="2" Text="Номер столбца с часами"/>
-                <TextBox   Grid.Column="1" Grid.Row="2" Text="{Binding TimeColumn}"/>
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="Номер столбца с датами"/>
+                <TextBox   Grid.Column="1" Grid.Row="1" Text="{Binding DateColumn}"/>
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Номер строки с часами"/>
+                <TextBox   Grid.Column="1" Grid.Row="2" Text="{Binding TimeRow}"/>
             </Grid>
         </GroupBox>
     </Grid>
-</UserControl>
+</parseControls:ParseControlBase>

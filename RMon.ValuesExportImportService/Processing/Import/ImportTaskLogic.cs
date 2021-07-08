@@ -38,7 +38,7 @@ namespace RMon.ValuesExportImportService.Processing.Import
 
                 try
                 {
-                    //task.Parameters.
+                    
                     //await context.LogStarted(TextParse.Start).ConfigureAwait(false);
                     //await context.LogInfo(TextParse.ValidateParameters).ConfigureAwait(false);
                     //ValidateParameters(task);

@@ -1,0 +1,58 @@
+﻿<operationsControl:OperationControlBase x:Class="EsbPublisher.Controls.OperationsControl.ParseControl"
+                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                            xmlns:local="clr-namespace:EsbPublisher.Controls"
+                            xmlns:commands="clr-namespace:EsbPublisher.Commands"
+                            xmlns:converters="clr-namespace:EsbPublisher.Converters"
+                            xmlns:operationsControl="clr-namespace:EsbPublisher.Controls.OperationsControl"
+                            mc:Ignorable="d" 
+                            d:DesignHeight="450" d:DesignWidth="800"
+                            DataContext="{Binding Logic, RelativeSource={RelativeSource Self}}"
+>
+    <operationsControl:OperationControlBase.Resources>
+        <Style BasedOn="{StaticResource TextBlockStyle}" TargetType="TextBlock"/>
+        <Style BasedOn="{StaticResource TextBoxStyle}" TargetType="TextBox"/>
+        <Style BasedOn="{StaticResource DatePickerStyle}" TargetType="DatePicker"/>
+
+        <Style BasedOn="{StaticResource ButtonStyle}" TargetType="Button"/>
+        <Style BasedOn="{StaticResource ComboBoxStyle}" TargetType="ComboBox"/>
+        <Style BasedOn="{StaticResource CheckBoxStyle}" TargetType="CheckBox"/>
+        <Style BasedOn="{StaticResource GroupBoxStyle}" TargetType="GroupBox"/>
+        <Style BasedOn="{StaticResource ListBoxStyle}" TargetType="ListBox"/>
+
+        <converters:ImportSettingsTypeConverter x:Key="ImportSettingsTypeConverter"/>
+    </operationsControl:OperationControlBase.Resources>
+    <operationsControl:OperationControlBase.CommandBindings>
+        <CommandBinding Command="commands:MainCommands.Parse" CanExecute="Parse_OnCanExecute" Executed="Parse_OnExecuted"/>
+        <CommandBinding Command="commands:MainCommands.CancelParse" CanExecute="CancelParse_OnCanExecute" Executed="CancelParse_OnExecuted"/>
+    </operationsControl:OperationControlBase.CommandBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ComboBox Grid.Row="0" ItemsSource="{Binding SupportedFileTypes}" SelectedItem="{Binding SelectedFileType}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding ., Converter={StaticResource ImportSettingsTypeConverter}}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <TextBlock Grid.Row="1" Text="Путь к файлу (внутри RMon.FileStorageService)"/>
+        <TextBox   Grid.Row="2"   Text="{Binding FilePath}"/>
+        <CheckBox  Grid.Row="3"  Content="Использовать коэффициенты трансформации" IsChecked="{Binding UseTransformationRatio}"/>
+
+        <ContentControl Grid.Row="4"  Content="{Binding SelectedParseControl, RelativeSource={RelativeSource AncestorType=operationsControl:OperationControlBase}}"/>
+        <StackPanel     Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Парсинг" Command="commands:MainCommands.Parse"/>
+            <Button Content="Отмена" Command="commands:MainCommands.CancelParse"/>
+        </StackPanel>
+    </Grid>
+</operationsControl:OperationControlBase>

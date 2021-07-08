@@ -1,0 +1,1802 @@
+[{
+        "IdTag": 320645,
+        "TimeStamp": "2021-06-01T00:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.00684632,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 6.84632,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T05:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08737052000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 87.37052,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T06:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.0873714,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 87.3714,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T07:00:02",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08737604,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 87.37604,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T08:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08738466,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 87.38466,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T09:00:02",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08741848,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 87.41848,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T10:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08748483,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 87.48483,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T11:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08752393,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 87.52393,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T12:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08766739,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 87.66739,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T13:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08773048,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 87.73048,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T14:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08792575999999999,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 87.92576,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T15:00:02",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08807467,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 88.07467,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T16:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08821429,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 88.21429,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T17:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08835498,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 88.35498,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T18:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08842945,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 88.42945,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T19:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08858805,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 88.58805,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T20:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08885328,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 88.85328,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T21:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08905163,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.05163,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T22:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.0892435,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.2435,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-13T23:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08931106,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.31106,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T00:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08941023000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.41023,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T01:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08942304,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.42304,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T02:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08943277999999999,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.43278,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T03:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08943366000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.43366,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T04:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08943454,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.43454,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T05:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08943542,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.43542,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T06:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08943586,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.43586,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T07:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08946796000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.46796,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T08:00:02",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08955664,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.55664,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T09:00:02",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08960881000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.60881,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T10:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08962550000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.6255,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T11:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08963412,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.63412,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T12:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08964494,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.64494,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T13:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08965403000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.65403,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T14:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08970183,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.70183,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T15:00:02",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08974175,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.74175,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T16:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08978884,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.78884,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T17:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08984021,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.84021,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T18:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08990625000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.90625,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T19:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.08994924,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 89.94924,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T20:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09012877000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.12877,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T21:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09031432,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.31432,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T22:00:02",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09049751,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.49751,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-14T23:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09056331000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.56331,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T00:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.090671,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.671,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T01:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09069244000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.69244,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T02:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09069288,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.69288,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T03:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.0906942,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.6942,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T04:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09069508000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.69508,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T05:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09069596,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.69596,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T06:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09069684,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.69684,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T07:00:02",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09072656999999999,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.72657,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T08:00:02",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09081255,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.81255,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T09:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09084228,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.84228,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T10:00:02",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09088225,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.88225,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T11:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09089082999999999,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.89083,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T12:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09090211,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.90211,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T13:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09091051,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.91051,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T14:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09095823,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.95823,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T15:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.0909981,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 90.9981,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T16:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09104662999999999,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 91.04663,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T17:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09107357,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 91.07357,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T18:00:02",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09116676,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 91.16676,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T19:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09125982,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 91.25982,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T20:00:02",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09139116,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 91.39116,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T21:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09148197000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 91.48197,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T22:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09168094,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 91.68094,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-15T23:00:02",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09188103,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 91.88103,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T00:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.0919477,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 91.9477,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T01:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09196968,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 91.96968,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T02:00:02",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09197056,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 91.97056,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T03:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09197144,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 91.97144,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T04:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09197232,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 91.97232,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T05:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09197276,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 91.97276,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T06:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09197408,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 91.97408,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T07:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09200596,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 92.00596,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T08:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09209481,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 92.09481,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T09:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09212601,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 92.12601,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T10:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09216072,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 92.16072,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T11:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09217401,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 92.17401,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T12:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09217861000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 92.17861,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T13:00:02",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09220683,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 92.20683,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T14:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09224298,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 92.24298,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T15:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09228145000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 92.28145,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T16:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09233016000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 92.33016,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T17:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09238338,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 92.38338,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T18:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09244978999999999,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 92.44979,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T19:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09253951,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 92.53951,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T20:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09267368000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 92.67368,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T21:00:03",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09285235,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 92.85235,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T22:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.0929556,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 92.9556,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-16T23:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09315269999999999,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 93.1527,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-17T00:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.0932187,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 93.2187,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-17T01:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09324026,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 93.24026,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-17T02:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09324114,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 93.24114,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-17T03:00:00",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09324158,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 93.24158,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-17T04:00:02",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.0932429,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 93.2429,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-17T05:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09324378,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 93.24378,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-17T06:00:01",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09324466,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 93.24466,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }, {
+        "IdTag": 320625,
+        "TimeStamp": "2021-06-17T07:00:04",
+        "Value": {
+            "IdQuality": "Normal",
+            "ValueFloat": 0.09327576000000001,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "CurrentValue": {
+            "IdQuality": "Normal",
+            "ValueFloat": 93.27576,
+            "ValueInt": null,
+            "ValueData": null,
+            "ValueBool": null
+        },
+        "Rewrite": false
+    }
+]

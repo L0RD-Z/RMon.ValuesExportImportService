@@ -53,4 +53,6 @@
             <Setter Property="CanUserResizeRows" Value="False"/>
         </Style.Setters>
     </Style>
+
+    <Style x:Key="TabControlStyle" BasedOn="{StaticResource BaseStyle}" TargetType="TabControl"/>
 </ResourceDictionary>

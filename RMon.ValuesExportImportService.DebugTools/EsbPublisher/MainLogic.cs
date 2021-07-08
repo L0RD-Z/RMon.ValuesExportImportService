@@ -10,6 +10,7 @@ namespace EsbPublisher
     {
         private ExportLogic _exportLogic;
         private ParseLogic _parseLogic;
+        private ImportLogic _importLogic;
 
 
         public ExportLogic ExportLogic
@@ -24,7 +25,6 @@ namespace EsbPublisher
                 }
             }
         }
-
         public ParseLogic ParseLogic
         {
             get => _parseLogic;
@@ -37,6 +37,19 @@ namespace EsbPublisher
                 }
             }
         }
+        public ImportLogic ImportLogic
+        {
+            get => _importLogic;
+            set
+            {
+                if (_importLogic != value)
+                {
+                    _importLogic = value;
+                    OnPropertyChanged(nameof(ImportLogic));
+                }
+            }
+        }
+
 
         public MainLogic()
         {
@@ -47,7 +60,7 @@ namespace EsbPublisher
 
             ExportLogic = new ExportLogic(busService, dataRepository);
             ParseLogic = new ParseLogic(busService);
-
+            ImportLogic = new ImportLogic(busService);
 
             InitializeProperties();
         }
