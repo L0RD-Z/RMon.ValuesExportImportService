@@ -11,22 +11,22 @@ namespace RMon.ValuesExportImportService.Tests
         public void ConvertColNumberTest()
         {
             var colNumber = ExcelCellAddressConverter.ExcelColumnToIndex("XFC");
-            Assert.AreEqual(16383, colNumber, "Некорректное преобразование формата представления номера столбца Excel 1");
+            Assert.AreEqual(16382, colNumber, "Некорректное преобразование формата представления номера столбца Excel 1");
             colNumber = ExcelCellAddressConverter.ExcelColumnToIndex("A");
-            Assert.AreEqual(1, colNumber, "Некорректное преобразование формата представления номера столбца Excel 2");
+            Assert.AreEqual(0, colNumber, "Некорректное преобразование формата представления номера столбца Excel 2");
             colNumber = ExcelCellAddressConverter.ExcelColumnToIndex("Z");
-            Assert.AreEqual(26, colNumber, "Некорректное преобразование формата представления номера столбца Excel 3");
+            Assert.AreEqual(25, colNumber, "Некорректное преобразование формата представления номера столбца Excel 3");
             colNumber = ExcelCellAddressConverter.ExcelColumnToIndex("AA");
-            Assert.AreEqual(27, colNumber, "Некорректное преобразование формата представления номера столбца Excel 4");
+            Assert.AreEqual(26, colNumber, "Некорректное преобразование формата представления номера столбца Excel 4");
         }
 
         [TestMethod]
         public void ConvertCellAddressTest()
         {
             var address = ExcelCellAddressConverter.CellAddressConvert("AB18");
-            Assert.AreEqual(new ExcelCellAddress(28, 18), address, "Некорректное преобразование формата представления адреса ячейки Excel 1");
+            Assert.AreEqual(new ExcelCellAddress(27, 17), address, "Некорректное преобразование формата представления адреса ячейки Excel 1");
             address = ExcelCellAddressConverter.CellAddressConvert("A2");
-            Assert.AreEqual(new ExcelCellAddress(1, 2), address, "Некорректное преобразование формата представления адреса ячейки Excel 2");
+            Assert.AreEqual(new ExcelCellAddress(0, 1), address, "Некорректное преобразование формата представления адреса ячейки Excel 2");
         }
     }
 }
