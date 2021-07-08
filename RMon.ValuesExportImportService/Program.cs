@@ -14,6 +14,7 @@ using RMon.Core.Base;
 using RMon.Data.Provider.Units.Backend.Interfaces;
 using RMon.Data.Provider.Units.Backend.Sql;
 using RMon.Data.Provider.Values;
+using RMon.ValuesExportImportService.Configuration;
 using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Excel.Flexible;
 using RMon.ValuesExportImportService.Excel.Matrix;
@@ -59,7 +60,8 @@ namespace RMon.ValuesExportImportService
                     services.ConfigureOption<EntitiesDatabase>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(EntitiesDatabase));
                     services.ConfigureOption<ValuesDatabase>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesDatabase));
                     services.ConfigureOption<ValuesExportImportFileStorage>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesExportImportFileStorage));
-                    
+                    services.ConfigureOption<ResultMessageSender>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ResultMessageSender));
+
                     services.AddSingleton<IBusProvider, BusProvider>();
                     services.AddSingleton<ExportStateMachine>();
                     services.AddSingleton<ParseStateMachine>();
@@ -75,7 +77,6 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<IDataRepository, MsSqlDataRepository>();
                     services.AddSingleton<ILogicDevicesRepository, SqlLogicDevicesRepository>();
                     services.AddSingleton<ITagsRepository, SqlTagsRepository>();
-
 
                     services.AddSingleton<IEntityReader, EntityReader>();
                     services.AddSingleton<IFileStorage, Files.FileStorage>();
@@ -93,6 +94,7 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<ParseFlexibleFormatLogic>();
 
                     services.AddSingleton<ITransformationRatioCalculator, TransformationRatioCalculator>();
+                    services.AddSingleton<IResultMessagesSender, ResultMessagesSqlProvider>();
 
                     services.AddSingleton<IImportTaskLogger, ImportTaskLogger>();
                     services.AddSingleton<IParseTaskLogger, ParseTaskLogger>();
@@ -101,9 +103,7 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<IExportTaskLogic, ExportTaskLogic>();
                     services.AddSingleton<IParseTaskLogic, ParseTaskLogic>();
                     services.AddSingleton<IImportTaskLogic, ImportTaskLogic>();
-                    
 
-                    
 
                     services.AddSingleton<ILanguageRepository, LanguageRepository>();
                     services.AddSingleton<IGlobalizationProviderFactory, FileProviderFactory>();

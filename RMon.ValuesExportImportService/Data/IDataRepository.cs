@@ -60,5 +60,13 @@ namespace RMon.ValuesExportImportService.Data
         /// <param name="ct">Токен отмены операции</param>
         /// <returns></returns>
         Task<List<DeviceProperty>> GetDevicePropertiesAsync(IList<long> idDevices, IList<string> devicePropertyCodes, CancellationToken ct = default);
+
+        /// <summary>
+        /// Асинхронно добавляет пакет <see cref="buffer"/> в таблицу <see cref="SSDAnalizeBuf"/>
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="ct">Токен отмены операции</param>
+        /// <returns></returns>
+        Task<long> AddSsdAnalizeBufAsync(SSDAnalizeBuf buffer, CancellationToken ct = default);
     }
 }

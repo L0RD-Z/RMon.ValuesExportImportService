@@ -40,15 +40,16 @@ namespace RMon.ValuesExportImportService.Processing.Common
             {
                 // ReSharper disable once PossibleInvalidOperationException
                 var propertyValues = deviceProperties.Where(t => t.IdDevice == tag.IdDevice.Value).ToDictionary(t => t.DevicePropertyType.KeyReport, t => t.Value);
-                var item = new TagRatio
+                var tagRatio = new TagRatio
                 {
                     IdTag = tag.Id,
+                    TagCode = tag.LogicTagLink.LogicDeviceType.Code,
                     Offset = tag.DeviceTag.Offset,
                     Ratio = tag.DeviceTag.Ratio,
                     TransformationRatio = GetTransformationRatio(tag.DeviceTag.Code, tag.LogicTagLink.LogicDeviceType.Code, propertyValues)
                 };
 
-                TagsRatio.Add(item);
+                TagsRatio.Add(tagRatio);
             }
         }
 

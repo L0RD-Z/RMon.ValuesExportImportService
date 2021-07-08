@@ -45,5 +45,10 @@ namespace RMon.ValuesExportImportService.Tests.ParseFlexible
         {
             throw new NotImplementedException();
         }
+
+        public Task<long> AddSsdAnalizeBufAsync(SSDAnalizeBuf buffer, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

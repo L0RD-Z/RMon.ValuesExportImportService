@@ -59,6 +59,11 @@ namespace RMon.ValuesExportImportService.Tests
             throw new NotImplementedException();
         }
 
+        public Task<long> AddSsdAnalizeBufAsync(SSDAnalizeBuf buffer, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
 
         private static Tag TagCreate(long id, string tagCode, TimeStampTypeEnum idTimeStampType) =>
             new()

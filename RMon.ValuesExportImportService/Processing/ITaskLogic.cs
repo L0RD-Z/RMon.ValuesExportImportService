@@ -11,9 +11,9 @@ namespace RMon.ValuesExportImportService.Processing
         /// Выполнение задачи <see cref="receivedTask"/>
         /// </summary>
         /// <param name="receivedTask">Полученная задача</param>
-        /// <param name="cancellationToken">Токен отмены задачи</param>
+        /// <param name="ct">Токен отмены задачи</param>
         /// <returns></returns>
-        Task StartTaskAsync(ITask receivedTask, CancellationToken cancellationToken);
+        Task StartTaskAsync(ITask receivedTask, CancellationToken ct);
 
         /// <summary>
         /// Выполняет отмену задачи <see cref="receivedTask"/>
