@@ -50,7 +50,7 @@ namespace RMon.ValuesExportImportService.Processing.Common
                 Name = task.Name,
                 Progress = 0,
                 IdUser = task.IdUser,
-                OperationType = OperationTypes.Export,
+                OperationType = OperationTypes.Import,
                 ImportParameters = task.Parameters,
                 DirectorInstance = instanceName,
                 ExecutorInstance = instanceName
@@ -73,7 +73,7 @@ namespace RMon.ValuesExportImportService.Processing.Common
                 Name = task.Name,
                 Progress = 0,
                 IdUser = task.IdUser,
-                OperationType = OperationTypes.Export,
+                OperationType = OperationTypes.Parse,
                 ParseParameters = task.Parameters,
                 DirectorInstance = instanceName,
                 ExecutorInstance = instanceName
