@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RMon.Configuration.Options;
 using RMon.Core.Files;
@@ -23,63 +22,65 @@ using RMon.ValuesExportImportService.Text;
 using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Excel.Flexible;
 using RMon.ValuesExportImportService.Extensions;
-using RMon.ValuesExportImportService.Processing.Permission;
 
 namespace RMon.ValuesExportImportService.Processing.Export
 {
-    class ExportTaskLogic : BaseTaskLogic, IExportTaskLogic
+    class ExportTaskLogic : IExportTaskLogic
     {
+        private readonly IOptionsMonitor<Service> _serviceOptions;
+        private IDataRepository DataRepository { get; }
+        private readonly IFileStorage _fileStorage;
+
         private readonly IExportTaskLogger _taskLogger;
         private readonly IEntityReader _entityReader;
         private readonly IExcelWorker _excelWorker;
+        private readonly IGlobalizationProviderFactory _globalizationProviderFactory;
+        private readonly ILanguageRepository _languageRepository;
 
 
         /// <summary>
         /// Конструктор 1
         /// </summary>
-        /// <param name="logger">Логгер</param>
         /// <param name="serviceOptions">Опции сервиса</param>
-        /// <param name="taskFactoryRepositoryConfigurator">Конфигуратор репозиторияя для логирования хода выполнения задач</param>
         /// <param name="dataRepository">Репозиторий данных</param>
         /// <param name="taskLogger">Логгер для заданий</param>
-        /// <param name="permissionLogic">Логика работы с прадвами доступа</param>
         /// <param name="fileStorage">Файловое хранилище</param>
         /// <param name="excelWorker">Работник с Excel</param>
         /// <param name="entityReader">Логика загрузки сущностей из БД</param>
         /// <param name="globalizationProviderFactory"></param>
         /// <param name="languageRepository"></param>
-        public ExportTaskLogic(
-            ILogger<ExportTaskLogic> logger,
-            IOptionsMonitor<Service> serviceOptions,
-            IRepositoryFactoryConfigurator taskFactoryRepositoryConfigurator,
+        public ExportTaskLogic(IOptionsMonitor<Service> serviceOptions,
             IDataRepository dataRepository, 
             IExportTaskLogger taskLogger,
-            IPermissionLogic permissionLogic,
             IFileStorage fileStorage,
             IExcelWorker excelWorker,
             IEntityReader entityReader,
             IGlobalizationProviderFactory globalizationProviderFactory,
             ILanguageRepository languageRepository)
-            : base(logger, serviceOptions, taskFactoryRepositoryConfigurator, dataRepository, permissionLogic, fileStorage, globalizationProviderFactory, languageRepository)
         {
+            _serviceOptions = serviceOptions;
+            DataRepository = dataRepository;
             _taskLogger = taskLogger;
+            _fileStorage = fileStorage;
             _entityReader = entityReader;
+            _globalizationProviderFactory = globalizationProviderFactory;
+            _languageRepository = languageRepository;
             _excelWorker = excelWorker;
         }
 
         
-        public override async Task StartTaskAsync(ITask receivedTask, CancellationToken ct = default)
+        public async Task StartTaskAsync(ITask receivedTask, CancellationToken ct = default)
         {
             if (receivedTask is IValuesExportTask task)
             {
-                var instanceName = ServiceOptions.CurrentValue.InstanceName;
+                var instanceName = _serviceOptions.CurrentValue.InstanceName;
                 var dbTask = task.ToDbTask(instanceName);
                 var context = CreateProcessingContext(task, dbTask);
 
                 try
                 {
-                    await context.LogStarted(TextExport.Start).ConfigureAwait(false);
-                    await context.LogInfo(TextExport.ValidateParameters).ConfigureAwait(false);
+                    await context.LogStarted(TextTask.Start).ConfigureAwait(false);
+                    await context.LogInfo(TextTask.ValidateParameters).ConfigureAwait(false);
                     ValidateParameters(task);
 
                     await context.LogInfo(TextExport.LoadingData, 10).ConfigureAwait(false);
@@ -92,34 +93,34 @@ namespace RMon.ValuesExportImportService.Processing.Export
                     await context.LogInfo(TextExport.StoringFile, 90).ConfigureAwait(false);
                     var currentDate = await DataRepository.GetDateAsync().ConfigureAwait(false);
                     var filePath = FilePathCreate(Guid.NewGuid(), currentDate, context);
-                    await FileStorage.StoreFileAsync(filePath, fileBody, ct).ConfigureAwait(false);
+                    await _fileStorage.StoreFileAsync(filePath, fileBody, ct).ConfigureAwait(false);
 
-                    await context.LogFinished(TextExport.FinishSuccess, new List<FileInStorage> { new(filePath, fileBody.Length) }).ConfigureAwait(false);
+                    await context.LogFinished(TextTask.FinishSuccess, new List<FileInStorage> { new(filePath, fileBody.Length) }).ConfigureAwait(false);
                 }
                 catch (TaskCanceledException)
                 {
-                    await context.LogAborted(TextExport.FinishAborted).ConfigureAwait(false);
+                    await context.LogAborted(TextTask.FinishAborted).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
-                    await context.LogAborted(TextExport.FinishAborted).ConfigureAwait(false);
+                    await context.LogAborted(TextTask.FinishAborted).ConfigureAwait(false);
                 }
                 catch (UserFormattedException ex)
                 {
-                    await context.LogFailed(TextExport.FinishFailed.With(ex.FormattedMessage), ex).ConfigureAwait(false);
+                    await context.LogFailed(TextTask.FinishFailed.With(ex.FormattedMessage), ex).ConfigureAwait(false);
                 }
                 catch (DataProviderException ex)
                 {
-                    await context.LogFailed(TextExport.FinishFailed.With(ex.String), ex).ConfigureAwait(false);
+                    await context.LogFailed(TextTask.FinishFailed.With(ex.String), ex).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
-                    await context.LogFailed(TextExport.FinishFailed.With(new I18nString("", ex.Message)), ex).ConfigureAwait(false);
+                    await context.LogFailed(TextTask.FinishFailed.With(new I18nString("", ex.Message)), ex).ConfigureAwait(false);
                 }
             }
         }
 
-        public override void AbortTask(ITask receivedTask, StateMachineInstance instance) => instance.CancellationTokenSource.Cancel();
+        public void AbortTask(ITask receivedTask, StateMachineInstance instance) => instance.CancellationTokenSource.Cancel();
 
 
         /// <summary>
@@ -153,9 +154,9 @@ namespace RMon.ValuesExportImportService.Processing.Export
         {
             var processingContext = new ExportProcessingContext(task, dbTask, _taskLogger, task.IdUser.Value);
 
-            var idLanguage = LanguageRepository.GetUserLanguage(task.IdUser.Value).Result;
+            var idLanguage = _languageRepository.GetUserLanguage(task.IdUser.Value).Result;
             if (idLanguage != null)
-                processingContext.GlobalizationProvider = GlobalizationProviderFactory.GetGlobalizationProvider(idLanguage.Value);
+                processingContext.GlobalizationProvider = _globalizationProviderFactory.GetGlobalizationProvider(idLanguage.Value);
             
 
             return processingContext;

@@ -75,21 +75,18 @@ namespace RMon.ValuesExportImportService.Data
 
         #endregion
 
-
         #region Flexiable
 
         /// <inheritdoc/>
-        public async Task<IList<long>> FindTags(IList<long> idUserGroups, long idLogicDevice, Entity entityFilter, CancellationToken ct = default)
+        public async Task<IList<long>> FindTagsAsync(IList<long> idUserGroups, long idLogicDevice, Entity entityFilter, CancellationToken ct = default)
         {
             await using var context = _factory.Create();
 
             IQueryable<Tag> tags = context.Tags
                 .Where(t => t.LogicDevice.Id == idLogicDevice && t.LogicDevice.UserGroupLogicDevices.Any(ugs => idUserGroups.Contains(ugs.IdUserGroup)));
 
-            
             foreach (var property in entityFilter.Properties) 
                 tags = AddTagPropertyCondition(tags, property.Value);
-
 
             return await tags.AsNoTracking()
                 .Select(t => t.Id)
@@ -97,7 +94,7 @@ namespace RMon.ValuesExportImportService.Data
                 .ConfigureAwait(false);
         }
 
-        private IQueryable<Tag> AddTagPropertyCondition(IQueryable<Tag> queryable, PropertyValue propertyValue) =>
+        private static IQueryable<Tag> AddTagPropertyCondition(IQueryable<Tag> queryable, PropertyValue propertyValue) =>
             propertyValue.Code switch
             {
                 TagPropertyCodes.Id => long.TryParse(propertyValue.Value, out var lValue)
@@ -114,6 +111,46 @@ namespace RMon.ValuesExportImportService.Data
 
         #endregion
 
+
+        #region Вычисление коэффициентов трансформации
+
+        public async Task<List<Tag>> GetTagsAsync(IList<long> idTags, CancellationToken ct = default)
+        {
+            await using var dataContext = _factory.Create();
+            return await dataContext.Tags.AsNoTracking()
+                .Include(t => t.DeviceTag)
+                .Include(t => t.LogicTagLink)
+                .ThenInclude(t => t.LogicDeviceType)
+                .Where(t => idTags.Contains(t.Id) && t.IdDevice.HasValue)
+                .ToListAsync(ct)
+                .ConfigureAwait(false);
+        }
+
+        public async Task<List<DeviceProperty>> GetDevicePropertiesAsync(IList<long> idDevices, IList<string> devicePropertyCodes, CancellationToken ct = default)
+        {
+            await using var dataContext = _factory.Create();
+            return await dataContext.DeviceProperties.AsNoTracking()
+                .Include(t => t.DevicePropertyType)
+                .Where(t => idDevices.Contains(t.IdDevice) && devicePropertyCodes.Contains(t.DevicePropertyType.KeyReport))
+                .ToListAsync(ct)
+                .ConfigureAwait(false);
+        }
+
+        #endregion
+
+
+        #endregion
+
+        #region Импорт
+
+        /// <inheritdoc/>
+        public async Task<long> AddSsdAnalizeBufAsync(SSDAnalizeBuf buffer, CancellationToken ct = default)
+        {
+            await using var dataContext = _factory.Create();
+            await dataContext.SSDAnalizeBufs.AddAsync(buffer, ct).ConfigureAwait(false);
+            await dataContext.SaveChangesAsync(ct).ConfigureAwait(false);
+            return buffer.id;
+        }
 
         #endregion
 

@@ -4,13 +4,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using RMon.Context.EntityStore;
 using RMon.Data.Provider.Units.Backend.Common;
+using RMon.ValuesExportImportService.Common;
 
 namespace RMon.ValuesExportImportService.Data
 {
     public interface IDataRepository
     {
         /// <summary>
-        /// Возвращает текущую дату и время
+        /// Асинхронно возвращает текущую дату и время
         /// </summary>
         /// <returns></returns>
         Task<DateTime> GetDateAsync();
@@ -34,13 +35,38 @@ namespace RMon.ValuesExportImportService.Data
         Task<LogicDevice> GetLogicDeviceByPropertyValueAsync(string propertyCode, string propertyValue, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Выполняет поиск тегов для указанного оборудования с указанными значениями свойств
+        /// Асинхронно выполняет поиск тегов для указанного оборудования с указанными значениями свойств
         /// </summary>
         /// <param name="idUserGroups">Группа пользователей</param>
         /// <param name="idLogicDevice">Id оборудования</param>
         /// <param name="entityFilter">Коды свойств со значениями</param>
         /// <param name="ct">Токен отмены операции</param>
         /// <returns>Список id тегов</returns>
-        Task<IList<long>> FindTags(IList<long> idUserGroups, long idLogicDevice, Entity entityFilter, CancellationToken ct = default);
+        Task<IList<long>> FindTagsAsync(IList<long> idUserGroups, long idLogicDevice, Entity entityFilter, CancellationToken ct = default);
+
+        /// <summary>
+        /// Асинхронно возвращает список тегов <see cref="idTags"/>
+        /// </summary>
+        /// <param name="idTags">Список id возвращаемых тегов</param>
+        /// <param name="ct">Токен отмены операции</param>
+        /// <returns></returns>
+        Task<List<Tag>> GetTagsAsync(IList<long> idTags, CancellationToken ct = default);
+
+        /// <summary>
+        /// Асинхронно возвращает список свойств с кодами <see cref="devicePropertyCodes"/> для устройств <see cref="idDevices"/>
+        /// </summary>
+        /// <param name="idDevices">Список устройств для которых возвращаются свойства</param>
+        /// <param name="devicePropertyCodes">Список кодов свойств, которые возвращаются</param>
+        /// <param name="ct">Токен отмены операции</param>
+        /// <returns></returns>
+        Task<List<DeviceProperty>> GetDevicePropertiesAsync(IList<long> idDevices, IList<string> devicePropertyCodes, CancellationToken ct = default);
+
+        /// <summary>
+        /// Асинхронно добавляет пакет <see cref="buffer"/> в таблицу <see cref="SSDAnalizeBuf"/>
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="ct">Токен отмены операции</param>
+        /// <returns></returns>
+        Task<long> AddSsdAnalizeBufAsync(SSDAnalizeBuf buffer, CancellationToken ct = default);
     }
 }

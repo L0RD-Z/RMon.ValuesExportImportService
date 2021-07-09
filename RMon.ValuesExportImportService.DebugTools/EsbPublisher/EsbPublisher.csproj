@@ -21,20 +21,26 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Controls\ParseTableControl.xaml.cs">
+    <Compile Update="Controls\ParseControls\ParseTableControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\ParseMatrix31X24Control.xaml.cs">
+    <Compile Update="Controls\ParseControls\ParseMatrix31X24Control.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="Controls\ParseTableControl.xaml">
+    <None Update="Values.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Controls\ParseControls\ParseTableControl.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\ParseMatrix31X24Control.xaml">
+    <Page Update="Controls\ParseControls\ParseMatrix31X24Control.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

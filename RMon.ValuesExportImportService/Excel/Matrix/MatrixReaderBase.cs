@@ -58,7 +58,7 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
         /// </summary>
         /// <param name="hours"></param>
         /// <returns></returns>
-        protected int ParseHours(string hours)
+        protected static int ParseHours(string hours)
         {
             try
             {

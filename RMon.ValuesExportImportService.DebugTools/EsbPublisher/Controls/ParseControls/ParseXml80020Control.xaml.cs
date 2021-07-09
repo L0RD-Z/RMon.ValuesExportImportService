@@ -1,16 +1,12 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Controls;
-using System.Windows.Input;
-using EsbPublisher.Annotations;
+﻿using System.Windows.Input;
 using EsbPublisher.Processing.Parse;
 
-namespace EsbPublisher.Controls
+namespace EsbPublisher.Controls.ParseControls
 {
     /// <summary>
     /// Логика взаимодействия для ParseXml80020Control.xaml
     /// </summary>
-    public partial class ParseXml80020Control : UserControl, INotifyPropertyChanged
+    public partial class ParseXml80020Control : ParseControlBase
     {
         private ParseXml80020Logic _logic;
 
@@ -101,19 +97,6 @@ namespace EsbPublisher.Controls
         #endregion
 
         #endregion
-
-        #endregion
-
-
-        #region INotifyPropertyChanged
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         #endregion
     }

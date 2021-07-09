@@ -49,7 +49,7 @@ namespace RMon.ValuesExportImportService.Excel.Table
             return result;
         }
 
-        private List<ExcelLogicDeviceValues> ParseTable(DataTable dataTable, int logicDevicePropertyValueRowIndex, ExcelCellAddress cellStart, int dateColumnIndex, int timeColumnIndex)
+        private static List<ExcelLogicDeviceValues> ParseTable(DataTable dataTable, int logicDevicePropertyValueRowIndex, ExcelCellAddress cellStart, int dateColumnIndex, int timeColumnIndex)
         {
 
             var result = new List<ExcelLogicDeviceValues>();
@@ -108,8 +108,6 @@ namespace RMon.ValuesExportImportService.Excel.Table
                             result.Add(matrixResult);
                         }
                     }
-
-                    //colIndex++;
                 }
                 catch (Exception e)
                 {

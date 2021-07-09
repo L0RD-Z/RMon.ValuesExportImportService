@@ -29,11 +29,26 @@ namespace RMon.ValuesExportImportService.Tests.ParseFlexible
             throw new NotImplementedException();
         }
 
-        public Task<IList<long>> FindTags(IList<long> idUserGroups, long idLogicDevice, Entity entityFilter, CancellationToken ct = default)
+        public Task<IList<long>> FindTagsAsync(IList<long> idUserGroups, long idLogicDevice, Entity entityFilter, CancellationToken ct = default)
         {
             var result = new List<long> { long.Parse(entityFilter.Properties["Id"].Value) };
 
             return System.Threading.Tasks.Task.FromResult((IList<long>)result);
+        }
+
+        public Task<List<Tag>> GetTagsAsync(IList<long> idTags, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<DeviceProperty>> GetDevicePropertiesAsync(IList<long> idDevices, IList<string> devicePropertyCodes, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<long> AddSsdAnalizeBufAsync(SSDAnalizeBuf buffer, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
         }
     }
 }

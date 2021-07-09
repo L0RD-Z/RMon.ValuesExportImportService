@@ -8,18 +8,21 @@ using RMon.Configuration.DependencyInjection;
 using RMon.Configuration.MassTransit;
 using RMon.Configuration.Options;
 using RMon.Configuration.Options.FileStorage;
+using RMon.Configuration.Options.TagValueTransformation;
 using RMon.Context.BackEndContext;
 using RMon.Context.FrontEndContext;
 using RMon.Core.Base;
 using RMon.Data.Provider.Units.Backend.Interfaces;
 using RMon.Data.Provider.Units.Backend.Sql;
 using RMon.Data.Provider.Values;
+using RMon.ValuesExportImportService.Configuration;
 using RMon.ValuesExportImportService.Data;
 using RMon.ValuesExportImportService.Excel.Flexible;
 using RMon.ValuesExportImportService.Excel.Matrix;
 using RMon.ValuesExportImportService.Excel.Table;
 using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Globalization;
+using RMon.ValuesExportImportService.Processing.Common;
 using RMon.ValuesExportImportService.Processing.Export;
 using RMon.ValuesExportImportService.Processing.Import;
 using RMon.ValuesExportImportService.Processing.Parse;
@@ -58,7 +61,10 @@ namespace RMon.ValuesExportImportService
                     services.ConfigureOption<EntitiesDatabase>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(EntitiesDatabase));
                     services.ConfigureOption<ValuesDatabase>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesDatabase));
                     services.ConfigureOption<ValuesExportImportFileStorage>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesExportImportFileStorage));
+                    services.ConfigureOption<TagValueTransformation>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(TagValueTransformation));
+                    services.ConfigureOption<ResultMessageSender>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ResultMessageSender));
                     
+
                     services.AddSingleton<IBusProvider, BusProvider>();
                     services.AddSingleton<ExportStateMachine>();
                     services.AddSingleton<ParseStateMachine>();
@@ -75,7 +81,6 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<ILogicDevicesRepository, SqlLogicDevicesRepository>();
                     services.AddSingleton<ITagsRepository, SqlTagsRepository>();
 
-
                     services.AddSingleton<IEntityReader, EntityReader>();
                     services.AddSingleton<IFileStorage, Files.FileStorage>();
                     services.AddSingleton<Format80020Parser>();
@@ -90,7 +95,9 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<ParseMatrix31X24Logic>();
                     services.AddSingleton<ParseTableLogic>();
                     services.AddSingleton<ParseFlexibleFormatLogic>();
-                    
+
+                    services.AddSingleton<ITransformationRatioCalculator, TransformationRatioCalculator>();
+                    services.AddSingleton<IResultMessagesSender, ResultMessagesSqlProvider>();
 
                     services.AddSingleton<IImportTaskLogger, ImportTaskLogger>();
                     services.AddSingleton<IParseTaskLogger, ParseTaskLogger>();
@@ -99,9 +106,7 @@ namespace RMon.ValuesExportImportService
                     services.AddSingleton<IExportTaskLogic, ExportTaskLogic>();
                     services.AddSingleton<IParseTaskLogic, ParseTaskLogic>();
                     services.AddSingleton<IImportTaskLogic, ImportTaskLogic>();
-                    
 
-                    
 
                     services.AddSingleton<ILanguageRepository, LanguageRepository>();
                     services.AddSingleton<IGlobalizationProviderFactory, FileProviderFactory>();

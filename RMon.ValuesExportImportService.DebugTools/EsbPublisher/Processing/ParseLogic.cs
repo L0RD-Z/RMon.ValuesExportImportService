@@ -26,7 +26,8 @@ namespace EsbPublisher.Processing
         private long _idUser;
 
         private Guid _correlationId;
-        
+        private bool _useTransformationRatio;
+
 
         public ParseXml80020Logic Xml80020Logic
         {
@@ -122,6 +123,22 @@ namespace EsbPublisher.Processing
             }
         }
 
+        /// <summary>
+        /// <see langword="True"/>, если при парсинге нужно применять коэффициенты трансформации
+        /// </summary>
+        public bool UseTransformationRatio
+        {
+            get => _useTransformationRatio;
+            set
+            {
+                if (_useTransformationRatio != value)
+                {
+                    _useTransformationRatio = value;
+                    OnPropertyChanged(nameof(UseTransformationRatio));
+                }
+            }
+        }
+
         public long IdUser
         {
             get => _idUser;
@@ -149,6 +166,7 @@ namespace EsbPublisher.Processing
         public void InitializeProperties()
         {
             IdUser = 14;
+            UseTransformationRatio = true;
 
             SupportedFileTypes = new List<ValuesParseFileFormatType>
             {
@@ -218,7 +236,7 @@ namespace EsbPublisher.Processing
                     Channels = Xml80020Logic.MeasuringPoint.Channels.Select(t => new Xml80020ChannelParameters(t.ChannelCode, t.TagCode)).ToList()
                 };
 
-            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, parsingParams, IdUser);
+            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, UseTransformationRatio, parsingParams, IdUser);
         }
 
         /// <summary>
@@ -239,7 +257,7 @@ namespace EsbPublisher.Processing
                 TimeRow = Matrix24X31Logic.TimeRow.ToString()
             };
 
-            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, parsingParams, IdUser);
+            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, UseTransformationRatio, parsingParams, IdUser);
         }
 
         /// <summary>
@@ -260,7 +278,7 @@ namespace EsbPublisher.Processing
                 TimeColumn = Matrix31X24Logic.TimeColumn
             };
 
-            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, parsingParams, IdUser);
+            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, UseTransformationRatio, parsingParams, IdUser);
         }
 
         /// <summary>
@@ -280,7 +298,7 @@ namespace EsbPublisher.Processing
                 TimeColumn = TableLogic.TimeColumn
             };
 
-            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, parsingParams, IdUser);
+            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, UseTransformationRatio, parsingParams, IdUser);
         }
 
         /// <summary>
@@ -291,7 +309,7 @@ namespace EsbPublisher.Processing
         {
             _correlationId = Guid.NewGuid();
 
-            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, IdUser);
+            return _busService.Publisher.SendParseTaskAsync(_correlationId, FilePath, SelectedFileType, UseTransformationRatio, IdUser);
         }
 
         public event EventHandler<ValuesParseFileFormatType> ChangeParseType;
