@@ -96,7 +96,7 @@ namespace RMon.ValuesExportImportService.Data
                 .ConfigureAwait(false);
         }
 
-        private IQueryable<Tag> AddTagPropertyCondition(IQueryable<Tag> queryable, PropertyValue propertyValue) =>
+        private static IQueryable<Tag> AddTagPropertyCondition(IQueryable<Tag> queryable, PropertyValue propertyValue) =>
             propertyValue.Code switch
             {
                 TagPropertyCodes.Id => long.TryParse(propertyValue.Value, out var lValue)
@@ -124,7 +124,7 @@ namespace RMon.ValuesExportImportService.Data
                 .Include(t => t.LogicTagLink)
                 .ThenInclude(t => t.LogicDeviceType)
                 .Where(t => idTags.Contains(t.Id) && t.IdDevice.HasValue)
-                .ToListAsync(cancellationToken: ct)
+                .ToListAsync(ct)
                 .ConfigureAwait(false);
         }
 
@@ -134,7 +134,7 @@ namespace RMon.ValuesExportImportService.Data
             return await dataContext.DeviceProperties.AsNoTracking()
                 .Include(t => t.DevicePropertyType)
                 .Where(t => idDevices.Contains(t.IdDevice) && devicePropertyCodes.Contains(t.DevicePropertyType.KeyReport))
-                .ToListAsync(cancellationToken: ct)
+                .ToListAsync(ct)
                 .ConfigureAwait(false);
         }
 

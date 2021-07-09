@@ -115,7 +115,7 @@ namespace RMon.ValuesExportImportService.Processing.Import
                             message.data.usd.Add(CreateTagValue(value.TimeStamp, tag.TagCode, value.Value.ValueFloat.Value));
                     }
 
-                    await _resultMessagesSender.SendPacketAsync(message, ct: ct).ConfigureAwait(false);
+                    await _resultMessagesSender.SendPacketAsync(message, ct).ConfigureAwait(false);
                     await context.LogInfo(TextImport.TagImportSuccess.With(tag.TagCode, tag.IdTag)).ConfigureAwait(false);
                 }
                 else
