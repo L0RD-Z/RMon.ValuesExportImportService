@@ -85,10 +85,8 @@ namespace RMon.ValuesExportImportService.Data
             IQueryable<Tag> tags = context.Tags
                 .Where(t => t.LogicDevice.Id == idLogicDevice && t.LogicDevice.UserGroupLogicDevices.Any(ugs => idUserGroups.Contains(ugs.IdUserGroup)));
 
-            
             foreach (var property in entityFilter.Properties) 
                 tags = AddTagPropertyCondition(tags, property.Value);
-
 
             return await tags.AsNoTracking()
                 .Select(t => t.Id)
