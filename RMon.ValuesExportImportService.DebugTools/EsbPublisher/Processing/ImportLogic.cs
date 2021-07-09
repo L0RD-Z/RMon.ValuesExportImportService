@@ -21,7 +21,20 @@ namespace EsbPublisher.Processing
 
         private Guid _correlationId;
         private string _jsonValues = string.Empty;
+        private bool _rewrite;
 
+        public bool Rewrite
+        {
+            get => _rewrite;
+            set
+            {
+                if (_rewrite != value)
+                {
+                    _rewrite = value;
+                    OnPropertyChanged(nameof(Rewrite));
+                }
+            }
+        }
 
         public string JsonValues
         {
@@ -35,6 +48,8 @@ namespace EsbPublisher.Processing
                 }
             }
         }
+
+
 
         public long IdUser
         {
@@ -60,7 +75,7 @@ namespace EsbPublisher.Processing
         public void InitializeProperties()
         {
             IdUser = 14;
-            
+            Rewrite = true;
             if (File.Exists("Values.json"))
                 JsonValues = File.ReadAllText("Values.json");
         }
