@@ -8,6 +8,7 @@ using RMon.Configuration.DependencyInjection;
 using RMon.Configuration.MassTransit;
 using RMon.Configuration.Options;
 using RMon.Configuration.Options.FileStorage;
+using RMon.Configuration.Options.TagValueTransformation;
 using RMon.Context.BackEndContext;
 using RMon.Context.FrontEndContext;
 using RMon.Core.Base;
@@ -60,7 +61,9 @@ namespace RMon.ValuesExportImportService
                     services.ConfigureOption<EntitiesDatabase>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(EntitiesDatabase));
                     services.ConfigureOption<ValuesDatabase>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesDatabase));
                     services.ConfigureOption<ValuesExportImportFileStorage>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesExportImportFileStorage));
+                    services.ConfigureOption<TagValueTransformation>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(TagValueTransformation));
                     services.ConfigureOption<ResultMessageSender>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ResultMessageSender));
+                    
 
                     services.AddSingleton<IBusProvider, BusProvider>();
                     services.AddSingleton<ExportStateMachine>();

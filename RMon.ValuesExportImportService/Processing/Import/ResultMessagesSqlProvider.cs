@@ -21,16 +21,13 @@ namespace RMon.ValuesExportImportService.Processing.Import
             _dataRepository = dataRepository;
         }
 
-        
-
         /// <inheritdoc />
-        public async Task<long> SendPacketAsync(DAServerDataMessage packet, long idSsdList = 0, string idAnalysisService = "", CancellationToken ct = default)
+        public async Task<long> SendPacketAsync(DAServerDataMessage packet, CancellationToken ct = default)
         {
             var buffer = new SSDAnalizeBuf
             {
-                idSSDList = idSsdList,
+                idSSDList = 0,
                 rcvdTS = await _dataRepository.GetDateAsync().ConfigureAwait(false),
-                IdAnalysisService = string.IsNullOrEmpty(idAnalysisService) ? null : idAnalysisService,
                 data = _resultMessageSenderOptions.CurrentValue.PacketFormat switch
                 {
                     ResultMessagePacketFormats.Json => packet.JsonSerialize(),
@@ -41,8 +38,5 @@ namespace RMon.ValuesExportImportService.Processing.Import
 
             return await _dataRepository.AddSsdAnalizeBufAsync(buffer, ct).ConfigureAwait(false);
         }
-
-        /// <inheritdoc />
-        public bool IsServiceAvailable() => true;
     }
 }

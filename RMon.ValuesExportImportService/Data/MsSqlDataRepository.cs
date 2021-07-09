@@ -96,7 +96,7 @@ namespace RMon.ValuesExportImportService.Data
                 .ConfigureAwait(false);
         }
 
-        private static IQueryable<Tag> AddTagPropertyCondition(IQueryable<Tag> queryable, PropertyValue propertyValue) =>
+        private IQueryable<Tag> AddTagPropertyCondition(IQueryable<Tag> queryable, PropertyValue propertyValue) =>
             propertyValue.Code switch
             {
                 TagPropertyCodes.Id => long.TryParse(propertyValue.Value, out var lValue)
