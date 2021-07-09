@@ -5,8 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using RMon.Configuration.Options;
-using RMon.Core.Base;
-using RMon.Core.MainServerInterface;
 using RMon.Data.Provider;
 using RMon.Data.Provider.Values;
 using RMon.ESB.Core.Common;
@@ -17,7 +15,7 @@ using RMon.Values.ExportImport.Core;
 using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Extensions;
 using RMon.ValuesExportImportService.Processing.Common;
-using RMon.ValuesExportImportService.Processing.Import.Extensions;
+using RMon.ValuesExportImportService.Processing.Parse;
 using RMon.ValuesExportImportService.ServiceBus;
 using RMon.ValuesExportImportService.Text;
 
@@ -89,6 +87,41 @@ namespace RMon.ValuesExportImportService.Processing.Import
                 {
                     await context.LogFailed(TextTask.FinishFailed.With(new I18nString("", ex.Message)), ex).ConfigureAwait(false);
                 }
+            }
+        }
+
+        private async Task ProcessingTag(IGrouping<long, ValueInfo> tagValue, IValueRepository valueRepository, ImportProcessingContext context, CancellationToken ct)
+        {
+            try
+            {
+                var tag = _transformationRatioCalculator.TagsRatio.SingleOrDefault(t => t.IdTag == tagValue.Key);
+                if (tag != null)
+                {
+                    var message = CreateManualTagDataMessage(tag.IdTag);
+                    foreach (var value in tagValue)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        /*Удаление текущего значения*/
+                        if (value.Rewrite)
+                            await valueRepository.DeleteAsync(value.ToValue()).ConfigureAwait(false);
+
+                        /*Применение коэффициента трансформации*/
+                        value.Value.ValueFloat = value.Value.ValueFloat / tag.TransformationRatio / tag.Ratio - tag.Offset;
+
+                        /*Формирование пакета для DPS*/
+                        if (value.Value.ValueFloat.HasValue)
+                            message.data.usd.Add(CreateTagValue(value.TimeStamp, tag.TagCode, value.Value.ValueFloat.Value));
+                    }
+
+                    await _resultMessagesSender.SendPacketAsync(message, idAnalysisService: _serviceOptions.CurrentValue.InstanceName, ct: ct).ConfigureAwait(false);
+                    await context.LogInfo(TextImport.TagImportSuccess.With(tag.TagCode, tag.IdTag)).ConfigureAwait(false);
+                }
+                else
+                    await context.LogError(TextImport.TagNotFoundError.With(tagValue.Key)).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                await context.LogError(e.ConcatExceptionMessage(TextImport.TagNotImportError.With(tagValue.Key))).ConfigureAwait(false);
             }
         }
 
