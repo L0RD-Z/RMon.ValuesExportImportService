@@ -1,3 +1,3 @@
 "*.dll"
-"*RMon.Service.exe"
-"*RMon.Service.*.json"
+"*RMon.ValuesExportImportService.exe"
+"*RMon.ValuesExportImportService.*.json"
