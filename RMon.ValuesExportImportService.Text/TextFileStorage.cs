@@ -7,18 +7,18 @@ namespace RMon.ValuesExportImportService.Text
         public static I18nString<string> ErrorCodeException = new (nameof(ErrorCodeException), "Код ошибки: {code}.", "code");
 
         public static I18nString<string, string> SendFileException = new(nameof(SendFileException),
-            "Во время отправки файла \\\"{filePath}\\\" в файловое хранилище \\\"{options}\\\" возникло исключение.", "filePath", "options");
+            "Во время отправки файла \"{filePath}\" в файловое хранилище \"{options}\" возникло исключение.", "filePath", "options");
         public static I18nString<string, string, string> SendFileWithStatusException = new(nameof(SendFileWithStatusException),
-            "Во время отправки файла \"{filePath}\" в файловое хранилище \"{_options}\" возникло исключение. Статус: \"{status}\"", "filePath", "options", "status");
+            "Во время отправки файла \"{filePath}\" в файловое хранилище \"{options}\" возникло исключение. Статус: \"{status}\"", "filePath", "options", "status");
 
         public static I18nString<string, string> ReceiveFileException = new(nameof(ReceiveFileException),
-            "Во время получения файла \\\"{filePath}\\\" из файлового хранилища \\\"{options}\\\" возникло исключение.", "filePath", "options");
+            "Во время получения файла \"{filePath}\" из файлового хранилища \"{options}\" возникло исключение.", "filePath", "options");
         public static I18nString<string, string, string> ReceiveFileWithStatusException = new(nameof(ReceiveFileWithStatusException),
-            "Во время получения файла \"{filePath}\" из файлового хранилища \"{_options}\" возникло исключение. Статус: \"{status}\"", "filePath", "options", "status");
+            "Во время получения файла \"{filePath}\" из файлового хранилища \"{options}\" возникло исключение. Статус: \"{status}\"", "filePath", "options", "status");
 
         public static I18nString<string, string> DeleteFileException = new(nameof(DeleteFileException),
-            "Во время удаления файла \\\"{filePath}\\\" из файлового хранилища \\\"{options}\\\" возникло исключение.", "filePath", "options");
+            "Во время удаления файла \"{filePath}\" из файлового хранилища \"{options}\" возникло исключение.", "filePath", "options");
         public static I18nString<string, string, string> DeleteFileWithStatusException = new(nameof(DeleteFileWithStatusException),
-            "Во время удаления файла \"{filePath}\" из файлового хранилища \"{_options}\" возникло исключение. Статус: \"{status}\"", "filePath", "options", "status");
+            "Во время удаления файла \"{filePath}\" из файлового хранилища \"{options}\" возникло исключение. Статус: \"{status}\"", "filePath", "options", "status");
     }
 }

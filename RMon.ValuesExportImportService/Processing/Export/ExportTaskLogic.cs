@@ -130,11 +130,11 @@ namespace RMon.ValuesExportImportService.Processing.Export
         private void ValidateParameters(IValuesExportTask task)
         {
             if (task.IdUser == null)
-                throw new TaskException(TextExport.NoUserIdError);
+                throw new TaskException(TextExport.MissingUserIdError);
             if (!task.Parameters.IdLogicDevices.Any())
-                throw new TaskException(TextExport.NoLogicDevicesError);
+                throw new TaskException(TextExport.MissingLogicDevicesError);
             if (!task.Parameters.TagTypeCodes.Any())
-                throw new TaskException(TextExport.NoTagCodesError);
+                throw new TaskException(TextExport.MissingTagCodesError);
         }
 
         /// <summary>

@@ -37,13 +37,13 @@ namespace RMon.ValuesExportImportService.Processing.Parse.Format80020
         private I18nString Validate(object messageHeader)
         {
             if (messageHeader is not MessageHeader mh)
-                return Text80020.IncorrectFileFormat;
+                return Text80020.IncorrectFileFormatError;
 
             if (mh.Class != Class80020)
-                return Text80020.Not80020;
+                return Text80020.Not80020Error;
 
             if (mh.Version != SupportedVersion)
-                return Text80020.UnsupportedVersion;
+                return Text80020.UnsupportedVersionError;
 
             return null;
         }

@@ -53,19 +53,19 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         private static void ValidateParameters(Matrix31X24ParsingParameters taskParams)
         {
             if (string.IsNullOrEmpty(taskParams.LogicDevicePropertyCode))
-                throw new TaskException(TextParse.MissingLogicDevicePropertyCode);
+                throw new TaskException(TextParse.MissingLogicDevicePropertyCodeError);
             if (string.IsNullOrEmpty(taskParams.LogicDevicePropertyCell))
-                throw new TaskException(TextParse.MissingLogicDevicePropertyCellAddress);
+                throw new TaskException(TextParse.MissingLogicDevicePropertyCellAddressError);
             if (string.IsNullOrEmpty(taskParams.TagCode))
-                throw new TaskException(TextParse.MissingTagCode);
+                throw new TaskException(TextParse.MissingTagCodeError);
             if (string.IsNullOrEmpty(taskParams.FirstValueCell))
-                throw new TaskException(TextParse.MissingFirstValueCellAddress);
+                throw new TaskException(TextParse.MissingFirstValueCellAddressError);
             if (string.IsNullOrEmpty(taskParams.DateRow))
-                throw new TaskException(TextParse.MissingDateRowNumber);
+                throw new TaskException(TextParse.MissingDateRowNumberError);
             if (!int.TryParse(taskParams.DateRow, out _))
-                throw new TaskException(TextParse.IncorrectDateRowNumber);
+                throw new TaskException(TextParse.IncorrectDateRowNumberError);
             if (string.IsNullOrEmpty(taskParams.TimeColumn))
-                throw new TaskException(TextParse.MissingTimeColumnNumber);
+                throw new TaskException(TextParse.MissingTimeColumnNumberError);
         }
     }
 }

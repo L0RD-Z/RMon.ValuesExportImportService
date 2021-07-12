@@ -15,7 +15,7 @@
     <PackageReference Include="MassTransit.RabbitMQ" Version="7.2.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.7" />
     <PackageReference Include="RMon.Data.Provider.Configuration" Version="4.0.2" />
-    <PackageReference Include="RMon.ESB.Common" Version="3.3.0" />
+    <PackageReference Include="RMon.ESB.Common" Version="3.4.1" />
     <PackageReference Include="RMon.ESB.Core" Version="2.13.0" />
     <PackageReference Include="RMon.Values.ExportImport.Core" Version="1.1.2" />
   </ItemGroup>
