@@ -22,8 +22,9 @@ namespace RMon.ValuesExportImportService.Text
         public static I18nString<I18nString> SheetUnexpectedError = new (nameof(SheetUnexpectedError), 
             "Лист \"{EntityName}\": во время выполнения процесса формирования произошло исключение.", "EntityName");
         
-        public static I18nString<string> SheetParseUnexpectedError = new(nameof(SheetParseUnexpectedError), 
-            "Лист \"{sheetName}\": не удалось распарсить.", "sheetName");
+        public static I18nString<string, string> SheetParseUnexpectedError = new(nameof(SheetParseUnexpectedError),
+            "Файл \"{fileName}\" лист \"{sheetName}\": не удалось распарсить.", "fileName", "sheetName");
+
         public static I18nString<int> RowParseUnexpectedError = new(nameof(RowParseUnexpectedError), 
             "Не удалось распарсить строку № {rowIndex}.", "rowIndex");
         public static I18nString<int> ColParseUnexpectedError = new(nameof(ColParseUnexpectedError),
@@ -37,7 +38,7 @@ namespace RMon.ValuesExportImportService.Text
             "Не удалось распарсить строку с часами \"{hours}\".", "hours");
         public static I18nString<string> IncorrectValueFormatError = new(nameof(IncorrectValueFormatError), 
             "Не удалось распарсить строку со значением \"{strValue}\".", "strValue");
-        public static I18nString FailedParseLogicDevicePropertyValueError = new(nameof(FailedParseLogicDevicePropertyValueError), "Не удалось получить значение свойства оборудования.");
+        public static I18nString FailedParseLogicDevicePropertyValueError = new(nameof(FailedParseLogicDevicePropertyValueError), "Не удалось прочитать значение свойства оборудования.");
 
     }
 }    

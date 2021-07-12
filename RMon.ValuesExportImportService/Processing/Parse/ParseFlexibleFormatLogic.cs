@@ -48,12 +48,12 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             var tables = new List<(string FileName, List<ReadSheet> Sheets)>();
             foreach (var file in files)
             {
-                await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Flexible.ToString())).ConfigureAwait(false);
+                await context.LogInfo(TextParse.ReadingFile.With(file.Name, ValuesParseFileFormatType.Flexible.ToString())).ConfigureAwait(false);
 
-                var table = await _excelWorker.ReadFile(file.Body, context).ConfigureAwait(false);
+                var table = await _excelWorker.ReadFile(file, context).ConfigureAwait(false);
                 if (!table.Any())
-                    throw new TaskException(TextParse.ReadFileError.With(file.Path));
-                tables.Add((file.Path, table));
+                    throw new TaskException(TextParse.ReadFileError.With(file.Name));
+                tables.Add((file.Name, table));
             }
 
             var result = new List<ValueInfo>();

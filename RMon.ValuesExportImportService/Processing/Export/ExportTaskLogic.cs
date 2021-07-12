@@ -22,6 +22,7 @@ using RMon.ValuesExportImportService.Text;
 using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Excel.Flexible;
 using RMon.ValuesExportImportService.Extensions;
+using RMon.ValuesExportImportService.Processing.Extensions;
 
 namespace RMon.ValuesExportImportService.Processing.Export
 {

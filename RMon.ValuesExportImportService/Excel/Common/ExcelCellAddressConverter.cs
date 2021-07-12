@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using RMon.ValuesExportImportService.Text;
 
 namespace RMon.ValuesExportImportService.Excel.Common

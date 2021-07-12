@@ -15,8 +15,6 @@ namespace RMon.ValuesExportImportService.ServiceBus
         /// </summary>
         public CancellationTokenSource CancellationTokenSource { get; set; }
 
-
-
         protected StateMachineInstance() => CancellationTokenSource = new CancellationTokenSource();
     }
 }

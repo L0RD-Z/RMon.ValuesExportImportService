@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ using RMon.Values.ExportImport.Core;
 using RMon.ValuesExportImportService.Extensions;
 using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Processing.Common;
+using RMon.ValuesExportImportService.Processing.Extensions;
 using RMon.ValuesExportImportService.ServiceBus;
 using RMon.ValuesExportImportService.Text;
 using Task = System.Threading.Tasks.Task;
@@ -104,7 +106,10 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                         ValuesParseFileFormatType.Flexible => await _parseFlexibleFormatLogic.AnalyzeAsync(files, context, ct).ConfigureAwait(false),
                         _ => throw new ArgumentOutOfRangeException(),
                     };
-                    
+
+                    if (!values.Any())
+                        throw new TaskException(TextParse.MissingParseValuesError);
+
                     if (task.Parameters.UseTransformationRatio)
                     {
                         await context.LogInfo(TextParse.UseTransformationRatio, 60).ConfigureAwait(false);
@@ -175,7 +180,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             var tasks = files.Select(async file =>
             {
                 var fileBody = await _fileStorage.GetFileAsync(file.Path, cancellationToken).ConfigureAwait(false);
-                storedFiles.Add(new LocalFile(file.Path, fileBody));
+                storedFiles.Add(new LocalFile(Path.GetFileName(file.Path), fileBody));
             });
             await Task.WhenAll(tasks).ConfigureAwait(false);
             return storedFiles;

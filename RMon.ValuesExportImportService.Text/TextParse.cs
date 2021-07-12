@@ -5,14 +5,14 @@ namespace RMon.ValuesExportImportService.Text
 {
     public class TextParse : IStringContainer
     {
-        public static I18nString LoadingFiles = new(nameof(LoadingFiles), "Загрузка файлов");
-        public static I18nString<string, string> ReadingFile = new(nameof(ReadingFile), "Чтение файла формата \"{fileType}\": {fileName}", "fileName", "fileType");
+        public static I18nString LoadingFiles = new(nameof(LoadingFiles), "Загрузка файлов из файлового хранилища");
+        public static I18nString<string, string> ReadingFile = new(nameof(ReadingFile), "Чтение файла \"{fileName}\" формата \"{fileType}\"", "fileName", "fileType");
         public static I18nString<string> ReadFileError = new(nameof(ReadFileError), "Не удалось выполнить чтение файла \"{fileName}\".", "fileName");
         
         public static I18nString<string> AnalyzeInfoFromFile = new(nameof(AnalyzeInfoFromFile), 
             "Анализ информации из файла \"{fileName}\"", "fileName");
         public static I18nString<string, string> AnalyzeInfoFromExcelFile = new(nameof(AnalyzeInfoFromExcelFile), 
-            "Анализ информации из файла \"{fileName}\", страница \"{sheetName}\"", "fileName", "sheetName");
+            "Анализ информации из файла \"{fileName}\", лист \"{sheetName}\"", "fileName", "sheetName");
         public static I18nString<string, string> AnalyzeArea = new(nameof(AnalyzeArea), 
             "Анализ организации \"{name}\" (ИНН {inn})", "name", "inn");
         public static I18nString AnalyzeMeasuringPoints = new(nameof(AnalyzeMeasuringPoints), "Анализ точек измерения");
@@ -20,7 +20,7 @@ namespace RMon.ValuesExportImportService.Text
         public static I18nString<string, string> AnalyzePoint = new(nameof(AnalyzeDeliveryPoints), 
             "Анализ точеки \"{name}\" (код: {code})", "name", "code");
         public static I18nString LoadingCurrentValues = new(nameof(LoadingCurrentValues), "Загрузка текущих значений из БД");
-        public static I18nString UseTransformationRatio = new(nameof(UseTransformationRatio), "Применение коэффициентов трансформации");
+        public static I18nString UseTransformationRatio = new(nameof(UseTransformationRatio), "Применение коэффициентов трансформации к считанным значениям");
         public static I18nString<long, DateTime, DateTime> LoadingCurrentValuesForTag = new(nameof(LoadingCurrentValuesForTag),
             "Загрузка текущих значений из БД для тега (id = {idTag}) за период [{dateStart}; {dateEnd}]", "idTag", "dateStart", "dateEnd");
 
@@ -35,7 +35,7 @@ namespace RMon.ValuesExportImportService.Text
             "У точки \"{pointName}\" (код: {pointCode}) найдено более одного канала с кодом \"{channelCode}\".", "pointName", "pointCode", "channelCode");
 
         public static I18nString<long, string> SelectedNoOneTagsError = new(nameof(SelectedNoOneTagsError),
-            "У оборудования (id = logicDeviceId) не найдено тегов с кодом \"{tagCode}\".", "logicDeviceId", "tagCode");
+            "У оборудования (id = {logicDeviceId}) не найдено тега с кодом \"{tagCode}\".", "logicDeviceId", "tagCode");
 
         public static I18nString<DateTime, DateTime> UndefinedTimestampError = new(nameof(UndefinedTimestampError),
             "Не удалось определить таймштамп у значения с {DateTimeStart} по {DateTimeEnd}", "DateTimeStart", "DateTimeEnd");
@@ -81,5 +81,7 @@ namespace RMon.ValuesExportImportService.Text
             "Номер столбца \"{number}\" содержит недопустимый символ \"{ch}\".", "number", "ch");
         public static I18nString<string> InvalidCellAddressError = new(nameof(InvalidCellAddressError),
             "Адрес ячейки \"{cellAddress}\" задан некорректно.", "cellAddress");
+
+        public static I18nString MissingParseValuesError = new(nameof(MissingParseValuesError), "В ходе анализа полученных файлов не удалось получить ни одного значения для импорта.");
     }
 }

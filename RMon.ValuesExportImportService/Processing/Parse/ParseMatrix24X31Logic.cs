@@ -35,13 +35,13 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             var excelResults = new List<ExcelResult>();
             foreach (var file in files)
             {
-                await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Matrix24X31.ToString())).ConfigureAwait(false);
+                await context.LogInfo(TextParse.ReadingFile.With(file.Name, ValuesParseFileFormatType.Matrix24X31.ToString())).ConfigureAwait(false);
 
-                var excelResult = _matrixReader.ReadExcelBook(file.Body, logicDevicePropertyValueCellAddress, cellStart, dateColumnIndex, timeRowIndex, context);
+                var excelResult = _matrixReader.ReadExcelBook(file, logicDevicePropertyValueCellAddress, cellStart, dateColumnIndex, timeRowIndex, context);
                 if (!excelResult.Any())
-                    throw new TaskException(TextParse.ReadFileError.With(file.Path));
+                    throw new TaskException(TextParse.ReadFileError.With(file.Name));
 
-                excelResults.Add(new(file.Path, excelResult));
+                excelResults.Add(new(file.Name, excelResult));
             }
 
             return await _dbValuesAnalyzer.Analyze(excelResults, taskParams.LogicDevicePropertyCode, taskParams.TagCode, context, ct).ConfigureAwait(false);

@@ -2,7 +2,7 @@
 using RMon.Values.ExportImport.Core;
 using RMon.ValuesExportImportService.Processing.Import.Model;
 
-namespace RMon.ValuesExportImportService.Processing.Common
+namespace RMon.ValuesExportImportService.Processing.Extensions
 {
     static class ValueInfoExt
     {

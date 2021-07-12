@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using RMon.Globalization;
 using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Excel.Common;
+using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Processing.Parse;
 
 namespace RMon.ValuesExportImportService.Excel.Flexible
@@ -17,11 +18,11 @@ namespace RMon.ValuesExportImportService.Excel.Flexible
         byte[] WriteFile(ExportTable exportTable, IGlobalizationProvider globalizationProvider);
 
         /// <summary>
-        /// Выполняет парсинг файла Excel-файла <see cref="fileBody"/>
+        /// Выполняет парсинг Excel-файла <see cref="file"/>
         /// </summary>
-        /// <param name="fileBody">Файл excel</param>
+        /// <param name="file">Файл excel</param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public Task<List<ReadSheet>> ReadFile(byte[] fileBody, ParseProcessingContext context);
+        public Task<List<ReadSheet>> ReadFile(LocalFile file, ParseProcessingContext context);
     }
 }

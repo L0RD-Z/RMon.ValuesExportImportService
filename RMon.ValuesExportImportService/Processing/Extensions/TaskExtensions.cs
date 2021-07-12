@@ -5,8 +5,7 @@ using RMon.ESB.Core.ValuesExportTaskDto;
 using RMon.ESB.Core.ValuesImportTaskDto;
 using RMon.ESB.Core.ValuesParseTaskDto;
 
-
-namespace RMon.ValuesExportImportService.Processing.Common
+namespace RMon.ValuesExportImportService.Processing.Extensions
 {
     static class TaskExtensions
     {
