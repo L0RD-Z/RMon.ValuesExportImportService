@@ -63,7 +63,8 @@ namespace RMon.ValuesExportImportService
                     services.ConfigureOption<ValuesExportImportFileStorage>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesExportImportFileStorage));
                     services.ConfigureOption<TagValueTransformation>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(TagValueTransformation));
                     services.ConfigureOption<ResultMessageSender>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ResultMessageSender));
-                    
+                    services.ConfigureOption<ValuesLoggingOptions>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesLoggingOptions));
+
 
                     services.AddSingleton<IBusProvider, BusProvider>();
                     services.AddSingleton<ExportStateMachine>();
@@ -98,6 +99,7 @@ namespace RMon.ValuesExportImportService
 
                     services.AddSingleton<ITransformationRatioCalculator, TransformationRatioCalculator>();
                     services.AddSingleton<IResultMessagesSender, ResultMessagesSqlProvider>();
+                    services.AddSingleton<IValuesLogger, ValuesLogger>();
 
                     services.AddSingleton<IImportTaskLogger, ImportTaskLogger>();
                     services.AddSingleton<IParseTaskLogger, ParseTaskLogger>();

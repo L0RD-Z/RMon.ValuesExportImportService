@@ -35,6 +35,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         private readonly ParseTableLogic _parseTableLogic;
         private readonly ParseFlexibleFormatLogic _parseFlexibleFormatLogic;
         private readonly ITransformationRatioCalculator _transformationRatioCalculator;
+        private readonly IValuesLogger _valuesLogger;
 
         /// <summary>
         /// Конструктор 1
@@ -49,6 +50,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <param name="parseTableLogic">Логика для парсинга "Таблицы"</param>
         /// <param name="parseFlexibleFormatLogic">Логика для парсинга гибкого формата</param>
         /// <param name="transformationRatioCalculator">Калькулятор коэффициентов трансформации</param>
+        /// <param name="valuesLogger">Логгер для полученных значений</param>
         public ParseTaskLogic(IOptionsMonitor<Service> serviceOptions,
             ISimpleFactory<IValueRepository> valueRepositorySimpleFactory,
             IParseTaskLogger taskLogger,
@@ -58,7 +60,8 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             ParseMatrix31X24Logic parseMatrix31X24Logic,
             ParseTableLogic parseTableLogic,
             ParseFlexibleFormatLogic parseFlexibleFormatLogic,
-            ITransformationRatioCalculator transformationRatioCalculator)
+            ITransformationRatioCalculator transformationRatioCalculator,
+            IValuesLogger valuesLogger)
         {
             _serviceOptions = serviceOptions;
             _valueRepositorySimpleFactory = valueRepositorySimpleFactory;
@@ -70,6 +73,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             _parseTableLogic = parseTableLogic;
             _parseFlexibleFormatLogic = parseFlexibleFormatLogic;
             _transformationRatioCalculator = transformationRatioCalculator;
+            _valuesLogger = valuesLogger;
         }
 
         
@@ -113,10 +117,11 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                                 value.Value.ValueFloat = value.Value.ValueFloat * tag.TransformationRatio * tag.Ratio + tag.Offset;
                         }
                     }
-
+                    
                     await context.LogInfo(TextParse.LoadingCurrentValues, 80).ConfigureAwait(false);
                     await LoadCurrentValuesFromDb(context, values).ConfigureAwait(false);
 
+                    _valuesLogger.LogValues(task.CorrelationId, values);
                     await context.LogFinished(TextTask.FinishSuccess, values).ConfigureAwait(false);
                 }
                 catch (TaskCanceledException)
@@ -196,7 +201,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 {
                     var dbValue = dbValues.SingleOrDefault(t => t.Datetime == value.TimeStamp);
                     if (dbValue != null)
-                        value.CurrentValue = new ValueUnion("Normal", dbValue.ValueFloat);
+                        value.CurrentValue = dbValue.ToValueUnion();
                 }
             }
         }

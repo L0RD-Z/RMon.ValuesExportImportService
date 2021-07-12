@@ -63,7 +63,6 @@ namespace RMon.ValuesExportImportService.ServiceBus.Import
 
         void FinishTask(BehaviorContext<ImportStateMachineInstance, IValuesImportTaskFinished> context)
         {
-            _busLogger.LogReceivedTask(context.Data, typeof(IValuesImportTaskFinished));
         }
     }
 }

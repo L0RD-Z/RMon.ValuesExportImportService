@@ -63,7 +63,7 @@ namespace RMon.ValuesExportImportService.ServiceBus.Parse
 
         void FinishTask(BehaviorContext<ParseStateMachineInstance, IValuesParseTaskFinished> context)
         {
-            _busLogger.LogReceivedTask(context.Data, typeof(IValuesParseTaskFinished));
+            
         }
     }
 }
