@@ -121,6 +121,8 @@ namespace RMon.ValuesExportImportService.Data
                 .Include(t => t.DeviceTag)
                 .Include(t => t.LogicTagLink)
                 .ThenInclude(t => t.LogicTagType)
+                .Include(t => t.LogicTagLink)
+                .ThenInclude(t => t.LogicDeviceType)
                 .Where(t => idTags.Contains(t.Id) && t.IdDevice.HasValue)
                 .ToListAsync(ct)
                 .ConfigureAwait(false);

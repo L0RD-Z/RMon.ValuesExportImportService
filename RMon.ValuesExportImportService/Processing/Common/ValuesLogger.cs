@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using RMon.Values.ExportImport.Core;
 using RMon.ValuesExportImportService.Configuration;
 
-namespace RMon.ValuesExportImportService.Processing.Parse
+namespace RMon.ValuesExportImportService.Processing.Common
 {
     class ValuesLogger : IValuesLogger
     {
@@ -20,25 +20,40 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             _logger = logger;
         }
 
-        public void LogValues(Guid correlationId, IList<ValueInfo> values)
+
+        
+        /// <inheritdoc />
+        public void LogReceivedValues(Guid correlationId, IList<ValueInfo> values) => LogValues(correlationId, values, TaskActions.Received);
+
+        /// <inheritdoc />
+        public void LogSendValues(Guid correlationId, IList<ValueInfo> values) => LogValues(correlationId, values, TaskActions.Sent);
+
+
+        private void LogValues(Guid correlationId, IList<ValueInfo> values, TaskActions action)
         {
             if (_loggingOptions.CurrentValue.LogMessages)
             {
                 var valuesGroup = values.GroupBy(t => t.IdTag).OrderBy(t => t.Key);
 
                 var logMessages = new StringBuilder();
-                logMessages.AppendLine($"Задача {correlationId}");
+                logMessages.AppendLine($"Задача {correlationId}, {(action == TaskActions.Sent ? "отправлено:" : "получено:")}");
                 foreach (var tag in valuesGroup)
                 {
                     var tagValues = tag.OrderBy(t => t.TimeStamp);
                     logMessages.AppendLine($"Значения тега (id = {tag.Key}):");
                     foreach (var value in tagValues) 
-                        logMessages.AppendLine($"  {value.TimeStamp}, \"{nameof(value.Value)}\" = {value.Value?.ValueFloat}, \"{nameof(value.CurrentValue)}\" = {value.CurrentValue?.ValueFloat}");
+                        logMessages.AppendLine($"  {value.TimeStamp} - \"{nameof(value.Value)}\" = {value.Value?.ValueFloat}, \"{nameof(value.CurrentValue)}\" = {value.CurrentValue?.ValueFloat}, \"{nameof(value.Rewrite)}\" = {value.Rewrite}");
                 }
 
                 logMessages.AppendLine();
                 _logger.LogInformation(logMessages.ToString());
             }
+        }
+
+        private enum TaskActions
+        {
+            Sent,
+            Received
         }
     }
 }

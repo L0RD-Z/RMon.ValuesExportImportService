@@ -131,7 +131,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                     await context.LogInfo(TextParse.LoadingCurrentValues, 80).ConfigureAwait(false);
                     await LoadCurrentValuesFromDb(context, values).ConfigureAwait(false);
 
-                    _valuesLogger.LogValues(task.CorrelationId, values);
+                    _valuesLogger.LogSendValues(task.CorrelationId, values);
                     await context.LogFinished(TextTask.FinishSuccess, values).ConfigureAwait(false);
                 }
                 catch (TaskCanceledException)

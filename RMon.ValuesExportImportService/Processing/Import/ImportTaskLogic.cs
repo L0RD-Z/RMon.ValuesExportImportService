@@ -30,19 +30,22 @@ namespace RMon.ValuesExportImportService.Processing.Import
         private readonly ISimpleFactory<IValueRepository> _valueRepositorySimpleFactory;
         private readonly ITransformationRatioCalculator _transformationRatioCalculator;
         private readonly IResultMessagesSender _resultMessagesSender;
+        private readonly IValuesLogger _valuesLogger;
 
 
         public ImportTaskLogic(IOptionsMonitor<Service> serviceOptions, 
             IImportTaskLogger taskLogger, 
             ISimpleFactory<IValueRepository> valueRepositorySimpleFactory, 
             ITransformationRatioCalculator transformationRatioCalculator,
-            IResultMessagesSender resultMessagesSender)
+            IResultMessagesSender resultMessagesSender,
+            IValuesLogger valuesLogger)
         {
             _serviceOptions = serviceOptions;
             _taskLogger = taskLogger;
             _valueRepositorySimpleFactory = valueRepositorySimpleFactory;
             _transformationRatioCalculator = transformationRatioCalculator;
             _resultMessagesSender = resultMessagesSender;
+            _valuesLogger = valuesLogger;
         }
 
         public async Task StartTaskAsync(ITask receivedTask, CancellationToken ct)
@@ -57,6 +60,7 @@ namespace RMon.ValuesExportImportService.Processing.Import
                 {
                     await context.LogStarted(TextTask.Start).ConfigureAwait(false);
                     var values = task.Parameters.Values;
+                    _valuesLogger.LogReceivedValues(task.CorrelationId, values);
 
                     var valueRepository = _valueRepositorySimpleFactory.Create();
                     await _transformationRatioCalculator.LoadTagsRatioFromDbAsync(values.Select(t => t.IdTag).ToList(), ct).ConfigureAwait(false);
