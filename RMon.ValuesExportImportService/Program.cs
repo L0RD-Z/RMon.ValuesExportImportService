@@ -63,7 +63,7 @@ namespace RMon.ValuesExportImportService
                     services.ConfigureOption<ValuesExportImportFileStorage>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesExportImportFileStorage));
                     services.ConfigureOption<ValuesParseOptions>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesParseOptions));
                     services.ConfigureOption<TagValueTransformation>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(TagValueTransformation));
-                    services.ConfigureOption<ResultMessageSender>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ResultMessageSender));
+                    services.ConfigureOption<ResultMessageSenderOptions>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ResultMessageSenderOptions));
                     services.ConfigureOption<ValuesLoggingOptions>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesLoggingOptions));
 
 

@@ -11,11 +11,11 @@ namespace RMon.ValuesExportImportService.Processing.Import
     /// <inheritdoc />
     class ResultMessagesSqlProvider : IResultMessagesSender
     {
-        private readonly IOptionsMonitor<ResultMessageSender> _resultMessageSenderOptions;
+        private readonly IOptionsMonitor<ResultMessageSenderOptions> _resultMessageSenderOptions;
         private readonly IDataRepository _dataRepository;
 
 
-        public ResultMessagesSqlProvider(IOptionsMonitor<ResultMessageSender> resultMessageSenderOptions, IDataRepository dataRepository)
+        public ResultMessagesSqlProvider(IOptionsMonitor<ResultMessageSenderOptions> resultMessageSenderOptions, IDataRepository dataRepository)
         {
             _resultMessageSenderOptions = resultMessageSenderOptions;
             _dataRepository = dataRepository;

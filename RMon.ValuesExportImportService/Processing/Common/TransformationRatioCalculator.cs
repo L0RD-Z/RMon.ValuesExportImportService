@@ -43,7 +43,7 @@ namespace RMon.ValuesExportImportService.Processing.Common
                 var tagRatio = new TagRatio
                 {
                     IdTag = tag.Id,
-                    TagCode = tag.LogicTagLink.LogicDeviceType.Code,
+                    TagCode = tag.LogicTagLink.LogicTagType.Code,
                     Offset = tag.DeviceTag.Offset,
                     Ratio = tag.DeviceTag.Ratio,
                     TransformationRatio = GetTransformationRatio(tag.DeviceTag.Code, tag.LogicTagLink.LogicDeviceType.Code, propertyValues)

@@ -120,7 +120,7 @@ namespace RMon.ValuesExportImportService.Data
             return await dataContext.Tags.AsNoTracking()
                 .Include(t => t.DeviceTag)
                 .Include(t => t.LogicTagLink)
-                .ThenInclude(t => t.LogicDeviceType)
+                .ThenInclude(t => t.LogicTagType)
                 .Where(t => idTags.Contains(t.Id) && t.IdDevice.HasValue)
                 .ToListAsync(ct)
                 .ConfigureAwait(false);
