@@ -6,6 +6,9 @@ namespace RMon.ValuesExportImportService.Text
     public class TextParse : IStringContainer
     {
         public static I18nString LoadingFiles = new(nameof(LoadingFiles), "Загрузка файлов из файлового хранилища");
+
+        public static I18nString<int> FilesSizeExceedLimit = new(nameof(FilesSizeExceedLimit),
+            "Размер загружаемых файлов превышает лимит в {limit} кб.", "limit");
         public static I18nString<string, string> ReadingFile = new(nameof(ReadingFile), "Чтение файла \"{fileName}\" формата \"{fileType}\"", "fileName", "fileType");
         public static I18nString<string> ReadFileError = new(nameof(ReadFileError), "Не удалось выполнить чтение файла \"{fileName}\".", "fileName");
         

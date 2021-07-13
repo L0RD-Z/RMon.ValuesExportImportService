@@ -134,6 +134,39 @@ namespace RMon.ValuesExportImportService.Files
             }
         }
 
+        /// <inheritdoc />
+        public async Task<StoredFileInfo> GetFileInfoAsync(string filePath, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var fileStorageService = await GetFileStorageServiceAsync().ConfigureAwait(false);
+                var response = await fileStorageService.GetFileInfoAsync(new GetFileInfoRequest
+                {
+                    AreaName = _options.Area,
+                    FilePath = filePath
+                }, Metadata.Empty, null, cancellationToken);
+                try
+                {
+                    response.Result.ThrowIfError();
+                    return response.FileInfo;
+                }
+                catch (Exception e)
+                {
+                    throw new FileStorageException(TextFileStorage.ErrorCodeException.With(response.Result.Code.ToString()), e);
+                }
+            }
+            catch (RpcException e)
+            {
+                if (e.StatusCode == StatusCode.Cancelled)
+                    throw new OperationCanceledException();
+                throw new FileStorageException(TextFileStorage.GetFileInfoWithStatusException.With(filePath, _options.ToString(), e.Status.ToString()), e);
+            }
+            catch (Exception e)
+            {
+                throw new FileStorageException(TextFileStorage.GetFileInfoException.With(filePath, _options.ToString()), e);
+            }
+        }
+
         #endregion
 
 

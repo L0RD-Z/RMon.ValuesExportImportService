@@ -1,12 +1,13 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using RMon.FileStorage.Grpc;
 
 namespace RMon.ValuesExportImportService.Files
 {
     public interface IFileStorage
     {
         /// <summary>
-        /// Отправляет файл <see cref="content"/> в файловое хранилище
+        /// Асинхронно отправляет файл <see cref="content"/> в файловое хранилище
         /// </summary>
         /// <param name="filePath">Ссылка, по которой будет храниться файл в файловом хранилище</param>
         /// <param name="content">Тело файла</param>
@@ -15,7 +16,7 @@ namespace RMon.ValuesExportImportService.Files
         Task StoreFileAsync(string filePath, byte[] content, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Получает файл <see cref="filePath"/> из файлового хранилища
+        /// Асинхронно получает файл <see cref="filePath"/> из файлового хранилища
         /// </summary>
         /// <param name="filePath">Ссылка на файл в файловом хранилище</param>
         /// <param name="cancellationToken">Токен отмены данных</param>
@@ -23,11 +24,19 @@ namespace RMon.ValuesExportImportService.Files
         Task<byte[]> GetFileAsync(string filePath, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Удаляет файл <see cref="filePath"/> из файлового хранилища
+        /// Асинхронно удаляет файл <see cref="filePath"/> из файлового хранилища
         /// </summary>
         /// <param name="filePath">Ссылка на файл в файловом хранилище</param>
         /// <param name="cancellationToken">Токен отмены данных</param>
         /// <returns></returns>
         Task DeleteFileAsync(string filePath, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Асинхронно возвращает информацию о файле <see cref="filePath"/>
+        /// </summary>
+        /// <param name="filePath">Ссылка на файл в файловом хранилище</param>
+        /// <param name="cancellationToken">Токен отмены данных</param>
+        /// <returns></returns>
+        Task<StoredFileInfo> GetFileInfoAsync(string filePath, CancellationToken cancellationToken = default);
     }
 }

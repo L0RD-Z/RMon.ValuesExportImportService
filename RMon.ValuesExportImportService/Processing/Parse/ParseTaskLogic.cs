@@ -15,6 +15,7 @@ using RMon.ESB.Core.ValuesParseTaskDto;
 using RMon.Globalization;
 using RMon.Globalization.String;
 using RMon.Values.ExportImport.Core;
+using RMon.ValuesExportImportService.Configuration;
 using RMon.ValuesExportImportService.Extensions;
 using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Processing.Common;
@@ -28,6 +29,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
     class ParseTaskLogic : IParseTaskLogic
     {
         private readonly IOptionsMonitor<Service> _serviceOptions;
+        private readonly IOptionsMonitor<ValuesParseOptions> _valuesParseOptions;
         private readonly IFileStorage _fileStorage;
         private readonly ISimpleFactory<IValueRepository> _valueRepositorySimpleFactory;
         private readonly IParseTaskLogger _taskLogger;
@@ -43,6 +45,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// Конструктор 1
         /// </summary>
         /// <param name="serviceOptions">Опции сервиса</param>
+        /// <param name="valuesParseOptions">Опциии парсинга</param>
         /// <param name="valueRepositorySimpleFactory">Фабрика для создания репозитория значений</param>
         /// <param name="taskLogger">Логгер для заданий</param>
         /// <param name="fileStorage">Файловое хранилище</param>
@@ -54,6 +57,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <param name="transformationRatioCalculator">Калькулятор коэффициентов трансформации</param>
         /// <param name="valuesLogger">Логгер для полученных значений</param>
         public ParseTaskLogic(IOptionsMonitor<Service> serviceOptions,
+            IOptionsMonitor<ValuesParseOptions> valuesParseOptions,
             ISimpleFactory<IValueRepository> valueRepositorySimpleFactory,
             IParseTaskLogger taskLogger,
             IFileStorage fileStorage,
@@ -66,6 +70,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             IValuesLogger valuesLogger)
         {
             _serviceOptions = serviceOptions;
+            _valuesParseOptions = valuesParseOptions;
             _valueRepositorySimpleFactory = valueRepositorySimpleFactory;
             _taskLogger = taskLogger;
             _fileStorage = fileStorage;
@@ -174,15 +179,22 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <param name="files">Список получаемых файлов</param>
         /// <param name="cancellationToken"></param>
         /// <returns>Список файлов</returns>
-        private async Task<IList<LocalFile>> ReceiveFilesAsync(IEnumerable<FileInStorage> files, CancellationToken cancellationToken = default)
+        private async Task<IList<LocalFile>> ReceiveFilesAsync(IList<FileInStorage> files, CancellationToken cancellationToken = default)
         {
             var storedFiles = new List<LocalFile>();
-            var tasks = files.Select(async file =>
+
+            var tasks1 = files.Select(file => _fileStorage.GetFileInfoAsync(file.Path, cancellationToken)).ToList();
+            await Task.WhenAll(tasks1).ConfigureAwait(false);
+            var size = tasks1.Sum(t => t.Result.Size);
+            if (size > _valuesParseOptions.CurrentValue.TotalParseFilesSize)
+                throw new TaskException(TextParse.FilesSizeExceedLimit.With((int) Math.Round(_valuesParseOptions.CurrentValue.TotalParseFilesSize / 1024d)));
+
+            var tasks2 = files.Select(async file =>
             {
                 var fileBody = await _fileStorage.GetFileAsync(file.Path, cancellationToken).ConfigureAwait(false);
                 storedFiles.Add(new LocalFile(Path.GetFileName(file.Path), fileBody));
             });
-            await Task.WhenAll(tasks).ConfigureAwait(false);
+            await Task.WhenAll(tasks2).ConfigureAwait(false);
             return storedFiles;
         }
 

@@ -20,5 +20,10 @@ namespace RMon.ValuesExportImportService.Text
             "Во время удаления файла \"{filePath}\" из файлового хранилища \"{options}\" возникло исключение.", "filePath", "options");
         public static I18nString<string, string, string> DeleteFileWithStatusException = new(nameof(DeleteFileWithStatusException),
             "Во время удаления файла \"{filePath}\" из файлового хранилища \"{options}\" возникло исключение. Статус: \"{status}\"", "filePath", "options", "status");
+
+        public static I18nString<string, string> GetFileInfoException = new(nameof(GetFileInfoException),
+            "Во время получения информации о файле \"{filePath}\" из файлового хранилища \"{options}\" возникло исключение.", "filePath", "options");
+        public static I18nString<string, string, string> GetFileInfoWithStatusException = new(nameof(GetFileInfoWithStatusException),
+            "Во время получения информации о файле \"{filePath}\" из файлового хранилища \"{options}\" возникло исключение. Статус: \"{status}\"", "filePath", "options", "status");
     }
 }
