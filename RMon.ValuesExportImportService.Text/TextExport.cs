@@ -5,7 +5,7 @@ namespace RMon.ValuesExportImportService.Text
 {
     public class TextExport : IStringContainer
     {
-        public static I18nString LoadingData = new(nameof(LoadingData), "Загрузка из базы данных");
+        public static I18nString LoadingData = new(nameof(LoadingData), "Загрузка данных из базы данных");
         public static I18nString BuildingExcel = new(nameof(BuildingExcel), "Формирование Excel - файла");
         public static I18nString StoringFile = new(nameof(StoringFile), "Отправка файла в файловое хранилище");
         

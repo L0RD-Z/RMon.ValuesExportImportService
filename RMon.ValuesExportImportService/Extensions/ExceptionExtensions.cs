@@ -11,26 +11,10 @@ namespace RMon.ValuesExportImportService.Extensions
         /// </summary>
         /// <param name="ex"></param>
         /// <returns></returns>
-        public static I18nString ConcatExceptionMessage(this Exception ex)
+        public static I18nString ConcatAllExceptionMessage(this Exception ex)
         {
-            var result = I18nString.FromString(string.Empty);
-            if (ex != null)
-            {
-                result = ex switch
-                {
-                    HandledFormattedException handledFormattedException => handledFormattedException.FormattedMessage,
-                    { } exception => I18nString.FromString(exception.Message),
-                    _ => result
-                };
-                if (ex.InnerException != null)
-                {
-                    var str = ConcatExceptionMessage(ex.InnerException);
-                    if (str != null)
-                        result = result.Clone().Append(I18nString.FromString(" ")).Append(str);
-                }
-            }
-
-            return result;
+            var str = ex is HandledFormattedException formattedException ? formattedException.FormattedMessage.Clone() : I18nString.FromString(ex.Message);
+            return ex.InnerException == null ? str : str.Append(" ").Append(ConcatAllExceptionMessage(ex.InnerException));
         }
 
 
@@ -41,6 +25,6 @@ namespace RMon.ValuesExportImportService.Extensions
         /// <param name="msg">Сообщение</param>
         /// <returns></returns>
         public static I18nString ConcatExceptionMessage(this Exception ex, I18nString msg) =>
-            msg.Clone().Append(" ").Append(ex.ConcatExceptionMessage());
+            msg.Clone().Append(" ").Append(ex.ConcatAllExceptionMessage());
     }
 }
