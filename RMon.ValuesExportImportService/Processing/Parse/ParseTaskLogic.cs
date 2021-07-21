@@ -98,6 +98,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                     await context.LogStarted(TextTask.Start).ConfigureAwait(false);
                     await context.LogInfo(TextTask.ValidateParameters).ConfigureAwait(false);
                     ValidateParameters(task);
+                    await ValidateReceiveFilesSizeLimitAsync(task.Parameters.Files, ct).ConfigureAwait(false);
 
                     await context.LogInfo(TextParse.LoadingFiles, 10).ConfigureAwait(false);
                     var files = await ReceiveFilesAsync(task.Parameters.Files, ct).ConfigureAwait(false);
@@ -172,31 +173,40 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 throw new TaskException(TextParse.NoUserIdError);
         }
 
+        /// <summary>
+        /// Асинхронно проверят размер всех получаемых файлов и в случае превышения заданного в настройках лимита генерирует исключение <see cref="TaskException"/>
+        /// </summary>
+        /// <param name="files">Список получаемых файлов</param>
+        /// <param name="cancellationToken">Токен отмены операции</param>
+        /// <returns></returns>
+        private async Task ValidateReceiveFilesSizeLimitAsync(IList<FileInStorage> files, CancellationToken cancellationToken)
+        {
+            var tasks = files.Select(file => _fileStorage.GetFileInfoAsync(file.Path, cancellationToken)).ToList();
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+            var size = tasks.Sum(t => t.Result.Size);
+            if (size > _valuesParseOptions.CurrentValue.TotalParseFilesSize)
+                throw new TaskException(TextParse.FilesSizeExceedLimit.With((int)Math.Round(_valuesParseOptions.CurrentValue.TotalParseFilesSize / 1024d)));
+        }
 
         /// <summary>
         /// Получает файлы <see cref="files"/> из файлового хранилища
         /// </summary>
         /// <param name="files">Список получаемых файлов</param>
-        /// <param name="cancellationToken"></param>
+        /// <param name="cancellationToken">Токен отмены операции</param>
         /// <returns>Список файлов</returns>
         private async Task<IList<LocalFile>> ReceiveFilesAsync(IList<FileInStorage> files, CancellationToken cancellationToken = default)
         {
             var storedFiles = new List<LocalFile>();
-
-            var tasks1 = files.Select(file => _fileStorage.GetFileInfoAsync(file.Path, cancellationToken)).ToList();
-            await Task.WhenAll(tasks1).ConfigureAwait(false);
-            var size = tasks1.Sum(t => t.Result.Size);
-            if (size > _valuesParseOptions.CurrentValue.TotalParseFilesSize)
-                throw new TaskException(TextParse.FilesSizeExceedLimit.With((int) Math.Round(_valuesParseOptions.CurrentValue.TotalParseFilesSize / 1024d)));
-
-            var tasks2 = files.Select(async file =>
+            var tasks = files.Select(async file =>
             {
                 var fileBody = await _fileStorage.GetFileAsync(file.Path, cancellationToken).ConfigureAwait(false);
                 storedFiles.Add(new LocalFile(Path.GetFileName(file.Path), fileBody));
             });
-            await Task.WhenAll(tasks2).ConfigureAwait(false);
+            await Task.WhenAll(tasks).ConfigureAwait(false);
             return storedFiles;
         }
+
+        
 
         /// <summary>
         /// Выполняет загрузку текущих значений из БД

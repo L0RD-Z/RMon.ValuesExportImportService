@@ -7,6 +7,7 @@ using RMon.Values.ExportImport.Core;
 using RMon.ValuesExportImportService.Processing;
 using RMon.ValuesExportImportService.Processing.Import;
 using RMon.ValuesExportImportService.ServiceBus.Common;
+using RMon.ValuesExportImportService.ServiceBus.Entity;
 
 namespace RMon.ValuesExportImportService.ServiceBus.Import
 {
@@ -54,16 +55,7 @@ namespace RMon.ValuesExportImportService.ServiceBus.Import
 
         void Start(BehaviorContext<ImportStateMachineInstance, IValuesImportTask> context)
         {
-            if (context.Data?.Parameters?.Values != null)
-            {
-                var values = context.Data.Parameters.Values.Select(t => t).ToList();
-                context.Data.Parameters.Values.Clear();
-                _busLogger.LogReceivedTask(context.Data, typeof(IValuesImportTask));
-                context.Data.Parameters.Values = values.Select(t => t).ToList();
-            }
-            else
-                _busLogger.LogReceivedTask(context.Data, typeof(IValuesImportTask));
-
+            _busLogger.LogReceivedTask(context.Data);
             _taskLogic.StartTaskAsync(context.Data, context.Instance.CancellationTokenSource.Token);
         }
 

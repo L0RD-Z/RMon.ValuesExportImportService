@@ -29,7 +29,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse.Format80020
 
             var validationText = Validate(message);
             if (validationText != null)
-                throw new Format800200Exception(validationText);
+                throw new Format80020Exception(validationText);
 
             return (Message)message;
         }
