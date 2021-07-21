@@ -48,12 +48,12 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             var tables = new List<(string FileName, List<ReadSheet> Sheets)>();
             foreach (var file in files)
             {
-                await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Flexible.ToString())).ConfigureAwait(false);
+                await context.LogInfo(TextParse.ReadingFile.With(file.Name, ValuesParseFileFormatType.Flexible.ToString())).ConfigureAwait(false);
 
-                var table = await _excelWorker.ReadFile(file.Body, context).ConfigureAwait(false);
+                var table = await _excelWorker.ReadFile(file, context).ConfigureAwait(false);
                 if (!table.Any())
-                    throw new TaskException(TextParse.ReadFileError.With(file.Path));
-                tables.Add((file.Path, table));
+                    throw new TaskException(TextParse.ReadFileError.With(file.Name));
+                tables.Add((file.Name, table));
             }
 
             var result = new List<ValueInfo>();
@@ -102,7 +102,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                                     throw new ParseException(TextParse.MissingPropertyError.With($"{EntityCodes.Tag}.{TagPropertyCodes.Id}"));
 
                                 if (!long.TryParse(tagId.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out var idTag))
-                                    throw new ParseException(TextParse.FailedConvertToLong.With(ValuesPropertyCodes.Value));
+                                    throw new ParseException(TextParse.FailedConvertToLongError.With(ValuesPropertyCodes.Value));
                                     
                                 result.Add(CreateValue(row, idTag));
                             }
@@ -167,7 +167,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             if (tags.Any())
                 return tags.SingleOrDefault();
             else
-                throw new ParseException(TextDb.FindNoOneTagForLogicDevice.With(entityFilter.ToLogString(), logicDeviceId));
+                throw new ParseException(TextDb.FindNoOneTagForLogicDeviceError.With(entityFilter.ToLogString(), logicDeviceId));
         }
 
         /// <summary>
@@ -184,9 +184,9 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 throw new ParseException(TextParse.MissingPropertyError.With(ValuesPropertyCodes.Value));
 
             if (!DateTime.TryParseExact(timestampProperty.Value, "dd.MM.yyyy H:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var timeStamp))
-                throw new ParseException(TextParse.FailedConvertToDateTime.With(timestampProperty.Value));
+                throw new ParseException(TextParse.FailedConvertToDateTimeError.With(timestampProperty.Value));
             if (!double.TryParse(valueProperty.Value.Replace(",", "."), NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
-                throw new ParseException(TextParse.FailedConvertToDouble.With(valueProperty.Value));
+                throw new ParseException(TextParse.FailedConvertToDoubleError.With(valueProperty.Value));
 
             return new(idTag, timeStamp, value);
         }

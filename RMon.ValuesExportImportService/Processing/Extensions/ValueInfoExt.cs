@@ -1,7 +1,8 @@
-﻿using RMon.Values.ExportImport.Core;
+﻿using RMon.Data;
+using RMon.Values.ExportImport.Core;
 using RMon.ValuesExportImportService.Processing.Import.Model;
 
-namespace RMon.ValuesExportImportService.Processing.Import.Extensions
+namespace RMon.ValuesExportImportService.Processing.Extensions
 {
     static class ValueInfoExt
     {
@@ -15,6 +16,16 @@ namespace RMon.ValuesExportImportService.Processing.Import.Extensions
                 ValueData = valueInfo.Value.ValueData,
                 ValueFloat = valueInfo.Value.ValueFloat,
                 ValueInt = valueInfo.Value.ValueInt
+            };
+
+        public static ValueUnion ToValueUnion(this IValue value) =>
+            new()
+            {
+                IdQuality = value.IdQuality,
+                ValueBool = value.ValueBool,
+                ValueData = value.ValueData,
+                ValueFloat = value.ValueFloat,
+                ValueInt = value.ValueInt
             };
     }
 }

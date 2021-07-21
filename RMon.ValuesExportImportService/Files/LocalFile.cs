@@ -3,9 +3,9 @@
     class LocalFile
     {
         /// <summary>
-        /// Путь к файлу
+        /// Имя файла
         /// </summary>
-        public string Path { get; set; }
+        public string Name { get; set; }
         /// <summary>
         /// Тело файла
         /// </summary>
@@ -22,11 +22,11 @@
         /// <summary>
         /// Конструктор 1
         /// </summary>
-        /// <param name="path">Путь к файлу</param>
+        /// <param name="name">Путь к файлу</param>
         /// <param name="body">Тело файла</param>
-        public LocalFile(string path, byte[] body)
+        public LocalFile(string name, byte[] body)
         {
-            Path = path;
+            Name = name;
             Body = body;
         }
     }

@@ -1,9 +1,13 @@
-﻿using Automatonymous;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Automatonymous;
 using Microsoft.Extensions.Logging;
 using RMon.ESB.Core.ValuesImportTaskDto;
+using RMon.Values.ExportImport.Core;
 using RMon.ValuesExportImportService.Processing;
 using RMon.ValuesExportImportService.Processing.Import;
 using RMon.ValuesExportImportService.ServiceBus.Common;
+using RMon.ValuesExportImportService.ServiceBus.Entity;
 
 namespace RMon.ValuesExportImportService.ServiceBus.Import
 {
@@ -51,7 +55,7 @@ namespace RMon.ValuesExportImportService.ServiceBus.Import
 
         void Start(BehaviorContext<ImportStateMachineInstance, IValuesImportTask> context)
         {
-            _busLogger.LogReceivedTask(context.Data, typeof(IValuesImportTask));
+            _busLogger.LogReceivedTask(context.Data);
             _taskLogic.StartTaskAsync(context.Data, context.Instance.CancellationTokenSource.Token);
         }
 
@@ -63,7 +67,6 @@ namespace RMon.ValuesExportImportService.ServiceBus.Import
 
         void FinishTask(BehaviorContext<ImportStateMachineInstance, IValuesImportTaskFinished> context)
         {
-            _busLogger.LogReceivedTask(context.Data, typeof(IValuesImportTaskFinished));
         }
     }
 }

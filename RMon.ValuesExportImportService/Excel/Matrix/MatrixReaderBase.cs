@@ -5,9 +5,9 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using ExcelDataReader;
-using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Excel.Common;
 using RMon.ValuesExportImportService.Extensions;
+using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Processing.Parse;
 using RMon.ValuesExportImportService.Text;
 
@@ -22,9 +22,9 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
 
         
         /// <inheritdoc />
-        public List<ExcelLogicDeviceValues> ReadExcelBook(byte[] fileBody, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateColumnIndex, int timeColumnIndex, ParseProcessingContext context)
+        public List<ExcelLogicDeviceValues> ReadExcelBook(LocalFile file, ExcelCellAddress logicDevicePropertyValueCell, ExcelCellAddress cellStart, int dateColumnIndex, int timeColumnIndex, ParseProcessingContext context)
         {
-            using var stream = new MemoryStream(fileBody);
+            using var stream = new MemoryStream(file.Body);
             // Авто-определение форматов, поддерживаются:
             //  - Binary Excel files (2.0-2003 format; *.xls)
             //  - OpenXml Excel files (2007 format; *.xlsx)
@@ -44,7 +44,7 @@ namespace RMon.ValuesExportImportService.Excel.Matrix
                 }
                 catch (Exception e)
                 {
-                    context.LogWarning(e.ConcatExceptionMessage(TextExcel.SheetParseUnexpectedError.With(table.TableName)));
+                    context.LogWarning(e.ConcatExceptionMessage(TextExcel.SheetParseUnexpectedError.With(file.Name, table.TableName)));
                 }
 
             return result;

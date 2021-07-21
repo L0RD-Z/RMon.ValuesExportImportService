@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,9 +15,11 @@ using RMon.ESB.Core.ValuesParseTaskDto;
 using RMon.Globalization;
 using RMon.Globalization.String;
 using RMon.Values.ExportImport.Core;
+using RMon.ValuesExportImportService.Configuration;
 using RMon.ValuesExportImportService.Extensions;
 using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Processing.Common;
+using RMon.ValuesExportImportService.Processing.Extensions;
 using RMon.ValuesExportImportService.ServiceBus;
 using RMon.ValuesExportImportService.Text;
 using Task = System.Threading.Tasks.Task;
@@ -26,6 +29,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
     class ParseTaskLogic : IParseTaskLogic
     {
         private readonly IOptionsMonitor<Service> _serviceOptions;
+        private readonly IOptionsMonitor<ValuesParseOptions> _valuesParseOptions;
         private readonly IFileStorage _fileStorage;
         private readonly ISimpleFactory<IValueRepository> _valueRepositorySimpleFactory;
         private readonly IParseTaskLogger _taskLogger;
@@ -35,11 +39,13 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         private readonly ParseTableLogic _parseTableLogic;
         private readonly ParseFlexibleFormatLogic _parseFlexibleFormatLogic;
         private readonly ITransformationRatioCalculator _transformationRatioCalculator;
+        private readonly IValuesLogger _valuesLogger;
 
         /// <summary>
         /// Конструктор 1
         /// </summary>
         /// <param name="serviceOptions">Опции сервиса</param>
+        /// <param name="valuesParseOptions">Опциии парсинга</param>
         /// <param name="valueRepositorySimpleFactory">Фабрика для создания репозитория значений</param>
         /// <param name="taskLogger">Логгер для заданий</param>
         /// <param name="fileStorage">Файловое хранилище</param>
@@ -49,7 +55,9 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         /// <param name="parseTableLogic">Логика для парсинга "Таблицы"</param>
         /// <param name="parseFlexibleFormatLogic">Логика для парсинга гибкого формата</param>
         /// <param name="transformationRatioCalculator">Калькулятор коэффициентов трансформации</param>
+        /// <param name="valuesLogger">Логгер для полученных значений</param>
         public ParseTaskLogic(IOptionsMonitor<Service> serviceOptions,
+            IOptionsMonitor<ValuesParseOptions> valuesParseOptions,
             ISimpleFactory<IValueRepository> valueRepositorySimpleFactory,
             IParseTaskLogger taskLogger,
             IFileStorage fileStorage,
@@ -58,9 +66,11 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             ParseMatrix31X24Logic parseMatrix31X24Logic,
             ParseTableLogic parseTableLogic,
             ParseFlexibleFormatLogic parseFlexibleFormatLogic,
-            ITransformationRatioCalculator transformationRatioCalculator)
+            ITransformationRatioCalculator transformationRatioCalculator,
+            IValuesLogger valuesLogger)
         {
             _serviceOptions = serviceOptions;
+            _valuesParseOptions = valuesParseOptions;
             _valueRepositorySimpleFactory = valueRepositorySimpleFactory;
             _taskLogger = taskLogger;
             _fileStorage = fileStorage;
@@ -70,6 +80,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             _parseTableLogic = parseTableLogic;
             _parseFlexibleFormatLogic = parseFlexibleFormatLogic;
             _transformationRatioCalculator = transformationRatioCalculator;
+            _valuesLogger = valuesLogger;
         }
 
         
@@ -87,6 +98,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                     await context.LogStarted(TextTask.Start).ConfigureAwait(false);
                     await context.LogInfo(TextTask.ValidateParameters).ConfigureAwait(false);
                     ValidateParameters(task);
+                    await ValidateReceiveFilesSizeLimitAsync(task.Parameters.Files, ct).ConfigureAwait(false);
 
                     await context.LogInfo(TextParse.LoadingFiles, 10).ConfigureAwait(false);
                     var files = await ReceiveFilesAsync(task.Parameters.Files, ct).ConfigureAwait(false);
@@ -100,7 +112,10 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                         ValuesParseFileFormatType.Flexible => await _parseFlexibleFormatLogic.AnalyzeAsync(files, context, ct).ConfigureAwait(false),
                         _ => throw new ArgumentOutOfRangeException(),
                     };
-                    
+
+                    if (!values.Any())
+                        throw new TaskException(TextParse.MissingParseValuesError);
+
                     if (task.Parameters.UseTransformationRatio)
                     {
                         await context.LogInfo(TextParse.UseTransformationRatio, 60).ConfigureAwait(false);
@@ -113,10 +128,11 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                                 value.Value.ValueFloat = value.Value.ValueFloat * tag.TransformationRatio * tag.Ratio + tag.Offset;
                         }
                     }
-
+                    
                     await context.LogInfo(TextParse.LoadingCurrentValues, 80).ConfigureAwait(false);
                     await LoadCurrentValuesFromDb(context, values).ConfigureAwait(false);
 
+                    _valuesLogger.LogSendValues(task.CorrelationId, values);
                     await context.LogFinished(TextTask.FinishSuccess, values).ConfigureAwait(false);
                 }
                 catch (TaskCanceledException)
@@ -157,24 +173,40 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 throw new TaskException(TextParse.NoUserIdError);
         }
 
+        /// <summary>
+        /// Асинхронно проверят размер всех получаемых файлов и в случае превышения заданного в настройках лимита генерирует исключение <see cref="TaskException"/>
+        /// </summary>
+        /// <param name="files">Список получаемых файлов</param>
+        /// <param name="cancellationToken">Токен отмены операции</param>
+        /// <returns></returns>
+        private async Task ValidateReceiveFilesSizeLimitAsync(IList<FileInStorage> files, CancellationToken cancellationToken)
+        {
+            var tasks = files.Select(file => _fileStorage.GetFileInfoAsync(file.Path, cancellationToken)).ToList();
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+            var size = tasks.Sum(t => t.Result.Size);
+            if (size > _valuesParseOptions.CurrentValue.TotalParseFilesSize)
+                throw new TaskException(TextParse.FilesSizeExceedLimit.With((int)Math.Round(_valuesParseOptions.CurrentValue.TotalParseFilesSize / 1024d)));
+        }
 
         /// <summary>
         /// Получает файлы <see cref="files"/> из файлового хранилища
         /// </summary>
         /// <param name="files">Список получаемых файлов</param>
-        /// <param name="cancellationToken"></param>
+        /// <param name="cancellationToken">Токен отмены операции</param>
         /// <returns>Список файлов</returns>
-        private async Task<IList<LocalFile>> ReceiveFilesAsync(IEnumerable<FileInStorage> files, CancellationToken cancellationToken = default)
+        private async Task<IList<LocalFile>> ReceiveFilesAsync(IList<FileInStorage> files, CancellationToken cancellationToken = default)
         {
             var storedFiles = new List<LocalFile>();
             var tasks = files.Select(async file =>
             {
                 var fileBody = await _fileStorage.GetFileAsync(file.Path, cancellationToken).ConfigureAwait(false);
-                storedFiles.Add(new LocalFile(file.Path, fileBody));
+                storedFiles.Add(new LocalFile(Path.GetFileName(file.Path), fileBody));
             });
             await Task.WhenAll(tasks).ConfigureAwait(false);
             return storedFiles;
         }
+
+        
 
         /// <summary>
         /// Выполняет загрузку текущих значений из БД
@@ -196,7 +228,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 {
                     var dbValue = dbValues.SingleOrDefault(t => t.Datetime == value.TimeStamp);
                     if (dbValue != null)
-                        value.CurrentValue = new ValueUnion("Normal", dbValue.ValueFloat);
+                        value.CurrentValue = dbValue.ToValueUnion();
                 }
             }
         }

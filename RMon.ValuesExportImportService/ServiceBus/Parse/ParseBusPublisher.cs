@@ -83,7 +83,7 @@ namespace RMon.ValuesExportImportService.ServiceBus.Parse
         {
             var msg = new ValuesParseTaskFinished(receivedTask, date, instanceName, state, values);
             await _busProvider.Bus.Publish((IValuesParseTaskFinished)msg).ConfigureAwait(false);
-            _busLogger.LogSentTask(msg, typeof(IValuesParseTaskFinished));
+            _busLogger.LogSentTask(msg);
         }
     }
 }

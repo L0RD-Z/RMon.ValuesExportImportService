@@ -1,6 +1,6 @@
 ﻿namespace RMon.ValuesExportImportService.Configuration
 {
-    record ResultMessageSender
+    record ResultMessageSenderOptions
     {
         public ResultMessagePacketFormats PacketFormat { get; init; }
     }

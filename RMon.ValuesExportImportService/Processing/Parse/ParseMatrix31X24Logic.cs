@@ -35,12 +35,12 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             var excelResults = new List<ExcelResult>();
             foreach (var file in files)
             {
-                await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Matrix31X24.ToString())).ConfigureAwait(false);
+                await context.LogInfo(TextParse.ReadingFile.With(file.Name, ValuesParseFileFormatType.Matrix31X24.ToString())).ConfigureAwait(false);
 
-                var excelResult = _matrixReader.ReadExcelBook(file.Body, logicDevicePropertyValueCell, cellStart, dateRowIndex, timeColumnIndex, context);
+                var excelResult = _matrixReader.ReadExcelBook(file, logicDevicePropertyValueCell, cellStart, dateRowIndex, timeColumnIndex, context);
                 if (!excelResult.Any())
-                    throw new TaskException(TextParse.ReadFileError.With(file.Path));
-                excelResults.Add(new(file.Path, excelResult));
+                    throw new TaskException(TextParse.ReadFileError.With(file.Name));
+                excelResults.Add(new(file.Name, excelResult));
             }
 
             return await _dbValuesAnalyzer.Analyze(excelResults, taskParams.LogicDevicePropertyCode, taskParams.TagCode, context, ct).ConfigureAwait(false);
@@ -53,19 +53,19 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         private static void ValidateParameters(Matrix31X24ParsingParameters taskParams)
         {
             if (string.IsNullOrEmpty(taskParams.LogicDevicePropertyCode))
-                throw new TaskException(TextParse.MissingLogicDevicePropertyCode);
+                throw new TaskException(TextParse.MissingLogicDevicePropertyCodeError);
             if (string.IsNullOrEmpty(taskParams.LogicDevicePropertyCell))
-                throw new TaskException(TextParse.MissingLogicDevicePropertyCellAddress);
+                throw new TaskException(TextParse.MissingLogicDevicePropertyCellAddressError);
             if (string.IsNullOrEmpty(taskParams.TagCode))
-                throw new TaskException(TextParse.MissingTagCode);
+                throw new TaskException(TextParse.MissingTagCodeError);
             if (string.IsNullOrEmpty(taskParams.FirstValueCell))
-                throw new TaskException(TextParse.MissingFirstValueCellAddress);
+                throw new TaskException(TextParse.MissingFirstValueCellAddressError);
             if (string.IsNullOrEmpty(taskParams.DateRow))
-                throw new TaskException(TextParse.MissingDateRowNumber);
+                throw new TaskException(TextParse.MissingDateRowNumberError);
             if (!int.TryParse(taskParams.DateRow, out _))
-                throw new TaskException(TextParse.IncorrectDateRowNumber);
+                throw new TaskException(TextParse.IncorrectDateRowNumberError);
             if (string.IsNullOrEmpty(taskParams.TimeColumn))
-                throw new TaskException(TextParse.MissingTimeColumnNumber);
+                throw new TaskException(TextParse.MissingTimeColumnNumberError);
         }
     }
 }

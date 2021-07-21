@@ -37,101 +37,54 @@ namespace RMon.ValuesExportImportService.Files
         /// <inheritdoc />
         public async Task StoreFileAsync(string filePath, byte[] content, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var fileStorageService = await GetFileStorageServiceAsync().ConfigureAwait(false);
+            var fileStorageService = await GetFileStorageServiceAsync().ConfigureAwait(false);
 
-                var response = await fileStorageService.StoreFileAsync(new StoreFileRequest
-                {
-                    AreaName = _options.Area,
-                    FilePath = filePath,
-                    Content = ByteString.CopyFrom(content)
-                }, Metadata.Empty, null, cancellationToken);
-                try
-                {
-                    response.Result.ThrowIfError();
-                }
-                catch (RMon.FileStorage.Grpc.FileStorageException e)
-                {
-                    throw new FileStorageException(TextFileStorage.ErrorCodeException.With(response.Result.Code.ToString()), e);
-                }
-            }
-            catch (RpcException e)
+            var response = await fileStorageService.StoreFileAsync(new StoreFileRequest
             {
-                if (e.StatusCode == StatusCode.Cancelled)
-                    throw new OperationCanceledException();
-                throw new FileStorageException(TextFileStorage.SendFileWithStatusException.With(filePath, _options.ToString(), e.Status.ToString()), e);
-            }
-            catch (Exception e)
-            {
-                throw new FileStorageException(TextFileStorage.SendFileException.With(filePath, _options.ToString()), e);
-            }
+                AreaName = _options.Area,
+                FilePath = filePath,
+                Content = ByteString.CopyFrom(content)
+            }, Metadata.Empty, null, cancellationToken);
+            response.Result.ThrowIfError();
         }
 
         /// <inheritdoc />
         public async Task<byte[]> GetFileAsync(string filePath, CancellationToken cancellationToken = default)
         {
-            try
+            var fileStorageService = await GetFileStorageServiceAsync().ConfigureAwait(false);
+            var response = await fileStorageService.GetFileAsync(new GetFileRequest
             {
-                var fileStorageService = await GetFileStorageServiceAsync().ConfigureAwait(false);
-                var response = await fileStorageService.GetFileAsync(new GetFileRequest
-                {
-                    AreaName = _options.Area,
-                    FilePath = filePath
-                }, Metadata.Empty, null, cancellationToken);
+                AreaName = _options.Area,
+                FilePath = filePath
+            }, Metadata.Empty, null, cancellationToken);
 
-                try
-                {
-                    response.Result.ThrowIfError();
-                    return response.Content.ToByteArray();
-                }
-                catch (Exception e)
-                {
-                    throw new FileStorageException(TextFileStorage.ErrorCodeException.With(response.Result.Code.ToString()), e);
-                }
-            }
-            catch (RpcException e)
-            {
-                if (e.StatusCode == StatusCode.Cancelled)
-                    throw new OperationCanceledException();
-                throw new FileStorageException(TextFileStorage.ReceiveFileWithStatusException.With(filePath, _options.ToString(), e.Status.ToString()), e);
-            }
-            catch (Exception e)
-            {
-                throw new FileStorageException(TextFileStorage.ReceiveFileException.With(filePath, _options.ToString()), e);
-            }
+            response.Result.ThrowIfError();
+            return response.Content.ToByteArray();
         }
 
         /// <inheritdoc />
         public async Task DeleteFileAsync(string filePath, CancellationToken cancellationToken = default)
         {
-            try
+            var fileStorageService = await GetFileStorageServiceAsync().ConfigureAwait(false);
+            var response = await fileStorageService.DeleteFileAsync(new DeleteFileRequest
             {
-                var fileStorageService = await GetFileStorageServiceAsync().ConfigureAwait(false);
-                var response = await fileStorageService.DeleteFileAsync(new DeleteFileRequest
-                {
-                    AreaName = _options.Area,
-                    FilePath = filePath
-                }, Metadata.Empty, null, cancellationToken);
-                try
-                {
-                    response.Result.ThrowIfError();
-                }
-                catch (Exception e)
-                {
-                    throw new FileStorageException(TextFileStorage.ErrorCodeException.With(response.Result.Code.ToString()), e);
-                }
-            }
-            catch (RpcException e)
+                AreaName = _options.Area,
+                FilePath = filePath
+            }, Metadata.Empty, null, cancellationToken);
+            response.Result.ThrowIfError();
+        }
+
+        /// <inheritdoc />
+        public async Task<StoredFileInfo> GetFileInfoAsync(string filePath, CancellationToken cancellationToken = default)
+        {
+            var fileStorageService = await GetFileStorageServiceAsync().ConfigureAwait(false);
+            var response = await fileStorageService.GetFileInfoAsync(new GetFileInfoRequest
             {
-                if (e.StatusCode == StatusCode.Cancelled)
-                    throw new OperationCanceledException();
-                throw new FileStorageException(TextFileStorage.DeleteFileWithStatusException.With(filePath, _options.ToString(), e.Status.ToString()), e);
-            }
-            catch (Exception e)
-            {
-                throw new FileStorageException(TextFileStorage.DeleteFileException.With(filePath, _options.ToString()), e);
-            }
+                AreaName = _options.Area,
+                FilePath = filePath
+            }, Metadata.Empty, null, cancellationToken);
+            response.Result.ThrowIfError();
+            return response.FileInfo;
         }
 
         #endregion

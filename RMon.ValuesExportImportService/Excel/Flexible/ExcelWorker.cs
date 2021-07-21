@@ -13,12 +13,13 @@ using RMon.Globalization.String;
 using RMon.ValuesExportImportService.Common;
 using RMon.ValuesExportImportService.Excel.Common;
 using RMon.ValuesExportImportService.Extensions;
+using RMon.ValuesExportImportService.Files;
 using RMon.ValuesExportImportService.Processing.Parse;
 using RMon.ValuesExportImportService.Text;
 
 namespace RMon.ValuesExportImportService.Excel.Flexible
 {
-    public class ExcelWorker : IExcelWorker
+    class ExcelWorker : IExcelWorker
     {
         private readonly ILogger _logger;
 
@@ -154,16 +155,11 @@ namespace RMon.ValuesExportImportService.Excel.Flexible
             }
         }
 
-        /// <summary>
-        /// Выполняет парсинг файла Excel-файла <see cref="fileBody"/>
-        /// </summary>
-        /// <param name="fileBody">Файл excel</param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public async Task<List<ReadSheet>> ReadFile(byte[] fileBody, ParseProcessingContext context)
+        /// <inheritdoc/>
+        public async Task<List<ReadSheet>> ReadFile(LocalFile file, ParseProcessingContext context)
         {
             _logger.LogInformation("Разбор книги Excel начат.");
-            await using var stream = new MemoryStream(fileBody);
+            await using var stream = new MemoryStream(file.Body);
             using var excelPackage = new ExcelPackage(stream);
 
             var result = new List<ReadSheet>();
@@ -175,7 +171,7 @@ namespace RMon.ValuesExportImportService.Excel.Flexible
                 }
                 catch (Exception e)
                 {
-                    await context.LogWarning(e.ConcatExceptionMessage(TextExcel.SheetParseUnexpectedError.With(excelSheet.Name))).ConfigureAwait(false);
+                    await context.LogWarning(e.ConcatExceptionMessage(TextExcel.SheetParseUnexpectedError.With(file.Name, excelSheet.Name))).ConfigureAwait(false);
                 }
 
             _logger.LogInformation("Разбор книги Excel завершен.");

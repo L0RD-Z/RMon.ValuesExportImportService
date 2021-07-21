@@ -49,10 +49,10 @@ namespace RMon.ValuesExportImportService.Processing.Parse
             var messages = new List<(string FileName, Message)>();
             foreach (var file in files)
             {
-                await context.LogInfo(TextParse.ReadingFile.With(file.Path, ValuesParseFileFormatType.Xml80020.ToString())).ConfigureAwait(false);
+                await context.LogInfo(TextParse.ReadingFile.With(file.Name, ValuesParseFileFormatType.Xml80020.ToString())).ConfigureAwait(false);
 
                 var message = _format80020Parser.Parse(file.Body);
-                messages.Add((file.Path, message));
+                messages.Add((file.Name, message));
             }
 
             var result = new List<ValueInfo>();

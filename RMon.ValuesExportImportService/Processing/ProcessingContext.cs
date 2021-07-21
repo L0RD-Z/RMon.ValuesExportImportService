@@ -28,8 +28,6 @@ namespace RMon.ValuesExportImportService.Processing
 
         public Task LogStarted(I18nString msg) => TaskLogger.LogStartedAsync(Task, DbTask, msg);
 
-        
-
         public Task LogAborted(I18nString msg) => TaskLogger.LogAbortedAsync(Task, DbTask, msg);
 
         public Task LogFailed(I18nString msg, Exception ex) => TaskLogger.LogFailedAsync(Task, DbTask, msg, ex);

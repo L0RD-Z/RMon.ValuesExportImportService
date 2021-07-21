@@ -61,9 +61,11 @@ namespace RMon.ValuesExportImportService
                     services.ConfigureOption<EntitiesDatabase>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(EntitiesDatabase));
                     services.ConfigureOption<ValuesDatabase>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesDatabase));
                     services.ConfigureOption<ValuesExportImportFileStorage>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesExportImportFileStorage));
+                    services.ConfigureOption<ValuesParseOptions>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesParseOptions));
                     services.ConfigureOption<TagValueTransformation>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(TagValueTransformation));
-                    services.ConfigureOption<ResultMessageSender>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ResultMessageSender));
-                    
+                    services.ConfigureOption<ResultMessageSenderOptions>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ResultMessageSenderOptions));
+                    services.ConfigureOption<ValuesLoggingOptions>(hostContext.Configuration, nameof(ValuesExportImportService), nameof(ValuesLoggingOptions));
+
 
                     services.AddSingleton<IBusProvider, BusProvider>();
                     services.AddSingleton<ExportStateMachine>();
@@ -98,6 +100,7 @@ namespace RMon.ValuesExportImportService
 
                     services.AddSingleton<ITransformationRatioCalculator, TransformationRatioCalculator>();
                     services.AddSingleton<IResultMessagesSender, ResultMessagesSqlProvider>();
+                    services.AddSingleton<IValuesLogger, ValuesLogger>();
 
                     services.AddSingleton<IImportTaskLogger, ImportTaskLogger>();
                     services.AddSingleton<IParseTaskLogger, ParseTaskLogger>();
