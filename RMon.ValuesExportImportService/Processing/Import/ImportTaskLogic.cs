@@ -111,11 +111,11 @@ namespace RMon.ValuesExportImportService.Processing.Import
                             await valueRepository.DeleteAsync(value.ToValue()).ConfigureAwait(false);
 
                         /*Применение коэффициента трансформации*/
-                        value.Value.ValueFloat = value.Value.ValueFloat / tag.TransformationRatio / tag.Ratio - tag.Offset;
+                        var valueFloat = value.Value.ValueFloat / tag.TransformationRatio / tag.Ratio - tag.Offset;
 
                         /*Формирование пакета для DPS*/
-                        if (value.Value.ValueFloat.HasValue)
-                            message.data.usd.Add(CreateTagValue(value.TimeStamp, tag.TagCode, value.Value.ValueFloat.Value));
+                        if (valueFloat.HasValue)
+                            message.data.usd.Add(CreateTagValue(value.TimeStamp, tag.TagCode, valueFloat.Value));
                     }
 
                     await _resultMessagesSender.SendPacketAsync(message, ct).ConfigureAwait(false);

@@ -8,6 +8,7 @@
 	<Authors>АО Связь инжиниринг М</Authors>
 	<Description>Служба экспорта/импорта значений тегов Romonitoring .NET</Description>
 	<Copyright>Copyright © АО Связь инжиниринг М 2021</Copyright>
+	<Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

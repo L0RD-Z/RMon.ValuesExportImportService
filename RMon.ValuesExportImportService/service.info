@@ -1,5 +1,5 @@
 ﻿[Service]
 SERVICE_NAME=RMon.ValuesExportImportService
 SERVICE_DISPLAY_NAME=Romonitoring .NET ValuesExportImportService
-SERVICE_DESCRIPTION=Service for export / import values of tags Romonitoring .NET
+SERVICE_DESCRIPTION=Service for export and import values of tags Romonitoring .NET
 SERVICE_EXE=RMon.ValuesExportImportService
