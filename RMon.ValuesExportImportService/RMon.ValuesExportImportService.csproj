@@ -8,7 +8,7 @@
 	<Authors>АО Связь инжиниринг М</Authors>
 	<Description>Служба экспорта/импорта значений тегов Romonitoring .NET</Description>
 	<Copyright>Copyright © АО Связь инжиниринг М 2021</Copyright>
-	<Version>1.0.1</Version>
+	<Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,7 +29,7 @@
     <PackageReference Include="RMon.Data.Provider.Esb" Version="3.3.1" />
     <PackageReference Include="RMon.Data.Provider.Security" Version="3.3.2" />
     <PackageReference Include="RMon.Data.Provider.Units" Version="3.7.1" />
-    <PackageReference Include="RMon.Data.Provider.Values" Version="2.2.2" />
+    <PackageReference Include="RMon.Data.Provider.Values" Version="2.3.0" />
     <PackageReference Include="RMon.DriverCore" Version="3.1.0" />
     <PackageReference Include="RMon.ESB.Common" Version="3.4.1" />
     <PackageReference Include="RMon.ESB.Core" Version="2.13.0" />
