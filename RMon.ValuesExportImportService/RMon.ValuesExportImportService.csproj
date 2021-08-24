@@ -8,28 +8,28 @@
 	<Authors>АО Связь инжиниринг М</Authors>
 	<Description>Служба экспорта/импорта значений тегов Romonitoring .NET</Description>
 	<Copyright>Copyright © АО Связь инжиниринг М 2021</Copyright>
-	<Version>1.0.1</Version>
+	<Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EPPlus" Version="5.7.1" />
+    <PackageReference Include="EPPlus" Version="5.7.3" />
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.9" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="5.0.3" />
     <PackageReference Include="RMon.Configuration.DependencyInjection" Version="1.0.0" />
     <PackageReference Include="RMon.Configuration.MassTransit" Version="1.1.0" />
-    <PackageReference Include="RMon.Configuration.Options" Version="1.3.1" />
+    <PackageReference Include="RMon.Configuration.Options" Version="1.4.0" />
     <PackageReference Include="RMon.Context.BackEndContext" Version="4.6.1" />
     <PackageReference Include="RMon.Context.FrontEndContext" Version="3.6.1" />
     <PackageReference Include="RMon.Data.Provider" Version="5.17.1" />
-    <PackageReference Include="RMon.Data.Provider.Esb" Version="3.2.3" />
+    <PackageReference Include="RMon.Data.Provider.Esb" Version="3.3.1" />
     <PackageReference Include="RMon.Data.Provider.Security" Version="3.3.2" />
     <PackageReference Include="RMon.Data.Provider.Units" Version="3.7.1" />
-    <PackageReference Include="RMon.Data.Provider.Values" Version="2.2.2" />
+    <PackageReference Include="RMon.Data.Provider.Values" Version="2.3.0" />
     <PackageReference Include="RMon.DriverCore" Version="3.1.0" />
     <PackageReference Include="RMon.ESB.Common" Version="3.4.1" />
     <PackageReference Include="RMon.ESB.Core" Version="2.13.0" />
