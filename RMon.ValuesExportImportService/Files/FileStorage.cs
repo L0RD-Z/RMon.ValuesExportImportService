@@ -8,7 +8,6 @@ using Grpc.Core;
 using Microsoft.Extensions.Options;
 using RMon.Configuration.Options.FileStorage;
 using RMon.FileStorage.Grpc;
-using RMon.ValuesExportImportService.Text;
 
 namespace RMon.ValuesExportImportService.Files
 {
