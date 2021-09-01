@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
@@ -133,7 +134,13 @@ namespace RMon.ValuesExportImportService.Files
                 // ignored
             }
 
-            _channel = new Channel($"{_newOptions.Grpc.Host}:{_newOptions.Grpc.Port}", ChannelCredentials.Insecure);
+            var channelOptions = new List<ChannelOption>
+            {
+                new(ChannelOptions.MaxReceiveMessageLength, int.MaxValue),
+                new(ChannelOptions.MaxSendMessageLength, int.MaxValue)
+            };
+
+            _channel = new Channel($"{_newOptions.Grpc.Host}:{_newOptions.Grpc.Port}", ChannelCredentials.Insecure, channelOptions);
             _fileStorageService = new FileStorageService.FileStorageServiceClient(_channel);
         }
 
