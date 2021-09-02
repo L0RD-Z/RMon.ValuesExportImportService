@@ -16,6 +16,14 @@ namespace RMon.ValuesExportImportService.Files
         Task StoreFileAsync(string filePath, byte[] content, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Асинхронно возвращает информацию о файле <see cref="filePath"/>
+        /// </summary>
+        /// <param name="filePath">Ссылка на файл в файловом хранилище</param>
+        /// <param name="cancellationToken">Токен отмены данных</param>
+        /// <returns></returns>
+        Task<StoredFileInfo> GetFileInfoAsync(string filePath, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Асинхронно получает файл <see cref="filePath"/> из файлового хранилища
         /// </summary>
         /// <param name="filePath">Ссылка на файл в файловом хранилище</param>
@@ -30,13 +38,5 @@ namespace RMon.ValuesExportImportService.Files
         /// <param name="cancellationToken">Токен отмены данных</param>
         /// <returns></returns>
         Task DeleteFileAsync(string filePath, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Асинхронно возвращает информацию о файле <see cref="filePath"/>
-        /// </summary>
-        /// <param name="filePath">Ссылка на файл в файловом хранилище</param>
-        /// <param name="cancellationToken">Токен отмены данных</param>
-        /// <returns></returns>
-        Task<StoredFileInfo> GetFileInfoAsync(string filePath, CancellationToken cancellationToken = default);
     }
 }
