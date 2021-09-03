@@ -32,14 +32,14 @@ namespace RMon.ValuesExportImportService.Processing.Common
             var tags = await _dataRepository.GetTagsAsync(idTags, ct).ConfigureAwait(false);
             var devicePropertyCodes = _tagValueTransformationOptions.CurrentValue.TagsGroups.SelectMany(t => t.MultiplyPropertyCodes).ToList();
 
-            var idDevices = tags.Where(t => t.IdDevice.HasValue).Select(t => t.IdDevice.Value).ToList();
-            var deviceProperties = await _dataRepository.GetDevicePropertiesAsync(idDevices, devicePropertyCodes, ct).ConfigureAwait(false);
+            var idLogicDevices = tags.Select(t => t.IdLogicDevice).Distinct().ToList();
+            var deviceProperties = await _dataRepository.GetLogicDevicePropertiesAsync(idLogicDevices, devicePropertyCodes, ct).ConfigureAwait(false);
 
             TagsRatio = new List<TagRatio>();
             foreach (var tag in tags)
             {
                 // ReSharper disable once PossibleInvalidOperationException
-                var propertyValues = deviceProperties.Where(t => t.IdDevice == tag.IdDevice.Value).ToDictionary(t => t.DevicePropertyType.KeyReport, t => t.Value);
+                var propertyValues = deviceProperties.Where(t => t.IdLogicDevice == tag.IdLogicDevice).ToDictionary(t => t.LogicDevicePropertyType.Code, t => t.Value);
                 var tagRatio = new TagRatio
                 {
                     IdTag = tag.Id,

@@ -128,12 +128,12 @@ namespace RMon.ValuesExportImportService.Data
                 .ConfigureAwait(false);
         }
 
-        public async Task<List<DeviceProperty>> GetDevicePropertiesAsync(IList<long> idDevices, IList<string> devicePropertyCodes, CancellationToken ct = default)
+        public async Task<List<LogicDeviceProperty>> GetLogicDevicePropertiesAsync(IList<long> idLogicDevices, IList<string> devicePropertyCodes, CancellationToken ct = default)
         {
             await using var dataContext = _factory.Create();
-            return await dataContext.DeviceProperties.AsNoTracking()
-                .Include(t => t.DevicePropertyType)
-                .Where(t => idDevices.Contains(t.IdDevice) && devicePropertyCodes.Contains(t.DevicePropertyType.KeyReport))
+            return await dataContext.LogicDeviceProperties.AsNoTracking()
+                .Include(t => t.LogicDevicePropertyType)
+                .Where(t => idLogicDevices.Contains(t.IdLogicDevice) && devicePropertyCodes.Contains(t.LogicDevicePropertyType.Code))
                 .ToListAsync(ct)
                 .ConfigureAwait(false);
         }
