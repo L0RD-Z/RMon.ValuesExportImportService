@@ -119,7 +119,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                     if (task.Parameters.UseTransformationRatio)
                     {
                         await context.LogInfo(TextParse.UseTransformationRatio, 60).ConfigureAwait(false);
-                        await _transformationRatioCalculator.LoadTagsRatioFromDbAsync(values.Select(t => t.IdTag).ToList(), ct).ConfigureAwait(false);
+                        await _transformationRatioCalculator.LoadTagsRatioFromDbAsync(values.Select(t => t.IdTag).Distinct().ToList(), ct).ConfigureAwait(false);
 
                         foreach (var value in values)
                         {

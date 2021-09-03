@@ -52,13 +52,13 @@ namespace RMon.ValuesExportImportService.Data
         Task<List<Tag>> GetTagsAsync(IList<long> idTags, CancellationToken ct = default);
 
         /// <summary>
-        /// Асинхронно возвращает список свойств с кодами <see cref="devicePropertyCodes"/> для устройств <see cref="idDevices"/>
+        /// Асинхронно возвращает список свойств с кодами <see cref="devicePropertyCodes"/> для устройств <see cref="idLogicDevices"/>
         /// </summary>
-        /// <param name="idDevices">Список устройств для которых возвращаются свойства</param>
+        /// <param name="idLogicDevices">Список id оборудования для которых возвращаются свойства</param>
         /// <param name="devicePropertyCodes">Список кодов свойств, которые возвращаются</param>
         /// <param name="ct">Токен отмены операции</param>
         /// <returns></returns>
-        Task<List<DeviceProperty>> GetDevicePropertiesAsync(IList<long> idDevices, IList<string> devicePropertyCodes, CancellationToken ct = default);
+        Task<List<LogicDeviceProperty>> GetLogicDevicePropertiesAsync(IList<long> idLogicDevices, IList<string> devicePropertyCodes, CancellationToken ct = default);
 
         /// <summary>
         /// Асинхронно добавляет пакет <see cref="buffer"/> в таблицу <see cref="SSDAnalizeBuf"/>

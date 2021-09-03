@@ -63,7 +63,7 @@ namespace RMon.ValuesExportImportService.Processing.Import
                     _valuesLogger.LogReceivedValues(task.CorrelationId, values);
 
                     var valueRepository = _valueRepositorySimpleFactory.Create();
-                    await _transformationRatioCalculator.LoadTagsRatioFromDbAsync(values.Select(t => t.IdTag).ToList(), ct).ConfigureAwait(false);
+                    await _transformationRatioCalculator.LoadTagsRatioFromDbAsync(values.Select(t => t.IdTag).Distinct().ToList(), ct).ConfigureAwait(false);
 
                     var groupValues = values.GroupBy(t => t.IdTag);
 

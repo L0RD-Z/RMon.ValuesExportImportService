@@ -54,7 +54,7 @@ namespace RMon.ValuesExportImportService.Tests
             throw new NotImplementedException();
         }
 
-        public Task<List<DeviceProperty>> GetDevicePropertiesAsync(IList<long> idDevices, IList<string> devicePropertyCodes, CancellationToken ct = default)
+        public Task<List<LogicDeviceProperty>> GetLogicDevicePropertiesAsync(IList<long> idDevices, IList<string> devicePropertyCodes, CancellationToken ct = default)
         {
             throw new NotImplementedException();
         }
