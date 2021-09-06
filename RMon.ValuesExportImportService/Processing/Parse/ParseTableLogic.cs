@@ -66,6 +66,11 @@ namespace RMon.ValuesExportImportService.Processing.Parse
                 throw new TaskException(TextParse.MissingDateColumnNumberError);
             if (string.IsNullOrEmpty(taskParams.TimeColumn))
                 throw new TaskException(TextParse.MissingTimeColumnNumberError);
+
+            var cellStart = ExcelCellAddressConverter.CellAddressConvert(taskParams.FirstValueCell);
+            var logicDevicePropertyValueRowIndex = ExcelCellAddressConverter.ExcelRowToIndex(taskParams.LogicDevicePropertyRow);
+            if (cellStart.RowIndex <= logicDevicePropertyValueRowIndex)
+                throw new TaskException(TextParse.IncorrectRowStartError);
         }
     }
 }

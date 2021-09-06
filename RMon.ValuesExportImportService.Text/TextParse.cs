@@ -78,7 +78,8 @@ namespace RMon.ValuesExportImportService.Text
         public static I18nString MissingTimeRowNumberError = new(nameof(MissingTimeRowNumberError), "В параметрах задания отсутствует номер строки с часами.");
         public static I18nString IncorrectDateRowNumberError = new(nameof(IncorrectDateRowNumberError), "В параметрах задания номер строки с датами задан некорректно.");
         public static I18nString IncorrectTimeRowNumberError = new(nameof(IncorrectTimeRowNumberError), "В параметрах задания номер строки с часами задан некорректно.");
-        public static I18nString IncorrectLogicDevicePropertyRowNumberError = new(nameof(IncorrectLogicDevicePropertyRowNumberError), "В параметрах задания номер строки с со значениями свойств оборудования задан некорректно.");
+        public static I18nString IncorrectLogicDevicePropertyRowNumberError = new(nameof(IncorrectLogicDevicePropertyRowNumberError), "В параметрах задания номер строки с значениями свойств оборудования задан некорректно.");
+        public static I18nString IncorrectRowStartError = new(nameof(IncorrectRowStartError), "В параметрах задания номер строки ячейки первого значения должен быть больше номера строки со значениями свойств.");
 
         public static I18nString<string, char> InvalidCharactersError = new(nameof(InvalidCharactersError), 
             "Номер столбца \"{number}\" содержит недопустимый символ \"{ch}\".", "number", "ch");
