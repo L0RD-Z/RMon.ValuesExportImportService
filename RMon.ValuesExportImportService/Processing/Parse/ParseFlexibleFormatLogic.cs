@@ -37,7 +37,7 @@ namespace RMon.ValuesExportImportService.Processing.Parse
         }
 
         /// <summary>
-        /// Асинхронно выполняет анализ файлов в формате 80020
+        /// Асинхронно выполняет анализ файлов в гибком формате
         /// </summary>
         /// <param name="files">Список файлов</param>
         /// <param name="context">Контекст выполнения</param>

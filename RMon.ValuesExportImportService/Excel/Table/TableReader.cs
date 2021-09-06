@@ -93,7 +93,8 @@ namespace RMon.ValuesExportImportService.Excel.Table
                                                     if (!double.TryParse(valueStr, out var value))
                                                         throw new ExcelException(TextExcel.IncorrectValueFormatError.With(valueStr));
 
-                                                    matrixResult.AddValue(date.AddHours(time.Hour).AddMinutes(time.Minute).AddSeconds(time.Second), value);
+                                                    var timeStamp = new DateTime(date.Year, date.Month, date.Day, time.Hour, time.Minute, time.Second);
+                                                    matrixResult.AddValue(timeStamp, value);
                                                 }
                                             }
                                         }
